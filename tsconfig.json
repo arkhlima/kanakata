@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "target": "ESNext",
     "module": "ESNext",
@@ -8,10 +9,11 @@
     "jsxImportSource": "solid-js",
     "jsx": "preserve",
     "strict": true,
+    "noEmit": true,
     "types": ["solid-start/env"],
     "baseUrl": "./",
     "paths": {
       "~/*": ["./src/*"]
     }
-  }
+  },
 }
