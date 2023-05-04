@@ -3,6 +3,8 @@ import { For } from 'solid-js'
 import useStore from '~/store'
 import Checkbox from '~/components/Checkbox'
 
+import { toRomaji } from 'wanakana'
+
 const App = () => {
    const state = useStore()
    const { toggleAllHiraganaMonographs, toggleHiraganaMonographs, toggleAllKana } = state
@@ -26,7 +28,12 @@ const App = () => {
                   onChange={() => toggleHiraganaMonographs(groupIndex)}
                />
                <For each={hiraganaMonographsGroup}>
-                  {hiraganaMonographs => <div>{hiraganaMonographs}</div>}
+                  {hiraganaMonographs => (
+                     <div class="flex flex-col">
+                        <span>{hiraganaMonographs}</span>
+                        <span>{!!hiraganaMonographs && toRomaji(hiraganaMonographs)}</span>
+                     </div>
+                  )}
                </For>
             </div>
          ))}
