@@ -1,25 +1,54 @@
-import { A } from 'solid-start'
-import Counter from '~/components/Counter'
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
+import { For } from 'solid-js'
+import useStore from '~/store'
+import Checkbox from '~/components/Checkbox'
 
-export default function Home() {
+const App = () => {
+   const state = useStore()
+   const { toggleAllHiraganaMonographs, toggleHiraganaMonographs, toggleAllKana } = state
+
    return (
-      <main class="mx-auto p-4 text-center text-gray-700">
-         <h1 class="my-16 text-6xl font-thin uppercase text-sky-700">Hello world!</h1>
-         <Counter />
-         <p class="mt-8">
-            Visit{' '}
-            <a href="https://solidjs.com" target="_blank" class="text-sky-600 hover:underline">
-               solidjs.com
-            </a>{' '}
-            to learn how to build Solid apps.
-         </p>
-         <p class="my-4">
-            <span>Home</span>
-            {' - '}
-            <A href="/about" class="text-sky-600 hover:underline">
-               About Page
-            </A>{' '}
-         </p>
-      </main>
+      <>
+         <Checkbox
+            label="Select All Hiragana Monographs"
+            checked={state.selectedHiraganaMonographs.every(group =>
+               group.every(char => char !== '' && char !== undefined)
+            )}
+            onChange={toggleAllHiraganaMonographs}
+         />
+         {state.hiraganaMonographs.map((hiraganaMonographsGroup, groupIndex) => (
+            <div class="grid grid-cols-6">
+               <Checkbox
+                  label=""
+                  checked={state.selectedHiraganaMonographs[groupIndex].every(
+                     item => item !== '' && item !== undefined
+                  )}
+                  onChange={() => toggleHiraganaMonographs(groupIndex)}
+               />
+               <For each={hiraganaMonographsGroup}>
+                  {hiraganaMonographs => <div>{hiraganaMonographs}</div>}
+               </For>
+            </div>
+         ))}
+         <div>
+            <Checkbox
+               label="Select All"
+               checked={state.selectedHiraganaMonographs.every(group =>
+                  group.every(item => item !== '' && item !== undefined)
+               )}
+               onChange={toggleAllKana}
+            />
+         </div>
+         <button
+            type="submit"
+            disabled={!state.selectedHiraganaMonographs.flat().some(selected => selected)}
+         >
+            Submit
+         </button>
+         <div>Selected Hiragana Monographs:</div>
+         <div class="flex">{state.selectedHiraganaMonographs}</div>
+      </>
    )
 }
+
+export default App
