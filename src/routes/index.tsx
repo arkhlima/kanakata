@@ -1,3 +1,4 @@
+/* eslint-disable solid/prefer-for */
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { For } from 'solid-js'
 import useStore from '~/store'
@@ -7,54 +8,57 @@ import { toRomaji } from 'wanakana'
 
 const App = () => {
    const state = useStore()
-   const { toggleAllHiraganaMonographs, toggleHiraganaMonographs, toggleAllKana } = state
+   const { toggleAllHiraganaMonographs, toggleHiraganaMonographs } = state
 
    return (
-      <>
-         <Checkbox
-            label="Select All Hiragana Monographs"
-            checked={state.selectedHiraganaMonographs.every(group =>
-               group.every(char => char !== '' && char !== undefined)
-            )}
-            onChange={toggleAllHiraganaMonographs}
-         />
-         {state.hiraganaMonographs.map((hiraganaMonographsGroup, groupIndex) => (
-            <div class="grid grid-cols-6">
-               <Checkbox
-                  label=""
-                  checked={state.selectedHiraganaMonographs[groupIndex].every(
-                     item => item !== '' && item !== undefined
-                  )}
-                  onChange={() => toggleHiraganaMonographs(groupIndex)}
-               />
-               <For each={hiraganaMonographsGroup}>
-                  {hiraganaMonographs => (
-                     <div class="flex flex-col">
-                        <span>{hiraganaMonographs}</span>
-                        <span>{!!hiraganaMonographs && toRomaji(hiraganaMonographs)}</span>
+      <main class="mx-auto grid max-w-lg grid-cols-12 py-16">
+         <header class="col-span-12 mb-16">
+            <h1 class="text-center text-5xl font-bold">kanakata</h1>
+         </header>
+
+         <section class="col-span-12">
+            <div class="grid gap-y-1">
+               <div class="flex rounded-t-xl border-2 border-b-0 border-slate-300 bg-slate-100 p-2 pb-1">
+                  <Checkbox
+                     label="select all"
+                     isChecked={state.selectedHiraganaMonographs.every(group =>
+                        group.every(char => char !== '' && char !== undefined)
+                     )}
+                     onChange={toggleAllHiraganaMonographs}
+                  />
+               </div>
+               {state.hiraganaMonographs.map((hiraganaMonographsGroup, groupIndex) => (
+                  <div class="grid grid-flow-dense grid-cols-[auto_repeat(5,1fr)] gap-x-1 rounded-xl">
+                     <div class="flex items-center rounded-l-xl border-2 border-r-0 border-slate-300 bg-slate-100 p-2 pr-1">
+                        <Checkbox
+                           label=""
+                           isChecked={state.selectedHiraganaMonographs[groupIndex].every(
+                              item => item !== '' && item !== undefined
+                           )}
+                           onChange={() => toggleHiraganaMonographs(groupIndex)}
+                        />
                      </div>
-                  )}
-               </For>
+                     <For each={hiraganaMonographsGroup}>
+                        {hiraganaMonographs => (
+                           <div class="flex flex-col items-center gap-y-1 rounded-xl border-2 border-slate-300 bg-slate-100 p-2">
+                              {!!hiraganaMonographs && (
+                                 <>
+                                    <span class="font-sans text-2xl font-bold">
+                                       {hiraganaMonographs}
+                                    </span>
+                                    <span class="text-sm text-slate-500">
+                                       {!!hiraganaMonographs && toRomaji(hiraganaMonographs)}
+                                    </span>
+                                 </>
+                              )}
+                           </div>
+                        )}
+                     </For>
+                  </div>
+               ))}
             </div>
-         ))}
-         <div>
-            <Checkbox
-               label="Select All"
-               checked={state.selectedHiraganaMonographs.every(group =>
-                  group.every(item => item !== '' && item !== undefined)
-               )}
-               onChange={toggleAllKana}
-            />
-         </div>
-         <button
-            type="submit"
-            disabled={!state.selectedHiraganaMonographs.flat().some(selected => selected)}
-         >
-            Submit
-         </button>
-         <div>Selected Hiragana Monographs:</div>
-         <div class="flex">{state.selectedHiraganaMonographs}</div>
-      </>
+         </section>
+      </main>
    )
 }
 
