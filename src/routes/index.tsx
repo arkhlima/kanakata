@@ -40,13 +40,13 @@ const App = () => {
                      </div>
                      <For each={hiraganaMonographsGroup}>
                         {hiraganaMonographs => (
-                           <div class="flex flex-col items-center gap-y-1 rounded-xl border-2 border-slate-300 bg-slate-100 p-2">
+                           <div class="flex flex-col items-center gap-y-2 rounded-xl border-2 border-slate-300 bg-slate-100 p-2">
                               {!!hiraganaMonographs && (
                                  <>
-                                    <span class="font-sans text-2xl font-bold">
+                                    <span class="font-sans text-xl font-bold leading-none">
                                        {hiraganaMonographs}
                                     </span>
-                                    <span class="text-sm text-slate-500">
+                                    <span class="text-xs leading-none text-slate-400">
                                        {!!hiraganaMonographs && toRomaji(hiraganaMonographs)}
                                     </span>
                                  </>
