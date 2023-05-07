@@ -14,10 +14,27 @@ export const MONOGRAPHS: CharGroup = [
    ['n', null, null, null, null], // n
 ]
 
+export const DIAGRAPHS: CharGroup = [
+   ['kya', 'kyu', 'kyo'], // KY
+   ['sha', 'shu', 'sho'], // SH
+   ['cha', 'chu', 'cho'], // CH
+   ['nya', 'nyu', 'nyo'], // NY
+   ['hya', 'hyu', 'hyo'], // HY
+   ['mya', 'myu', 'myo'], // MY
+   ['rya', 'ryu', 'ryo'], // RY
+]
+
 export const MONOGRAPH_DIACRITICS: CharGroup = [
-   ['ga', 'gi', 'gu', 'ge', 'go'], // GA
-   ['za', 'ji', 'zu', 'ze', 'zo'], // ZA
-   ['da', 'ji', 'zu', 'de', 'do'], // DA
-   ['ba', 'bi', 'bu', 'be', 'bo'], // BA
-   ['pa', 'pi', 'pu', 'pe', 'po'], // PA
+   ['ga', 'gi', 'gu', 'ge', 'go'], // G
+   ['za', 'ji', 'zu', 'ze', 'zo'], // Z
+   ['da', 'ji', 'zu', 'de', 'do'], // D
+   ['ba', 'bi', 'bu', 'be', 'bo'], // B
+   ['pa', 'pi', 'pu', 'pe', 'po'], // P
+]
+
+export const DIAGRAPH_DIACRITICS: CharGroup = [
+   ['gya', 'gyu', 'gyo'], // KY
+   ['ja', 'ju', 'jo'], // J
+   ['bya', 'byu', 'byo'], // BY
+   ['pya', 'pyu', 'pyo'], // PY
 ]
