@@ -8,6 +8,7 @@ import type { CharGroup } from '~/constants/kana'
 interface CharGroupProps {
    chars: CharGroup
    selectedChars: CharGroup
+   selectedCharsName: string
    toggleChars: (selectedChars: string, char: CharGroup, groupIndex: number) => void
    toggleAllChars: (selectedChars: string, char: CharGroup) => void
 }
@@ -21,7 +22,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
                isChecked={props.selectedChars.every(group =>
                   group.every(char => char !== '' && char !== undefined)
                )}
-               onChange={() => props.toggleAllChars('selectedHiraganaMonographs', props.chars)}
+               onChange={() => props.toggleAllChars(props.selectedCharsName, props.chars)}
             />
          </div>
          {props.chars.map((charGroup, groupIndex) => (
@@ -36,7 +37,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
                         char => char !== '' && char !== undefined
                      )}
                      onChange={() =>
-                        props.toggleChars('selectedHiraganaMonographs', props.chars, groupIndex)
+                        props.toggleChars(props.selectedCharsName, props.chars, groupIndex)
                      }
                   />
                </div>

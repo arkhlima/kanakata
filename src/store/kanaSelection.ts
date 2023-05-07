@@ -1,10 +1,11 @@
 import create from 'solid-zustand'
 
-import { MONOGRAPHS } from '~/constants/kana'
+import { MONOGRAPHS, MONOGRAPH_DIACRITICS } from '~/constants/kana'
 import type { CharGroup } from '~/constants/kana'
 
 interface State {
    selectedHiraganaMonographs: CharGroup
+   selectedHiraganaMonographDiacritics: CharGroup
 
    toggleChars: (selectedChars: string, chars: CharGroup, groupIndex: number) => void
    toggleAllChars: (selectedChars: string, chars: CharGroup) => void
@@ -12,6 +13,7 @@ interface State {
 
 const useStore = create<State>((set, get) => ({
    selectedHiraganaMonographs: MONOGRAPHS.map(group => group.map(() => '')),
+   selectedHiraganaMonographDiacritics: MONOGRAPH_DIACRITICS.map(group => group.map(() => '')),
 
    toggleChars: (selectedChars: string, chars: CharGroup, groupIndex: number) => {
       const obj = get()
