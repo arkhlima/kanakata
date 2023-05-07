@@ -6,10 +6,10 @@ import { toHiragana } from 'wanakana'
 import type { CharGroup } from '~/constants/kana'
 
 interface CharGroupProps {
-   chars: CharGroup
-   selectedChars: CharGroup
-   toggleChars: (selectedChar: string, char: CharGroup, groupIndex: number) => void
-   toggleAllChars: () => void
+   char: CharGroup
+   selectedChar: CharGroup
+   toggleChar: (selectedChar: string, char: CharGroup, groupIndex: number) => void
+   toggleAllChar: (selectedChar: string, char: CharGroup) => void
 }
 
 const CharGroupSelect = (props: CharGroupProps) => {
@@ -18,13 +18,13 @@ const CharGroupSelect = (props: CharGroupProps) => {
          <div class="flex rounded-t-xl border-2 border-b-0 border-slate-300 bg-slate-100 p-2 pb-1">
             <Checkbox
                label="select all"
-               isChecked={props.selectedChars.every(group =>
-                  group.every(char => char !== '' && char !== undefined)
+               isChecked={props.selectedChar.every(group =>
+                  group.every(item => item !== '' && item !== undefined)
                )}
-               onChange={props.toggleAllChars}
+               onChange={() => props.toggleAllChar('selectedHiraganaMonographs', props.char)}
             />
          </div>
-         {props.chars.map((hiraganaMonographsGroup, groupIndex) => (
+         {props.char.map((hiraganaMonographsGroup, groupIndex) => (
             <div
                class="grid gap-x-1 rounded-xl"
                style={`grid-template-columns: auto repeat(${hiraganaMonographsGroup.length},1fr)`}
@@ -32,11 +32,11 @@ const CharGroupSelect = (props: CharGroupProps) => {
                <div class="flex items-center rounded-l-xl border-2 border-r-0 border-slate-300 bg-slate-100 p-2 pr-1">
                   <Checkbox
                      label=""
-                     isChecked={props.selectedChars[groupIndex].every(
-                        char => char !== '' && char !== undefined
+                     isChecked={props.selectedChar[groupIndex].every(
+                        item => item !== '' && item !== undefined
                      )}
                      onChange={() =>
-                        props.toggleChars('selectedHiraganaMonographs', props.chars, groupIndex)
+                        props.toggleChar('selectedHiraganaMonographs', props.char, groupIndex)
                      }
                   />
                </div>

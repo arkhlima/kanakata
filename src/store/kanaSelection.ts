@@ -3,31 +3,21 @@ import create from 'solid-zustand'
 import { MONOGRAPHS } from '~/constants/kana'
 import type { CharGroup } from '~/constants/kana'
 
-type SelectedCharGroup = (string | '' | null)[][]
-
 interface State {
    selectedHiraganaMonographs: CharGroup
 
-   toggleAllHiraganaMonographs: () => void
    toggleChar: (selectedChar: string, char: CharGroup, groupIndex: number) => void
-
+   toggleAllChar: (selectedChar: string, char: CharGroup) => void
    toggleAllKana: () => void
 }
 
 const useStore = create<State>((set, get) => ({
    selectedHiraganaMonographs: MONOGRAPHS.map(group => group.map(() => '')),
 
-   toggleAllHiraganaMonographs: () => {
-      const { selectedHiraganaMonographs } = get()
-      set({
-         selectedHiraganaMonographs: toggleAllChars(selectedHiraganaMonographs, MONOGRAPHS),
-      })
-   },
-
    toggleChar: (selectedChar: string, char: CharGroup, groupIndex: number) => {
       const obj = get()
 
-      // TODO: fix the type error
+      // TODO: fix the type errors
       set({
          [selectedChar]: obj[selectedChar].map((group, index) =>
             index === groupIndex
@@ -36,6 +26,17 @@ const useStore = create<State>((set, get) => ({
                  )
                : group
          ),
+      })
+   },
+
+   toggleAllChar: (selectedChar: string, char: CharGroup) => {
+      const obj = get()
+
+      // TODO: fix the type errors
+      set({
+         [selectedChar]: obj[selectedChar].flat().every(item => item !== '')
+            ? char.map(group => group.map(() => ''))
+            : char.map(group => group.slice()),
       })
    },
 
@@ -50,10 +51,5 @@ const useStore = create<State>((set, get) => ({
       })
    },
 }))
-
-const toggleAllChars = (selectedChars: SelectedCharGroup, chars: CharGroup): SelectedCharGroup => {
-   const allSelected = selectedChars.flat().every(char => char !== '')
-   return allSelected ? chars.map(group => group.map(() => '')) : chars.map(group => group.slice())
-}
 
 export default useStore
