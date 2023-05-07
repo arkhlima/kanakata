@@ -42,7 +42,15 @@ const CharGroupSelect = (props: CharGroupProps) => {
                </div>
                <For each={charGroup}>
                   {char => (
-                     <div class="flex flex-col items-center gap-y-2 rounded-xl border-2 border-slate-300 bg-slate-100 p-2">
+                     <div
+                        class={`flex flex-col items-center gap-y-2 rounded-xl border-2 bg-slate-100 p-2 transition-all duration-100 ease-in-out ${
+                           props.selectedChars[groupIndex].every(
+                              char => char !== '' && char !== undefined
+                           )
+                              ? 'border-blue-300'
+                              : 'border-slate-300'
+                        }`}
+                     >
                         {!!char && (
                            <>
                               <span class="font-sans text-xl font-bold leading-none">
