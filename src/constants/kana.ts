@@ -1,29 +1,23 @@
 export type CharGroup = (string | null)[][]
 
-export const HIRAGANA_MONOGRAPHS: CharGroup = [
-   ['あ', 'い', 'う', 'え', 'お'], // ∅
-   ['か', 'き', 'く', 'け', 'こ'], // K
-   ['さ', 'し', 'す', 'せ', 'そ'], // S
-   ['た', 'ち', 'つ', 'て', 'と'], // T
-   ['な', 'に', 'ぬ', 'ね', 'の'], // N
-   ['ま', 'み', 'む', 'め', 'も'], // H
-   ['は', 'ひ', 'ふ', 'へ', 'ほ'], // M
-   ['や', null, 'ゆ', null, 'よ'], // Y
-   ['ら', 'り', 'る', 'れ', 'ろ'], // R
-   ['わ', null, null, null, 'を'], // W
-   ['ん', null, null, null, null], // n
+export const MONOGRAPHS: CharGroup = [
+   ['a', 'i', 'u', 'e', 'o'], // ∅
+   ['ka', 'ki', 'ku', 'ke', 'ko'], // K
+   ['sa', 'shi', 'su', 'se', 'so'], // S
+   ['ta', 'chi', 'tsu', 'te', 'to'], // T
+   ['na', 'ni', 'nu', 'ne', 'no'], // N
+   ['ha', 'hi', 'fu', 'he', 'ho'], // H
+   ['ma', 'mi', 'mu', 'me', 'mo'], // M
+   ['ya', null, 'yu', null, 'yo'], // Y
+   ['ra', 'ri', 'ru', 're', 'ro'], // R
+   ['wa', null, null, null, 'wo'], // W
+   ['n', null, null, null, null], // n
 ]
 
-export const KATAKANA_MONOGRAPH: CharGroup = [
-   ['ア', 'イ', 'ウ', 'エ', 'オ'], // ∅
-   ['カ', 'キ', 'ク', 'ケ', 'コ'], // K
-   ['サ', 'シ', 'ス', 'セ', 'ソ'], // S
-   ['タ', 'チ', 'ツ', 'テ', 'ト'], // T
-   ['ナ', 'ニ', 'ヌ', 'ネ', 'ノ'], // N
-   ['ハ', 'ヒ', 'フ', 'ヘ', 'ホ'], // H
-   ['マ', 'ミ', 'ム', 'メ', 'モ'], // M
-   ['ヤ', null, 'ユ', null, 'ヨ'], // Y
-   ['ラ', 'リ', 'ル', 'レ', 'ロ'], // R
-   ['ワ', null, null, null, 'ヲ'], // W
-   ['ン', null, null, null, null], // n
+export const MONOGRAPH_DIACRITICS: CharGroup = [
+   ['ga', 'gi', 'gu', 'ge', 'go'], // GA
+   ['za', 'ji', 'zu', 'ze', 'zo'], // ZA
+   ['da', 'ji', 'zu', 'de', 'do'], // DA
+   ['ba', 'bi', 'bu', 'be', 'bo'], // BA
+   ['pa', 'pi', 'pu', 'pe', 'po'], // PA
 ]
