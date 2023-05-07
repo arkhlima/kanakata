@@ -2,11 +2,12 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import useStore from '~/store/kanaSelection'
 import CharGroupSelect from '~/components/CharGroupSelect'
+
 import { MONOGRAPHS } from '~/constants/kana'
 
 const App = () => {
    const state = useStore()
-   const { toggleAllChar, toggleChar } = state
+   const { toggleAllChars, toggleChars } = state
 
    return (
       <main class="mx-auto grid max-w-lg grid-cols-12 py-16">
@@ -16,10 +17,10 @@ const App = () => {
 
          <section class="col-span-12">
             <CharGroupSelect
-               char={MONOGRAPHS}
-               selectedChar={state.selectedHiraganaMonographs}
-               toggleChar={toggleChar}
-               toggleAllChar={toggleAllChar}
+               chars={MONOGRAPHS}
+               selectedChars={state.selectedHiraganaMonographs}
+               toggleChars={toggleChars}
+               toggleAllChars={toggleAllChars}
             />
             <div class="flex">{JSON.stringify(state.selectedHiraganaMonographs)}</div>
          </section>

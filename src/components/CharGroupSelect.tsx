@@ -6,10 +6,10 @@ import { toHiragana } from 'wanakana'
 import type { CharGroup } from '~/constants/kana'
 
 interface CharGroupProps {
-   char: CharGroup
-   selectedChar: CharGroup
-   toggleChar: (selectedChar: string, char: CharGroup, groupIndex: number) => void
-   toggleAllChar: (selectedChar: string, char: CharGroup) => void
+   chars: CharGroup
+   selectedChars: CharGroup
+   toggleChars: (selectedChars: string, char: CharGroup, groupIndex: number) => void
+   toggleAllChars: (selectedChars: string, char: CharGroup) => void
 }
 
 const CharGroupSelect = (props: CharGroupProps) => {
@@ -18,39 +18,37 @@ const CharGroupSelect = (props: CharGroupProps) => {
          <div class="flex rounded-t-xl border-2 border-b-0 border-slate-300 bg-slate-100 p-2 pb-1">
             <Checkbox
                label="select all"
-               isChecked={props.selectedChar.every(group =>
-                  group.every(item => item !== '' && item !== undefined)
+               isChecked={props.selectedChars.every(group =>
+                  group.every(char => char !== '' && char !== undefined)
                )}
-               onChange={() => props.toggleAllChar('selectedHiraganaMonographs', props.char)}
+               onChange={() => props.toggleAllChars('selectedHiraganaMonographs', props.chars)}
             />
          </div>
-         {props.char.map((hiraganaMonographsGroup, groupIndex) => (
+         {props.chars.map((charGroup, groupIndex) => (
             <div
                class="grid gap-x-1 rounded-xl"
-               style={`grid-template-columns: auto repeat(${hiraganaMonographsGroup.length},1fr)`}
+               style={`grid-template-columns: auto repeat(${charGroup.length},1fr)`}
             >
                <div class="flex items-center rounded-l-xl border-2 border-r-0 border-slate-300 bg-slate-100 p-2 pr-1">
                   <Checkbox
                      label=""
-                     isChecked={props.selectedChar[groupIndex].every(
-                        item => item !== '' && item !== undefined
+                     isChecked={props.selectedChars[groupIndex].every(
+                        char => char !== '' && char !== undefined
                      )}
                      onChange={() =>
-                        props.toggleChar('selectedHiraganaMonographs', props.char, groupIndex)
+                        props.toggleChars('selectedHiraganaMonographs', props.chars, groupIndex)
                      }
                   />
                </div>
-               <For each={hiraganaMonographsGroup}>
-                  {hiraganaMonographs => (
+               <For each={charGroup}>
+                  {char => (
                      <div class="flex flex-col items-center gap-y-2 rounded-xl border-2 border-slate-300 bg-slate-100 p-2">
-                        {!!hiraganaMonographs && (
+                        {!!char && (
                            <>
                               <span class="font-sans text-xl font-bold leading-none">
-                                 {!!hiraganaMonographs && toHiragana(hiraganaMonographs)}
+                                 {!!char && toHiragana(char)}
                               </span>
-                              <span class="text-xs leading-none text-slate-400">
-                                 {hiraganaMonographs}
-                              </span>
+                              <span class="text-xs leading-none text-slate-400">{char}</span>
                            </>
                         )}
                      </div>
