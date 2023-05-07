@@ -15,13 +15,13 @@ const Menu = (): JSX.Element => {
             {menu => (
                <li>
                   <button
-                     class="text-2xl decoration-blue-300 decoration-wavy transition-all duration-100 ease-in-out"
+                     class="text-2xl text-slate-400 decoration-blue-300 decoration-wavy transition-all duration-100 ease-in-out"
                      classList={{
-                        underline: state.selectedScript === menu,
+                        'underline text-slate-700': state.selectedScript === menu,
                      }}
                      onClick={() => setSelectedScript(menu)}
                   >
-                     {menu}
+                     #{menu}
                   </button>
                </li>
             )}
