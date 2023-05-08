@@ -24,13 +24,15 @@ const CharGroupSelect = (props: CharGroupProps) => {
       <div class="grid gap-y-1">
          <header class="grid grid-cols-2 rounded-t-xl border-2 border-b-0 border-slate-300 bg-slate-100 p-2 pb-1">
             <h2 class="order-last text-right font-bold text-slate-400">{getCharGroupTitle()}</h2>
-            <Checkbox
-               label="select all"
-               isChecked={props.selectedChars.every(group =>
-                  group.every(char => char !== '' && char !== undefined)
-               )}
-               onChange={() => props.toggleAllChars(props.selectedCharsName, props.chars)}
-            />
+            <div class="flex">
+               <Checkbox
+                  label="select all"
+                  isChecked={props.selectedChars.every(group =>
+                     group.every(char => char !== '' && char !== undefined)
+                  )}
+                  onChange={() => props.toggleAllChars(props.selectedCharsName, props.chars)}
+               />
+            </div>
          </header>
          {props.chars.map((charGroup, groupIndex) => (
             <div
