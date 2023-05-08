@@ -10,6 +10,10 @@ module.exports = {
             japan: ['"Noto Sans JP"', ...defaultTheme.fontFamily.sans],
          },
       },
+      screens: {
+         xs: '480px',
+         ...defaultTheme.screens,
+      },
    },
    plugins: [],
 }

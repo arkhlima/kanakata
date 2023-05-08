@@ -6,7 +6,7 @@ import useStore from '~/store/kanaSelection'
 
 import Checkbox from '~/components/Checkbox'
 
-import { toHiragana, toKatakana } from 'wanakana'
+import { toKatakana, toRomaji } from 'wanakana'
 
 import type { CharGroup } from '~/constants/kana'
 
@@ -30,18 +30,16 @@ const Char = (props: CharProps) => {
             when={['hiragana', 'katakana'].includes(state.selectedScript)}
             fallback={
                <span class="flex items-end justify-center break-keep text-center font-sans font-bold leading-none">
-                  {toHiragana(props.char)} {toKatakana(props.char)}
+                  {props.char} {toKatakana(props.char)}
                </span>
             }
          >
             <span class="flex items-end justify-center font-sans text-xl font-bold leading-none">
-               {state.selectedScript === 'hiragana'
-                  ? toHiragana(props.char)
-                  : toKatakana(props.char)}
+               {state.selectedScript === 'katakana' ? toKatakana(props.char) : props.char}
             </span>
          </Show>
          <span class="flex items-end justify-center text-xs leading-none text-slate-400">
-            {props.char}
+            {toRomaji(props.char)}
          </span>
       </>
    )
@@ -58,8 +56,10 @@ const CharGroupSelect = (props: CharGroupProps) => {
 
    return (
       <div class="grid gap-y-1">
-         <header class="flex justify-between rounded-t-xl border-2 border-b-0 border-slate-300 bg-slate-100 p-2 pb-1">
-            <h2 class="order-last text-right font-bold text-slate-400">{getCharGroupTitle()}</h2>
+         <header class="flex items-center justify-between rounded-t-xl border-2 border-b-0 border-slate-300 bg-slate-100 p-2 pb-1">
+            <h2 class="xs:text-base order-last flex text-right text-sm font-bold text-slate-400">
+               {getCharGroupTitle()}
+            </h2>
             <Checkbox
                label="select all"
                // TODO: fix type errors

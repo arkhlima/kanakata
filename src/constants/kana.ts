@@ -3,40 +3,40 @@ export type CharGroup = (string | null)[][]
 export type Script = 'hiragana' | 'katakana' | 'kana'
 
 export const MONOGRAPHS: CharGroup = [
-   ['a', 'i', 'u', 'e', 'o'], // ∅
-   ['ka', 'ki', 'ku', 'ke', 'ko'], // K
-   ['sa', 'shi', 'su', 'se', 'so'], // S
-   ['ta', 'chi', 'tsu', 'te', 'to'], // T
-   ['na', 'ni', 'nu', 'ne', 'no'], // N
-   ['ha', 'hi', 'fu', 'he', 'ho'], // H
-   ['ma', 'mi', 'mu', 'me', 'mo'], // M
-   ['ya', null, 'yu', null, 'yo'], // Y
-   ['ra', 'ri', 'ru', 're', 'ro'], // R
-   ['wa', null, null, null, 'wo'], // W
-   ['n', null, null, null, null], // n
+   ['あ', 'い', 'う', 'え', 'お'], // ∅
+   ['か', 'き', 'く', 'け', 'こ'], // K
+   ['さ', 'し', 'す', 'せ', 'そ'], // S
+   ['た', 'ち', 'つ', 'て', 'と'], // T
+   ['な', 'に', 'ぬ', 'ね', 'の'], // N
+   ['ま', 'み', 'む', 'め', 'も'], // H
+   ['は', 'ひ', 'ふ', 'へ', 'ほ'], // M
+   ['や', null, 'ゆ', null, 'よ'], // Y
+   ['ら', 'り', 'る', 'れ', 'ろ'], // R
+   ['わ', null, null, null, 'を'], // W
+   ['ん', null, null, null, null], // n
 ]
 
 export const DIAGRAPHS: CharGroup = [
-   ['kya', 'kyu', 'kyo'], // KY
-   ['sha', 'shu', 'sho'], // SH
-   ['cha', 'chu', 'cho'], // CH
-   ['nya', 'nyu', 'nyo'], // NY
-   ['hya', 'hyu', 'hyo'], // HY
-   ['mya', 'myu', 'myo'], // MY
-   ['rya', 'ryu', 'ryo'], // RY
+   ['きゃ', 'きゅ', 'きょ'], // KY
+   ['しゃ', 'しゅ', 'しょ'], // SH
+   ['ちゃ', 'ちゅ', 'ちょ'], // CH
+   ['にゃ', 'にゅ', 'にょ'], // NY
+   ['ひゃ', 'ひゅ', 'ひょ'], // HY
+   ['みゃ', 'みゅ', 'みょ'], // MY
+   ['りゃ', 'りゅ', 'りょ'], // RY
 ]
 
 export const MONOGRAPH_DIACRITICS: CharGroup = [
-   ['ga', 'gi', 'gu', 'ge', 'go'], // G
-   ['za', 'ji', 'zu', 'ze', 'zo'], // Z
-   ['da', 'ji', 'zu', 'de', 'do'], // D
-   ['ba', 'bi', 'bu', 'be', 'bo'], // B
-   ['pa', 'pi', 'pu', 'pe', 'po'], // P
+   ['が', 'ぎ', 'ぐ', 'げ', 'ご'], // G
+   ['ざ', 'じ', 'ず', 'ぜ', 'ぞ'], // Z
+   ['だ', 'ぢ', 'づ', 'で', 'ど'], // D
+   ['ば', 'び', 'ぶ', 'べ', 'ぼ'], // B
+   ['ぱ', 'ぴ', 'ぷ', 'ぺ', 'ぽ'], // P
 ]
 
 export const DIAGRAPH_DIACRITICS: CharGroup = [
-   ['gya', 'gyu', 'gyo'], // KY
-   ['ja', 'ju', 'jo'], // J
-   ['bya', 'byu', 'byo'], // BY
-   ['pya', 'pyu', 'pyo'], // PY
+   ['ぎゃ', 'ぎゅ', 'ぎょ'], // KY
+   ['じゃ', 'じゅ', 'じょ'], // J
+   ['びゃ', 'びゅ', 'びょ'], // BY
+   ['ぴゃ', 'ぴゅ', 'ぴょ'], // PY
 ]

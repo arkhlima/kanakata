@@ -11,7 +11,7 @@ const Menu = (): JSX.Element => {
             {menu => (
                <li>
                   <button
-                     class="text-xl text-slate-400 decoration-blue-300 decoration-wavy transition-all duration-100 ease-in-out md:text-2xl"
+                     class="xs:text-xl text-lg text-slate-400 decoration-blue-300 decoration-wavy transition-all duration-100 ease-in-out md:text-2xl"
                      classList={{
                         'underline text-slate-700': state.selectedScript === menu,
                      }}
