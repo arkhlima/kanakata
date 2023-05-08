@@ -1,5 +1,3 @@
-/* eslint-disable solid/prefer-for */
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import useStore from '~/store/kanaSelection'
 import CharGroupSelect from '~/components/CharGroupSelect'
 import Menu from '~/components/Menu'
@@ -8,7 +6,13 @@ import { DIAGRAPHS, MONOGRAPHS, MONOGRAPH_DIACRITICS, DIAGRAPH_DIACRITICS } from
 
 const App = () => {
    const state = useStore()
-   const { toggleAllChars, toggleChars, setSelectedScript } = state
+   const { toggleAllChars, toggleChars } = state
+
+   const getSelectedChars = (syllabograms: string) => {
+      return `selected${
+         state.selectedScript.charAt(0).toUpperCase() + state.selectedScript.slice(1)
+      }${syllabograms}`
+   }
 
    return (
       <main class="mx-auto grid max-w-4xl grid-cols-12 py-16">
@@ -22,15 +26,13 @@ const App = () => {
             <div class="flex flex-col gap-y-8">
                <CharGroupSelect
                   chars={MONOGRAPHS}
-                  selectedChars={state.selectedHiraganaMonographs}
-                  selectedCharsName="selectedHiraganaMonographs"
+                  selectedChars={getSelectedChars('Monographs')}
                   toggleChars={toggleChars}
                   toggleAllChars={toggleAllChars}
                />
                <CharGroupSelect
                   chars={MONOGRAPH_DIACRITICS}
-                  selectedChars={state.selectedHiraganaMonographDiacritics}
-                  selectedCharsName="selectedHiraganaMonographDiacritics"
+                  selectedChars={getSelectedChars('MonographDiacritics')}
                   toggleChars={toggleChars}
                   toggleAllChars={toggleAllChars}
                />
@@ -38,15 +40,13 @@ const App = () => {
             <div class="flex flex-col gap-y-8">
                <CharGroupSelect
                   chars={DIAGRAPHS}
-                  selectedChars={state.selectedHiraganaDiagraphs}
-                  selectedCharsName="selectedHiraganaDiagraphs"
+                  selectedChars={getSelectedChars('Diagraphs')}
                   toggleChars={toggleChars}
                   toggleAllChars={toggleAllChars}
                />
                <CharGroupSelect
                   chars={DIAGRAPH_DIACRITICS}
-                  selectedChars={state.selectedHiraganaDiagraphDiacritics}
-                  selectedCharsName="selectedHiraganaDiagraphDiacritics"
+                  selectedChars={getSelectedChars('DiagraphDiacritics')}
                   toggleChars={toggleChars}
                   toggleAllChars={toggleAllChars}
                />
