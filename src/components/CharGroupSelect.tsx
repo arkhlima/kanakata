@@ -29,7 +29,7 @@ const Char = (props: CharProps) => {
          <Show
             when={['hiragana', 'katakana'].includes(state.selectedScript)}
             fallback={
-               <span class="flex items-end justify-center font-sans font-bold leading-none">
+               <span class="flex items-end justify-center break-keep text-center font-sans font-bold leading-none">
                   {toHiragana(props.char)} {toKatakana(props.char)}
                </span>
             }
@@ -58,18 +58,16 @@ const CharGroupSelect = (props: CharGroupProps) => {
 
    return (
       <div class="grid gap-y-1">
-         <header class="grid grid-cols-2 rounded-t-xl border-2 border-b-0 border-slate-300 bg-slate-100 p-2 pb-1">
+         <header class="flex justify-between rounded-t-xl border-2 border-b-0 border-slate-300 bg-slate-100 p-2 pb-1">
             <h2 class="order-last text-right font-bold text-slate-400">{getCharGroupTitle()}</h2>
-            <div class="flex">
-               <Checkbox
-                  label="select all"
-                  // TODO: fix type errors
-                  isChecked={state[props.selectedChars].every(group =>
-                     group.every(char => char !== '' && char !== undefined)
-                  )}
-                  onChange={() => props.toggleAllChars(props.selectedChars, props.chars)}
-               />
-            </div>
+            <Checkbox
+               label="select all"
+               // TODO: fix type errors
+               isChecked={state[props.selectedChars].every(group =>
+                  group.every(char => char !== '' && char !== undefined)
+               )}
+               onChange={() => props.toggleAllChars(props.selectedChars, props.chars)}
+            />
          </header>
          {props.chars.map((charGroup, groupIndex) => (
             <div

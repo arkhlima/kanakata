@@ -15,15 +15,15 @@ const App = () => {
    }
 
    return (
-      <main class="mx-auto grid max-w-4xl grid-cols-12 py-16">
-         <header class="col-span-12 mb-16 grid grid-cols-2 items-end">
-            <h1 class="order-last flex items-center justify-end text-5xl font-bold">kanakata</h1>
+      <main class="mx-auto grid max-w-5xl grid-cols-12 px-4 py-16 md:px-8">
+         <header class="col-span-12 mb-16 grid grid-cols-1 items-end gap-2 md:grid-cols-2 md:justify-center">
+            <h1 class="text-center text-5xl font-bold md:order-last md:text-right">kanakata</h1>
 
             <Menu />
          </header>
 
-         <section class="col-span-12 grid grid-cols-2 gap-8">
-            <div class="flex flex-col gap-y-8">
+         <section class="col-span-12 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-8">
+            <div class="flex flex-col gap-y-4 md:gap-y-8">
                <CharGroupSelect
                   chars={MONOGRAPHS}
                   selectedChars={getSelectedChars('Monographs')}
@@ -37,7 +37,7 @@ const App = () => {
                   toggleAllChars={toggleAllChars}
                />
             </div>
-            <div class="flex flex-col gap-y-8">
+            <div class="flex flex-col gap-y-4 md:gap-y-8">
                <CharGroupSelect
                   chars={DIAGRAPHS}
                   selectedChars={getSelectedChars('Diagraphs')}
