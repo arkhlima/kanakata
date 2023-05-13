@@ -55,7 +55,7 @@ const App = () => {
             <small class="text-slate-400">
                by{' '}
                <a
-                  class="text-slate-700 decoration-blue-300 decoration-wavy transition-all duration-100 ease-in-out hover:underline"
+                  class="text-slate-700 decoration-blue-300 decoration-wavy transition-all duration-75 ease-linear hover:underline"
                   href="https://arkhlima.xyz"
                >
                   arkhlima

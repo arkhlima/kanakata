@@ -90,7 +90,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
                   {char => (
                      <div
                         // TODO: fix type errors
-                        class={`grid grid-flow-row justify-center gap-y-2 rounded-xl border-2 p-2 transition-all duration-100 ease-in-out ${
+                        class={`grid grid-flow-row justify-center gap-y-2 rounded-xl border-2 p-2 transition-all duration-75 ease-linear ${
                            state[props.selectedChars][groupIndex].every(
                               char => char !== '' && char !== undefined
                            )
