@@ -1,6 +1,6 @@
 export type CharGroup = (string | null)[][]
 
-export type Script = 'hiragana' | 'katakana' | 'kana'
+export type Script = 'Hiragana' | 'Katakana' | 'Kana'
 
 export const MONOGRAPHS: CharGroup = [
    ['あ', 'い', 'う', 'え', 'お'], // ∅

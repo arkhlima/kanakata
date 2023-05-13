@@ -5,6 +5,7 @@ import { For, Show } from 'solid-js'
 import useStore from '~/store/kanaSelection'
 
 import Checkbox from '~/components/Checkbox'
+import { getCharGroupTitle } from '~/utils/chars'
 
 import { toKatakana, toRomaji } from 'wanakana'
 
@@ -27,7 +28,7 @@ const Char = (props: CharProps) => {
    return (
       <>
          <Show
-            when={['hiragana', 'katakana'].includes(state.selectedScript)}
+            when={['Hiragana', 'Katakana'].includes(state.selectedScript)}
             fallback={
                <span class="flex items-end justify-center break-keep text-center font-sans font-bold leading-none">
                   {props.char} {toKatakana(props.char)}
@@ -35,7 +36,7 @@ const Char = (props: CharProps) => {
             }
          >
             <span class="flex items-end justify-center font-sans text-xl font-bold leading-none">
-               {state.selectedScript === 'katakana' ? toKatakana(props.char) : props.char}
+               {state.selectedScript === 'Katakana' ? toKatakana(props.char) : props.char}
             </span>
          </Show>
          <span class="flex items-end justify-center text-xs leading-none text-slate-400">
@@ -47,18 +48,13 @@ const Char = (props: CharProps) => {
 
 const CharGroupSelect = (props: CharGroupProps) => {
    const state = useStore()
-
-   const getCharGroupTitle = () => {
-      const splitByUppercase: string[] = props.selectedChars.split(/(?=[A-Z])/)
-      const removeFirstTwoWords: string[] = splitByUppercase.slice(2)
-      return removeFirstTwoWords.join(' ').toLocaleLowerCase()
-   }
+   const { setTotalSelected } = state
 
    return (
       <div class="grid gap-y-1">
          <header class="flex items-center justify-between rounded-t-xl border-2 border-b-0 border-slate-300 bg-slate-100 p-2 pb-1">
             <h2 class="xs:text-base order-last flex text-right text-sm font-bold text-slate-400">
-               {getCharGroupTitle()}
+               {getCharGroupTitle(props.selectedChars)}
             </h2>
             <Checkbox
                label="select all"
@@ -66,7 +62,10 @@ const CharGroupSelect = (props: CharGroupProps) => {
                isChecked={state[props.selectedChars].every(group =>
                   group.every(char => char !== '' && char !== undefined)
                )}
-               onChange={() => props.toggleAllChars(props.selectedChars, props.chars)}
+               onChange={() => {
+                  props.toggleAllChars(props.selectedChars, props.chars)
+                  setTotalSelected()
+               }}
             />
          </header>
          {props.chars.map((charGroup, groupIndex) => (
@@ -81,9 +80,10 @@ const CharGroupSelect = (props: CharGroupProps) => {
                      isChecked={state[props.selectedChars][groupIndex].every(
                         char => char !== '' && char !== undefined
                      )}
-                     onChange={() =>
+                     onChange={() => {
                         props.toggleChars(props.selectedChars, props.chars, groupIndex)
-                     }
+                        setTotalSelected()
+                     }}
                   />
                </div>
                <For each={charGroup}>
