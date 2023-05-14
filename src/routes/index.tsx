@@ -52,7 +52,7 @@ const App = () => {
          <Show when={state.totalHiragana + state.totalKatakana + state.totalKana > 0}>
             <aside class="fixed bottom-8 left-0 w-full">
                <div class="relative mx-auto flex h-full w-full max-w-5xl justify-end px-4 md:px-8">
-                  <button class="ease w-full rounded-xl bg-slate-700 px-4 py-2 text-lg text-slate-50 shadow-lg shadow-slate-300 transition-all duration-100 hover:bg-slate-400">
+                  <button class="ease w-full rounded-xl bg-slate-700 px-4 py-2 text-lg text-slate-50 shadow-lg shadow-slate-200 transition-all duration-100 hover:bg-slate-600 focus:bg-slate-500">
                      let's play!
                   </button>
                </div>

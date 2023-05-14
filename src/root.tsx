@@ -24,7 +24,7 @@ export default function Root() {
             <Link rel="preconnect" href="https://fonts.googleapis.com" />
             <Link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
             <Link
-               href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&family=Poppins:wght@400;700&display=swap"
+               href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&family=Poppins:wght@500;700&display=swap"
                rel="stylesheet"
             />
          </Head>

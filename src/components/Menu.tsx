@@ -12,7 +12,7 @@ const Menu = (): JSX.Element => {
                <li class="relative">
                   <Show when={!!state[`total${menu}`]}>
                      <span
-                        class={`ease absolute -top-6 right-0 flex h-[24px] w-[24px] items-center justify-center rounded-full text-xs transition-all duration-75 ${
+                        class={`absolute -top-6 right-0 flex h-[24px] w-[24px] items-center justify-center rounded-full text-xs transition-all duration-75 ease-linear ${
                            state.selectedScript === menu
                               ? 'bg-blue-300'
                               : 'bg-slate-300 text-slate-50'
@@ -22,7 +22,7 @@ const Menu = (): JSX.Element => {
                      </span>
                   </Show>
                   <button
-                     class="xs:text-xl ease text-lg lowercase text-slate-400 decoration-blue-300 decoration-wavy transition-all duration-75 md:text-2xl"
+                     class="xs:text-xl text-lg lowercase text-slate-400 decoration-blue-300 decoration-wavy transition-all duration-75 ease-linear md:text-2xl"
                      classList={{
                         'underline text-slate-700': state.selectedScript === menu,
                      }}
