@@ -3,8 +3,8 @@ import { useNavigate } from 'solid-start'
 
 import useStore from '~/store/kanaStore'
 import General from '~/layouts/general'
-import Header from '~/components/Header'
 import Menu from '~/components/Menu'
+import Footer from '~/components/Footer'
 import CharGroupSelect from '~/components/CharGroupSelect'
 
 import {
@@ -22,9 +22,13 @@ const App = () => {
 
   return (
     <General>
-      <Header>
+      <header class="col-span-12 grid grid-cols-1 items-end gap-2 md:grid-cols-2 md:justify-center">
+        <h1 class="text-center text-5xl font-bold md:order-last md:text-right">
+          kanakata
+        </h1>
+
         <Menu />
-      </Header>
+      </header>
 
       <section class="col-span-12 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-8">
         <div class="flex flex-col gap-y-4 md:gap-y-8">
@@ -72,6 +76,8 @@ const App = () => {
           </div>
         </aside>
       </Show>
+
+      <Footer class="md:justify-end" />
     </General>
   )
 }

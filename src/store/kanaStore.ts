@@ -96,10 +96,10 @@ const useStore = create<State>((set, get) => ({
       .filter((char): char is string => !!char)
       .map((char) => char && toKatakana(char))
 
-    const composedQuestions = [
+    const composedQuestions = shuffleQuestions([
       ...shuffleQuestions(filteredSelectedHiragana),
       ...shuffleQuestions(filteredSelectedKatakana),
-    ].map((char) => ({
+    ]).map((char) => ({
       char,
       answer: '',
     }))

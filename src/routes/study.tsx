@@ -3,7 +3,7 @@ import { useNavigate } from 'solid-start'
 
 import useStore from '~/store/kanaStore'
 import General from '~/layouts/general'
-import Header from '~/components/Header'
+import Footer from '~/components/Footer'
 
 const Study = () => {
   const state = useStore()
@@ -16,8 +16,12 @@ const Study = () => {
 
   return (
     <General>
-      <Header>
-        <div>
+      <header class="col-span-12 grid grid-cols-1 items-end gap-2 md:grid-cols-3 md:justify-center">
+        <h1 class="order-1 col-span-2 text-center text-5xl font-bold md:order-2 md:col-span-1">
+          kanakata
+        </h1>
+
+        <div class="order-1">
           <button
             class="text-2xl lowercase text-slate-400 decoration-blue-300 decoration-wavy transition-all duration-75 ease-linear hover:text-slate-700 focus:underline"
             onClick={() => navigate('/')}
@@ -25,7 +29,15 @@ const Study = () => {
             back
           </button>
         </div>
-      </Header>
+        <div class="order-3 flex justify-end">
+          <button
+            class="cursor-not-allowed text-2xl lowercase text-slate-400 decoration-blue-300 decoration-wavy transition-all duration-75 ease-linear hover:text-slate-700 focus:underline"
+            disabled
+          >
+            settings
+          </button>
+        </div>
+      </header>
 
       <section class="col-span-12 flex">
         <div class="relative flex w-full items-center gap-x-2 overflow-x-hidden">
@@ -71,6 +83,8 @@ const Study = () => {
           </ul>
         </div>
       </section>
+
+      <Footer />
     </General>
   )
 }
