@@ -1,13 +1,15 @@
 /* eslint-disable solid/prefer-for */
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 
-import { For } from 'solid-js'
+import gsap from 'gsap'
+
+import { For, createEffect } from 'solid-js'
 import useStore from '~/store/kanaStore'
 
 import Checkbox from '~/components/Checkbox'
 import { getCharGroupTitle } from '~/utils/chars'
 
-import { toKatakana, toRomaji } from 'wanakana'
+import { toRomaji, toKatakana } from 'wanakana'
 
 import type { CharGroup } from '~/constants/kana'
 
@@ -21,7 +23,6 @@ interface CharGroupProps {
   ) => void
   toggleAllChars: (selectedChars: string, char: CharGroup) => void
 }
-
 interface CharProps {
   char: string
 }
@@ -29,13 +30,39 @@ interface CharProps {
 const Char = (props: CharProps) => {
   const state = useStore()
 
+  let kanaText: HTMLSpanElement
+  let animation: gsap.core.Timeline
+
+  createEffect(() => {
+    // scale-in & scale-out animation for chars by detecting selectedScript state
+    if (state.selectedScript && kanaText) {
+      animation = gsap
+        .timeline()
+        .to(kanaText, {
+          scale: 0,
+          duration: 0.1,
+          ease: 'expo.in',
+          onComplete: () => {
+            kanaText.textContent =
+              state.selectedScript === 'Katakana'
+                ? toKatakana(props.char)
+                : props.char
+          },
+        })
+        .to(kanaText, {
+          scale: 1,
+          duration: 0.1,
+          ease: 'expo.out',
+        })
+    }
+  })
+
   return (
     <>
-      <span class="flex items-end justify-center font-sans text-xl font-bold leading-none">
-        {state.selectedScript === 'Katakana'
-          ? toKatakana(props.char)
-          : props.char}
-      </span>
+      <span
+        ref={(el) => (kanaText = el)}
+        class="flex items-end justify-center font-sans text-xl font-bold leading-none"
+      />
       <span class="flex justify-center text-xs leading-none text-slate-400">
         {toRomaji(props.char)}
       </span>
@@ -49,10 +76,13 @@ const CharGroupSelect = (props: CharGroupProps) => {
 
   return (
     <div class="grid gap-y-1">
+      {/* header */}
       <header class="flex items-center justify-between rounded-t-xl border-2 border-b-0 border-slate-300 bg-slate-100 p-2 pb-1">
         <h2 class="xs:text-base order-last flex text-right text-sm font-bold text-slate-400">
           {getCharGroupTitle(props.selectedChars)}
         </h2>
+
+        {/* select all char group */}
         <Checkbox
           label="select all"
           // TODO: fix type errors
@@ -64,13 +94,17 @@ const CharGroupSelect = (props: CharGroupProps) => {
             setTotalSelected()
           }}
         />
+        {/* /select all char group */}
       </header>
+      {/* /header */}
+
       {props.chars.map((charGroup, groupIndex) => (
         <div
           class="grid min-h-[60px] gap-x-1 rounded-xl"
           style={`grid-template-columns: auto repeat(${charGroup.length},1fr)`}
         >
           <div class="flex items-center rounded-l-xl border-2 border-r-0 border-slate-300 bg-slate-100 p-2 pr-1">
+            {/* select char group */}
             <Checkbox
               label=""
               // TODO: fix type errors
@@ -82,6 +116,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
                 setTotalSelected()
               }}
             />
+            {/* /select char group */}
           </div>
           <For each={charGroup}>
             {(char) => (

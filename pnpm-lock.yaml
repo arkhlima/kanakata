@@ -15,6 +15,7 @@ specifiers:
   eslint-plugin-solid: ^0.12.1
   eslint-plugin-tailwindcss: ^3.11.0
   eslint-plugin-unused-imports: ^2.0.0
+  gsap: ^3.11.5
   postcss: ^8.4.21
   prettier: ^2.8.8
   solid-js: ^1.7.2
@@ -31,6 +32,7 @@ specifiers:
 dependencies:
   '@solidjs/meta': 0.28.4_solid-js@1.7.3
   '@solidjs/router': 0.8.2_solid-js@1.7.3
+  gsap: 3.11.5
   solid-js: 1.7.3
   solid-start: 0.2.26_4ml3zghkonug223lgl2sx4g7ti
   solid-zustand: 1.5.0_3no3tv3gaj4jvkaijvnto63olm
@@ -2938,6 +2940,10 @@ packages:
   /grapheme-splitter/1.0.4:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
     dev: true
+
+  /gsap/3.11.5:
+    resolution: {integrity: sha512-Q89nKCLgoX5xUjznh9LcaIUkz54k1voNucT1Rpf9SJNFIQznBwFqt5qUUQbeVInFyN/n18OUJkpeI6CNEDt74w==}
+    dev: false
 
   /has-bigints/1.0.2:
     resolution: {integrity: sha512-tSvCKtBr9lkF0Ex0aQiP9N+OpV4zi2r/Nee5VkRDbaqv35RLYMzbwQfFSZZH0kR+Rd6302UJZ2p/bJCEoR3VoQ==}
