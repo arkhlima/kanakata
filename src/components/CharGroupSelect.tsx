@@ -3,7 +3,7 @@
 
 import gsap from 'gsap'
 
-import { For, createEffect } from 'solid-js'
+import { For, createEffect, onCleanup } from 'solid-js'
 import useStore from '~/store/kanaStore'
 
 import Checkbox from '~/components/Checkbox'
@@ -40,7 +40,7 @@ const Char = (props: CharProps) => {
         .timeline()
         .to(kanaText, {
           scale: 0,
-          duration: 0.1,
+          duration: 0.2,
           ease: 'expo.in',
           onComplete: () => {
             kanaText.textContent =
@@ -51,10 +51,14 @@ const Char = (props: CharProps) => {
         })
         .to(kanaText, {
           scale: 1,
-          duration: 0.1,
+          duration: 0.2,
           ease: 'expo.out',
         })
     }
+  })
+
+  onCleanup(() => {
+    animation.kill()
   })
 
   return (
