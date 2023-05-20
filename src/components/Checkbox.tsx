@@ -1,5 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { JSX } from 'solid-js'
+
+import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
 
 interface CheckboxProps {
   label: string
@@ -10,7 +11,7 @@ interface CheckboxProps {
 const Checkbox = (props: CheckboxProps): JSX.Element => {
   return (
     <label
-      class="flex cursor-pointer gap-x-2"
+      class="flex cursor-pointer items-center gap-x-2"
       classList={{
         'underline decoration-blue-300 decoration-wavy': props.isChecked,
       }}
@@ -18,7 +19,7 @@ const Checkbox = (props: CheckboxProps): JSX.Element => {
       <input
         type="checkbox"
         checked={props.isChecked}
-        class="cursor-pointer"
+        class={`cursor-pointer ${DEFAULT_INTERACTION_CLASS}`}
         onClick={() => props.onChange()}
       />
       {props.label}

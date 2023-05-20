@@ -1,10 +1,24 @@
 import { JSX, For, Show } from 'solid-js'
+import { Transition } from 'solid-transition-group'
+
 import useStore from '~/store/kanaStore'
+
+import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
+import type { StateClasses } from '~/constants/classes'
 import type { Script } from '~/constants/kana'
 
 const Menu = (): JSX.Element => {
   const state = useStore()
   const { setSelectedScript } = state
+
+  const MENU_STATE_CLASSES: StateClasses = {
+    active: 'bg-blue-300',
+    inactive: 'bg-slate-300 text-slate-50',
+  }
+
+  const isMenuActive = (menu: string) => {
+    return state.selectedScript === menu
+  }
 
   const handleClickMenuButton = (menu: Script) => {
     setSelectedScript(menu)
@@ -16,24 +30,26 @@ const Menu = (): JSX.Element => {
         {(menu) => (
           <li class="relative">
             {/* total selected char group balloon */}
-            <Show when={!!state[`total${menu}`]}>
-              <span
-                class={`absolute -top-6 right-0 flex h-[24px] w-[24px] items-center justify-center rounded-full text-xs transition-all duration-75 ease-linear ${
-                  state.selectedScript === menu
-                    ? 'bg-blue-300'
-                    : 'bg-slate-300 text-slate-50'
-                }`}
-              >
-                {state[`total${menu}`]}
-              </span>
-            </Show>
+            <Transition name="tr--from-bottom">
+              <Show when={!!state[`total${menu}`]}>
+                <span
+                  class={`absolute -top-6 right-0 flex h-[24px] w-[24px] items-center justify-center rounded-full text-xs ${
+                    MENU_STATE_CLASSES[
+                      isMenuActive(menu) ? 'active' : 'inactive'
+                    ]
+                  }`}
+                >
+                  {state[`total${menu}`]}
+                </span>
+              </Show>
+            </Transition>
             {/* /total selected char group balloon */}
 
             {/* menu button */}
             <button
-              class="text-2xl lowercase text-slate-400 decoration-blue-300 decoration-wavy transition-all duration-75 ease-linear"
+              class={`text-2xl lowercase text-slate-400 decoration-blue-300 decoration-wavy ${DEFAULT_INTERACTION_CLASS}`}
               classList={{
-                'underline text-slate-700': state.selectedScript === menu,
+                'underline text-slate-700': isMenuActive(menu),
               }}
               onClick={() => handleClickMenuButton(menu)}
             >

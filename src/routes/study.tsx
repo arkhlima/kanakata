@@ -7,6 +7,8 @@ import useStore from '~/store/kanaStore'
 import General from '~/layouts/general'
 import Footer from '~/components/Footer'
 
+import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
+
 interface AnimatedCharProps {
   children: string
 }
@@ -16,6 +18,7 @@ const AnimatedChar = (props: AnimatedCharProps) => {
   let animation: gsap.core.Tween
 
   createEffect(() => {
+    // individual char animation
     animation = gsap.fromTo(
       char,
       { opacity: 0, scale: 0 },
@@ -94,7 +97,7 @@ const Study = () => {
               {(question, idx) =>
                 question && (
                   <li
-                    class={`ease grid h-24 w-32 grid-flow-row justify-center gap-y-4 rounded-xl border-2 p-2 transition-all duration-75 ${
+                    class={`grid h-24 w-32 grid-flow-row justify-center gap-y-4 rounded-xl border-2 p-2 transition-all duration-75 ease-linear ${
                       state.currentQuestion === idx()
                         ? 'border-blue-300 bg-blue-50'
                         : 'border-slate-300 bg-slate-100'
@@ -127,8 +130,8 @@ const Study = () => {
             maxlength="3"
             minlength="1"
             tabindex="2"
-            placeholder="answer here"
-            class="w-32 appearance-none rounded-md border-2 border-slate-400 bg-slate-50 px-3 py-2 text-center placeholder:text-slate-400"
+            placeholder="answer..."
+            class={`w-32 appearance-none rounded-md border-2 border-slate-400 bg-slate-50 px-3 py-2 text-center placeholder:text-slate-400 ${DEFAULT_INTERACTION_CLASS}`}
             onInput={handleAnswerInput}
           />
         </form>

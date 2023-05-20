@@ -1,16 +1,15 @@
-/* eslint-disable solid/prefer-for */
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
-
 import gsap from 'gsap'
 
 import { For, createEffect, onCleanup } from 'solid-js'
+
 import useStore from '~/store/kanaStore'
 
 import Checkbox from '~/components/Checkbox'
-import { getCharGroupTitle } from '~/utils/chars'
 
+import { getCharGroupTitle } from '~/utils/chars'
 import { toRomaji, toKatakana } from 'wanakana'
 
+import type { StateClasses } from '~/constants/classes'
 import type { CharGroup } from '~/constants/kana'
 
 interface CharGroupProps {
@@ -35,7 +34,7 @@ const Char = (props: CharProps) => {
 
   createEffect(() => {
     // scale-in & scale-out animation for chars by detecting selectedScript state
-    if (state.selectedScript && kanaText) {
+    if (state.selectedScript) {
       animation = gsap
         .timeline()
         .to(kanaText, {
@@ -65,7 +64,7 @@ const Char = (props: CharProps) => {
     <>
       <span
         ref={(el) => (kanaText = el)}
-        class="flex items-end justify-center font-sans text-xl font-bold leading-none "
+        class="flex items-end justify-center font-sans text-xl font-bold leading-none"
       >
         <span class="text-slate-400">◕‿◕</span>
       </span>
@@ -80,6 +79,25 @@ const CharGroupSelect = (props: CharGroupProps) => {
   const state = useStore()
   const { setTotalSelected } = state
 
+  const MENU_STATE_CLASSES: StateClasses = {
+    active: 'border-blue-300 bg-blue-50',
+    inactive: 'border-slate-300 bg-slate-100',
+  }
+
+  const isCharSelected = (groupIndex: number): boolean => {
+    // TODO: fix type errors
+    return state[props.selectedChars][groupIndex].every(
+      (char: string) => char !== '' && char !== undefined
+    )
+  }
+
+  const isCharGroupSelected = (): boolean => {
+    // TODO: fix type errors
+    return state[props.selectedChars].every((group) =>
+      group.every((char) => char !== '' && char !== undefined)
+    )
+  }
+
   return (
     <div class="grid gap-y-1">
       {/* header */}
@@ -92,9 +110,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
         <Checkbox
           label="select all"
           // TODO: fix type errors
-          isChecked={state[props.selectedChars].every((group) =>
-            group.every((char) => char !== '' && char !== undefined)
-          )}
+          isChecked={isCharGroupSelected()}
           onChange={() => {
             props.toggleAllChars(props.selectedChars, props.chars)
             setTotalSelected()
@@ -104,44 +120,46 @@ const CharGroupSelect = (props: CharGroupProps) => {
       </header>
       {/* /header */}
 
-      {props.chars.map((charGroup, groupIndex) => (
-        <div
-          class="grid min-h-[60px] gap-x-1 rounded-xl"
-          style={`grid-template-columns: auto repeat(${charGroup.length},1fr)`}
-        >
-          <div class="flex items-center rounded-l-xl border-2 border-r-0 border-slate-300 bg-slate-100 p-2 pr-1">
-            {/* select char group */}
-            <Checkbox
-              label=""
-              // TODO: fix type errors
-              isChecked={state[props.selectedChars][groupIndex].every(
-                (char) => char !== '' && char !== undefined
-              )}
-              onChange={() => {
-                props.toggleChars(props.selectedChars, props.chars, groupIndex)
-                setTotalSelected()
-              }}
-            />
-            {/* /select char group */}
-          </div>
-          <For each={charGroup}>
-            {(char) => (
-              <div
-                // TODO: fix type errors
-                class={`ease grid grid-flow-row justify-center gap-y-2 rounded-xl border-2 p-2 transition-all duration-75 ${
-                  state[props.selectedChars][groupIndex].every(
-                    (char) => char !== '' && char !== undefined
+      {
+        // eslint-disable-next-line solid/prefer-for
+        props.chars.map((charGroup, groupIndex) => (
+          <div
+            class="grid min-h-[60px] gap-x-1 rounded-xl"
+            // eslint-disable-next-line solid/style-prop
+            style={`grid-template-columns: auto repeat(${charGroup.length},1fr)`}
+          >
+            <div class="flex items-center rounded-l-xl border-2 border-r-0 border-slate-300 bg-slate-100 p-2 pr-1">
+              {/* select char group */}
+              <Checkbox
+                label=""
+                isChecked={isCharSelected(groupIndex)}
+                onChange={() => {
+                  props.toggleChars(
+                    props.selectedChars,
+                    props.chars,
+                    groupIndex
                   )
-                    ? 'border-blue-300 bg-blue-50'
-                    : 'border-slate-300 bg-slate-100'
-                }`}
-              >
-                {!!char && <Char char={char} />}
-              </div>
-            )}
-          </For>
-        </div>
-      ))}
+                  setTotalSelected()
+                }}
+              />
+              {/* /select char group */}
+            </div>
+            <For each={charGroup}>
+              {(char) => (
+                <div
+                  class={`grid grid-flow-row justify-center gap-y-2 rounded-xl border-2 p-2 transition-all duration-75 ease-linear ${
+                    MENU_STATE_CLASSES[
+                      isCharSelected(groupIndex) ? 'active' : 'inactive'
+                    ]
+                  }`}
+                >
+                  {!!char && <Char char={char} />}
+                </div>
+              )}
+            </For>
+          </div>
+        ))
+      }
     </div>
   )
 }
