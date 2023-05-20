@@ -65,8 +65,10 @@ const Char = (props: CharProps) => {
     <>
       <span
         ref={(el) => (kanaText = el)}
-        class="flex items-end justify-center font-sans text-xl font-bold leading-none"
-      />
+        class="flex items-end justify-center font-sans text-xl font-bold leading-none "
+      >
+        <span class="text-slate-400">◕‿◕</span>
+      </span>
       <span class="flex justify-center text-xs leading-none text-slate-400">
         {toRomaji(props.char)}
       </span>

@@ -1,17 +1,60 @@
-import { For } from 'solid-js'
+import gsap from 'gsap'
+
+import { For, createSignal, onMount } from 'solid-js'
 import { useNavigate } from 'solid-start'
 
 import useStore from '~/store/kanaStore'
 import General from '~/layouts/general'
 import Footer from '~/components/Footer'
 
+interface AnimatedCharProps {
+  children: string
+}
+
+const AnimatedChar = (props: AnimatedCharProps) => {
+  let char: HTMLSpanElement
+
+  onMount(() => {
+    gsap.fromTo(
+      char,
+      { opacity: 0, scale: 0 },
+      { opacity: 1, scale: 1, ease: 'expo.in.out', duration: 0.2 }
+    )
+  })
+
+  return <span ref={(el) => (char = el)}>{props.children}</span>
+}
+
 const Study = () => {
   const state = useStore()
+  const { setAnswer } = state
 
   const navigate = useNavigate()
+  let answerInput: HTMLInputElement
 
-  if (state.questions.length === 0) {
-    navigate('/', { replace: true })
+  const [currentAnswer, setCurrentAnswer] = createSignal<string[]>([
+    '.',
+    '.',
+    '.',
+  ])
+
+  onMount(() => {
+    if (state.questions.length === 0) {
+      navigate('/', { replace: true })
+    }
+
+    answerInput.focus()
+  })
+
+  const handleAnswerInput = (event: InputEvent) => {
+    const target = event.target as HTMLInputElement
+    setCurrentAnswer(target.value ? target.value.split('') : ['.', '.', '.'])
+  }
+
+  const handleSubmit = (event: Event): void => {
+    event.preventDefault()
+    setAnswer(event.target.value)
+    console.log('ok')
   }
 
   return (
@@ -39,42 +82,30 @@ const Study = () => {
         </div>
       </header>
 
-      <section class="col-span-12 flex">
-        <div class="relative flex w-full items-center gap-x-2 overflow-x-hidden">
-          <ul class="grid min-w-0 shrink-[1] grow-[1] basis-0 grid-flow-col grid-cols-[min-content] justify-end gap-x-2">
-            <For each={state.answeredQuestions}>
-              {(answeredQuestion) =>
-                answeredQuestion && (
-                  <li class="ease grid h-28 w-36 grid-flow-row justify-center gap-y-4 rounded-xl border-[3px] border-slate-300 bg-slate-100 p-2 transition-all duration-75">
-                    <span class="flex items-end justify-center font-sans text-4xl font-bold leading-none">
-                      {answeredQuestion.char}
-                    </span>
-                    <span class="flex justify-center text-xl leading-none text-slate-400">
-                      ...
-                    </span>
-                  </li>
-                )
-              }
-            </For>
-          </ul>
-          <div class="ease grid h-28 w-36 grid-flow-row justify-center gap-y-4 rounded-xl border-[3px] border-blue-300 bg-blue-50 p-2 transition-all duration-75">
-            <span class="flex items-end justify-center font-sans text-4xl font-bold leading-none">
-              {state.questions[0]?.char}
-            </span>
-            <span class="flex justify-center text-xl leading-none text-slate-400">
-              ...
-            </span>
-          </div>
-          <ul class="grid min-w-0 shrink-[1] grow-[1] basis-0 grid-flow-col grid-cols-[min-content] gap-x-2">
-            <For each={state.questions.slice(1)}>
-              {(question) =>
+      <section class="col-span-12 flex flex-col items-center justify-center gap-y-4">
+        <div class="relative flex w-full justify-center overflow-x-hidden">
+          <ul class="relative grid w-32 grid-flow-col gap-x-1">
+            <For each={state.questions}>
+              {(question, idx) =>
                 question && (
-                  <li class="ease grid h-28 w-36 grid-flow-row justify-center gap-y-4 rounded-xl border-[3px] border-slate-300 bg-slate-100 p-2 transition-all duration-75">
-                    <span class="flex items-end justify-center font-sans text-4xl font-bold leading-none">
+                  <li
+                    class={`ease grid h-24 w-32 grid-flow-row justify-center gap-y-4 rounded-xl border-2 p-2 transition-all duration-75 ${
+                      state.currentQuestion === idx()
+                        ? 'border-blue-300 bg-blue-50'
+                        : 'border-slate-300 bg-slate-100'
+                    }`}
+                  >
+                    <span class="flex items-end justify-center font-sans text-3xl font-bold leading-none">
                       {question.char}
                     </span>
                     <span class="flex justify-center text-xl leading-none text-slate-400">
-                      ...
+                      {state.currentQuestion === idx() && currentAnswer() ? (
+                        <For each={currentAnswer()}>
+                          {(char) => <AnimatedChar>{char}</AnimatedChar>}
+                        </For>
+                      ) : (
+                        '...'
+                      )}
                     </span>
                   </li>
                 )
@@ -82,6 +113,20 @@ const Study = () => {
             </For>
           </ul>
         </div>
+
+        <form class="" onSubmit={handleSubmit}>
+          <input
+            ref={(el) => (answerInput = el)}
+            id="answer"
+            type="text"
+            maxlength="3"
+            minlength="1"
+            tabindex="2"
+            placeholder="answer here"
+            class="w-32 appearance-none rounded-md border-2 border-slate-400 bg-slate-50 px-3 py-2 text-center placeholder:text-slate-400"
+            onInput={handleAnswerInput}
+          />
+        </form>
       </section>
 
       <Footer />

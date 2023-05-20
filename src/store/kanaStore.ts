@@ -32,9 +32,11 @@ interface State {
   selectedKatakanaDiagraphDiacritics: CharGroup
 
   questions: Questions[]
-  answeredQuestions: Questions[]
+  currentQuestion: number
 
   setQuestions: () => void
+  setAnswer: (value: string) => void
+
   setSelectedScript: (value: Script) => void
   setTotalSelected: () => void
 
@@ -72,7 +74,7 @@ const useStore = create<State>((set, get) => ({
   ),
 
   questions: [],
-  answeredQuestions: [],
+  currentQuestion: 0,
 
   setQuestions: () => {
     const obj = get()
@@ -106,6 +108,17 @@ const useStore = create<State>((set, get) => ({
 
     set({
       questions: composedQuestions,
+    })
+  },
+
+  setAnswer: (value) => {
+    const obj = get()
+
+    const newQuestions = [...obj.questions]
+    newQuestions[obj.currentQuestion].answer = value
+
+    set({
+      questions: newQuestions,
     })
   },
 
