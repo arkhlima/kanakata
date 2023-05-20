@@ -1,6 +1,6 @@
 import gsap from 'gsap'
 
-import { For, createSignal, onMount } from 'solid-js'
+import { For, createEffect, createSignal, onMount, onCleanup } from 'solid-js'
 import { useNavigate } from 'solid-start'
 
 import useStore from '~/store/kanaStore'
@@ -13,13 +13,18 @@ interface AnimatedCharProps {
 
 const AnimatedChar = (props: AnimatedCharProps) => {
   let char: HTMLSpanElement
+  let animation: gsap.core.Tween
 
-  onMount(() => {
-    gsap.fromTo(
+  createEffect(() => {
+    animation = gsap.fromTo(
       char,
       { opacity: 0, scale: 0 },
       { opacity: 1, scale: 1, ease: 'expo.in.out', duration: 0.2 }
     )
+  })
+
+  onCleanup(() => {
+    animation.kill()
   })
 
   return <span ref={(el) => (char = el)}>{props.children}</span>
