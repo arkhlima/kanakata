@@ -111,14 +111,16 @@ const useStore = create<State>((set, get) => ({
     })
   },
 
-  setAnswer: (value) => {
+  setAnswer: (value: string) => {
     const obj = get()
 
-    const newQuestions = [...obj.questions]
-    newQuestions[obj.currentQuestion].answer = value
-
     set({
-      questions: newQuestions,
+      questions: obj.questions.map((question, index) =>
+        index === obj.currentQuestion
+          ? { ...question, answer: value }
+          : question
+      ),
+      currentQuestion: obj.currentQuestion + 1,
     })
   },
 

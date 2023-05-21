@@ -39,6 +39,8 @@ const Study = () => {
 
   const navigate = useNavigate()
   let answerInput: HTMLInputElement
+  let questionList: HTMLUListElement
+  let animation: gsap.core.Tween
 
   const [currentAnswer, setCurrentAnswer] = createSignal<string[]>([
     '.',
@@ -54,6 +56,24 @@ const Study = () => {
     answerInput.focus()
   })
 
+  createEffect(() => {
+    if (state.questions) {
+      const calcValue =
+        -8 * state.currentQuestion - 0.25 * state.currentQuestion
+      animation = gsap.to(questionList, {
+        x: `${calcValue}rem`,
+        duration: 1,
+        ease: 'expo.out',
+      })
+      answerInput.focus()
+      answerInput.value = ''
+    }
+  })
+
+  onCleanup(() => {
+    animation.kill()
+  })
+
   const handleAnswerInput = (event: InputEvent) => {
     const target = event.target as HTMLInputElement
     setCurrentAnswer(target.value ? target.value.split('') : ['.', '.', '.'])
@@ -61,8 +81,8 @@ const Study = () => {
 
   const handleSubmit = (event: Event): void => {
     event.preventDefault()
-    setAnswer(event.target.value)
-    console.log('ok')
+    setAnswer(currentAnswer().join(''))
+    setCurrentAnswer(['.', '.', '.'])
   }
 
   return (
@@ -74,7 +94,7 @@ const Study = () => {
 
         <div class="order-1">
           <button
-            class="text-2xl lowercase text-slate-400 decoration-blue-300 decoration-wavy transition-all duration-75 ease-linear hover:text-slate-700 focus:underline"
+            class={`text-2xl lowercase text-slate-400 decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline ${DEFAULT_INTERACTION_CLASS}`}
             onClick={() => navigate('/')}
           >
             back
@@ -92,7 +112,10 @@ const Study = () => {
 
       <section class="col-span-12 flex flex-col items-center justify-center gap-y-4">
         <div class="relative flex w-full justify-center overflow-x-hidden">
-          <ul class="relative grid w-32 grid-flow-col gap-x-1">
+          <ul
+            ref={(el) => (questionList = el)}
+            class="relative grid w-32 grid-flow-col gap-x-1"
+          >
             <For each={state.questions}>
               {(question, idx) =>
                 question && (
@@ -107,12 +130,12 @@ const Study = () => {
                       {question.char}
                     </span>
                     <span class="flex justify-center text-xl leading-none text-slate-400">
-                      {state.currentQuestion === idx() && currentAnswer() ? (
+                      {state.currentQuestion === idx() && !question.answer ? (
                         <For each={currentAnswer()}>
                           {(char) => <AnimatedChar>{char}</AnimatedChar>}
                         </For>
                       ) : (
-                        '...'
+                        question.answer || '...'
                       )}
                     </span>
                   </li>
