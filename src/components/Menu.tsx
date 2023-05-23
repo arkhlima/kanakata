@@ -4,14 +4,13 @@ import { Transition } from 'solid-transition-group'
 import useStore from '~/store/kanaStore'
 
 import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
-import type { StateClasses } from '~/constants/classes'
 import type { Script } from '~/constants/kana'
 
 const Menu = (): JSX.Element => {
   const state = useStore()
   const { setSelectedScript } = state
 
-  const MENU_STATE_CLASSES: StateClasses = {
+  const MENU_STATE_CLASSES: Record<string, string> = {
     active: 'bg-blue-300',
     inactive: 'bg-slate-300 text-slate-50',
   }

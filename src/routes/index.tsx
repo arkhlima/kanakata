@@ -1,6 +1,6 @@
 import { Transition } from 'solid-transition-group'
 
-import { Show } from 'solid-js'
+import { Show, onMount } from 'solid-js'
 import { useNavigate } from 'solid-start'
 
 import useStore from '~/store/kanaStore'
@@ -21,9 +21,13 @@ import {
 
 const App = () => {
   const state = useStore()
-  const { toggleAllChars, toggleChars, setQuestions } = state
+  const { toggleAllChars, toggleChars, setQuestions, reset } = state
 
   const navigate = useNavigate()
+
+  onMount(() => {
+    reset()
+  })
 
   return (
     <General>

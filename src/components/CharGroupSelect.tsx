@@ -9,7 +9,6 @@ import Checkbox from '~/components/Checkbox'
 import { getCharGroupTitle } from '~/utils/chars'
 import { toRomaji, toKatakana } from 'wanakana'
 
-import type { StateClasses } from '~/constants/classes'
 import type { CharGroup } from '~/constants/kana'
 
 interface CharGroupProps {
@@ -57,7 +56,7 @@ const Char = (props: CharProps) => {
   })
 
   onCleanup(() => {
-    animation.kill()
+    if (animation) animation.kill()
   })
 
   return (
@@ -79,7 +78,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
   const state = useStore()
   const { setTotalSelected } = state
 
-  const MENU_STATE_CLASSES: StateClasses = {
+  const CHAR_STATE_CLASSES: Record<string, string> = {
     active: 'border-blue-300 bg-blue-50',
     inactive: 'border-slate-300 bg-slate-100',
   }
@@ -148,7 +147,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
               {(char) => (
                 <div
                   class={`grid grid-flow-row justify-center gap-y-2 rounded-xl border-2 p-2 transition-all duration-75 ease-linear ${
-                    MENU_STATE_CLASSES[
+                    CHAR_STATE_CLASSES[
                       isCharSelected(groupIndex) ? 'active' : 'inactive'
                     ]
                   }`}

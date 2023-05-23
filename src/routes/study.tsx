@@ -7,6 +7,9 @@ import useStore from '~/store/kanaStore'
 import General from '~/layouts/general'
 import Footer from '~/components/Footer'
 
+import { toRomaji } from 'wanakana'
+
+import type { Questions } from '~/store/kanaStore'
 import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
 
 interface AnimatedCharProps {
@@ -27,7 +30,7 @@ const AnimatedChar = (props: AnimatedCharProps) => {
   })
 
   onCleanup(() => {
-    animation.kill()
+    if (animation) animation.kill()
   })
 
   return <span ref={(el) => (char = el)}>{props.children}</span>
@@ -40,13 +43,13 @@ const Study = () => {
   const navigate = useNavigate()
   let answerInput: HTMLInputElement
   let questionList: HTMLUListElement
-  let animation: gsap.core.Tween
+  let animation: gsap.core.Timeline
 
-  const [currentAnswer, setCurrentAnswer] = createSignal<string[]>([
-    '.',
-    '.',
-    '.',
-  ])
+  const DEFAULT_ANSWER: string[] = ['.', '.', '.']
+
+  const [currentAnswer, setCurrentAnswer] =
+    createSignal<string[]>(DEFAULT_ANSWER)
+  const [answerInputValue, setAnswerInputValue] = createSignal<string>()
 
   onMount(() => {
     if (state.questions.length === 0) {
@@ -57,32 +60,88 @@ const Study = () => {
   })
 
   createEffect(() => {
-    if (state.questions) {
+    if (state.questions.length > state.currentQuestion) {
       const calcValue =
         -8 * state.currentQuestion - 0.25 * state.currentQuestion
-      animation = gsap.to(questionList, {
-        x: `${calcValue}rem`,
-        duration: 1,
-        ease: 'expo.out',
-      })
+
+      animation = gsap
+        .timeline()
+        .to(
+          `.question:nth-child(${
+            state.currentQuestion === 0
+              ? state.currentQuestion + 1
+              : state.currentQuestion
+          })`,
+          {
+            scale: 0.8,
+            duration: 0.2,
+            ease: 'expo.out',
+          }
+        )
+        .to(
+          `.question:nth-child(${
+            state.currentQuestion === 0
+              ? state.currentQuestion + 1
+              : state.currentQuestion
+          })`,
+          {
+            scale: 1,
+            duration: 0.2,
+            ease: 'expo.out',
+          }
+        )
+        .to(questionList, {
+          x: `${calcValue}rem`,
+          duration: 0.2,
+          ease: 'expo.out',
+        })
       answerInput.focus()
       answerInput.value = ''
     }
   })
 
   onCleanup(() => {
-    animation.kill()
+    if (animation) animation.kill()
   })
+
+  const QUESTION_STATE_CLASSES: Record<string, string> = {
+    active: 'border-blue-300 bg-blue-50',
+    inactive: 'border-slate-300 bg-slate-100',
+    correct: 'border-green-300 bg-green-50',
+    incorrect: 'border-pink-300 bg-pink-50',
+  }
+
+  const getQuestionStateClass = (question: Questions, idx: number): string => {
+    return idx === state.currentQuestion
+      ? 'active'
+      : question.answer
+      ? question.answer.toLowerCase() === toRomaji(question.char)
+        ? 'correct'
+        : 'incorrect'
+      : 'inactive'
+  }
 
   const handleAnswerInput = (event: InputEvent) => {
     const target = event.target as HTMLInputElement
-    setCurrentAnswer(target.value ? target.value.split('') : ['.', '.', '.'])
+    if (/^[A-Za-z]*$/g.test(target.value)) {
+      setAnswerInputValue(target.value)
+      setCurrentAnswer(target.value ? target.value.split('') : DEFAULT_ANSWER)
+    }
+  }
+
+  const handleKeyPress = (event: KeyboardEvent) => {
+    const isAlphabet = /[a-zA-Z]/i.test(event.key)
+
+    if (!isAlphabet) {
+      event.preventDefault()
+    }
   }
 
   const handleSubmit = (event: Event): void => {
     event.preventDefault()
+
     setAnswer(currentAnswer().join(''))
-    setCurrentAnswer(['.', '.', '.'])
+    setCurrentAnswer(DEFAULT_ANSWER)
   }
 
   return (
@@ -120,16 +179,17 @@ const Study = () => {
               {(question, idx) =>
                 question && (
                   <li
-                    class={`grid h-24 w-32 grid-flow-row justify-center gap-y-4 rounded-xl border-2 p-2 transition-all duration-75 ease-linear ${
-                      state.currentQuestion === idx()
-                        ? 'border-blue-300 bg-blue-50'
-                        : 'border-slate-300 bg-slate-100'
+                    class={`question grid h-24 w-32 grid-flow-row justify-center gap-y-4 rounded-xl border-2 p-2 ${
+                      QUESTION_STATE_CLASSES[
+                        getQuestionStateClass(question, idx())
+                      ]
                     }`}
+                    // classList={{ current: state.currentQuestion === idx() }}
                   >
                     <span class="flex items-end justify-center font-sans text-3xl font-bold leading-none">
                       {question.char}
                     </span>
-                    <span class="flex justify-center text-xl leading-none text-slate-400">
+                    <span class="flex justify-center text-xl lowercase leading-none text-slate-400">
                       {state.currentQuestion === idx() && !question.answer ? (
                         <For each={currentAnswer()}>
                           {(char) => <AnimatedChar>{char}</AnimatedChar>}
@@ -153,8 +213,11 @@ const Study = () => {
             maxlength="3"
             minlength="1"
             tabindex="2"
+            value={answerInputValue()}
+            onKeyDown={handleKeyPress}
             placeholder="answer..."
-            class={`w-32 appearance-none rounded-md border-2 border-slate-400 bg-slate-50 px-3 py-2 text-center placeholder:text-slate-400 ${DEFAULT_INTERACTION_CLASS}`}
+            required
+            class={`w-32 appearance-none rounded-full border-2 border-slate-300 bg-slate-50 px-3 py-2 text-center lowercase placeholder:text-slate-400 ${DEFAULT_INTERACTION_CLASS}`}
             onInput={handleAnswerInput}
           />
         </form>

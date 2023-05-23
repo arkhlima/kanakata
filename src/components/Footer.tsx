@@ -12,6 +12,8 @@ const Header = (props: FooterProps) => {
       <a
         class={`text-slate-700 underline decoration-blue-300 decoration-wavy ${DEFAULT_INTERACTION_CLASS}`}
         href="https://arkhlima.xyz"
+        target="_blank"
+        rel="noopener"
       >
         @arkhlima
       </a>

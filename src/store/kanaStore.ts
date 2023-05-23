@@ -9,7 +9,7 @@ import {
 } from '~/constants/kana'
 import type { CharGroup, Script } from '~/constants/kana'
 
-interface Questions {
+export interface Questions {
   char: string
   answer: string
 }
@@ -33,22 +33,9 @@ interface State {
 
   questions: Questions[]
   currentQuestion: number
-
-  setQuestions: () => void
-  setAnswer: (value: string) => void
-
-  setSelectedScript: (value: Script) => void
-  setTotalSelected: () => void
-
-  toggleChars: (
-    selectedChars: string,
-    chars: CharGroup,
-    groupIndex: number
-  ) => void
-  toggleAllChars: (selectedChars: string, chars: CharGroup) => void
 }
 
-const useStore = create<State>((set, get) => ({
+const initialState: State = {
   scripts: ['Hiragana', 'Katakana'],
 
   selectedScript: 'Hiragana',
@@ -75,24 +62,42 @@ const useStore = create<State>((set, get) => ({
 
   questions: [],
   currentQuestion: 0,
+}
+
+interface Actions {
+  setQuestions: () => void
+  setAnswer: (value: string) => void
+
+  setSelectedScript: (value: Script) => void
+  setTotalSelected: () => void
+
+  toggleChars: (
+    selectedChars: string,
+    chars: CharGroup,
+    groupIndex: number
+  ) => void
+  toggleAllChars: (selectedChars: string, chars: CharGroup) => void
+  reset: () => void
+}
+
+const useStore = create<State & Actions>((set, get) => ({
+  ...initialState,
 
   setQuestions: () => {
-    const obj = get()
-
     const filteredSelectedHiragana = [
-      ...obj.selectedHiraganaMonographs,
-      ...obj.selectedHiraganaMonographDiacritics,
-      ...obj.selectedHiraganaDiagraphs,
-      ...obj.selectedHiraganaDiagraphDiacritics,
+      ...get().selectedHiraganaMonographs,
+      ...get().selectedHiraganaMonographDiacritics,
+      ...get().selectedHiraganaDiagraphs,
+      ...get().selectedHiraganaDiagraphDiacritics,
     ]
       .flat()
       .filter((char): char is string => !!char)
 
     const filteredSelectedKatakana = [
-      ...obj.selectedKatakanaMonographs,
-      ...obj.selectedKatakanaMonographDiacritics,
-      ...obj.selectedKatakanaDiagraphs,
-      ...obj.selectedKatakanaDiagraphDiacritics,
+      ...get().selectedKatakanaMonographs,
+      ...get().selectedKatakanaMonographDiacritics,
+      ...get().selectedKatakanaDiagraphs,
+      ...get().selectedKatakanaDiagraphDiacritics,
     ]
       .flat()
       .filter((char): char is string => !!char)
@@ -112,29 +117,25 @@ const useStore = create<State>((set, get) => ({
   },
 
   setAnswer: (value: string) => {
-    const obj = get()
-
     set({
-      questions: obj.questions.map((question, index) =>
-        index === obj.currentQuestion
+      questions: get().questions.map((question, index) =>
+        index === get().currentQuestion
           ? { ...question, answer: value }
           : question
       ),
-      currentQuestion: obj.currentQuestion + 1,
+      currentQuestion: get().currentQuestion + 1,
     })
   },
 
   setSelectedScript: (value) => set({ selectedScript: value }),
 
   setTotalSelected: () => {
-    const obj = get()
-
     set({
-      [`total${obj.selectedScript}`]: [
-        ...obj[`selected${obj.selectedScript}Monographs`],
-        ...obj[`selected${obj.selectedScript}MonographDiacritics`],
-        ...obj[`selected${obj.selectedScript}Diagraphs`],
-        ...obj[`selected${obj.selectedScript}DiagraphDiacritics`],
+      [`total${get().selectedScript}`]: [
+        ...get()[`selected${get().selectedScript}Monographs`],
+        ...get()[`selected${get().selectedScript}MonographDiacritics`],
+        ...get()[`selected${get().selectedScript}Diagraphs`],
+        ...get()[`selected${get().selectedScript}DiagraphDiacritics`],
       ].filter((group) => group.some((char) => char !== '')).length,
     })
   },
@@ -144,11 +145,9 @@ const useStore = create<State>((set, get) => ({
     chars: CharGroup,
     groupIndex: number
   ) => {
-    const obj = get()
-
     // TODO: fix type errors
     set({
-      [selectedChars]: obj[selectedChars].map((group, index) =>
+      [selectedChars]: get()[selectedChars].map((group, index) =>
         index === groupIndex
           ? group.map((groupChar, groupCharIndex) =>
               groupChar === '' ? chars[index][groupCharIndex] : ''
@@ -159,13 +158,48 @@ const useStore = create<State>((set, get) => ({
   },
 
   toggleAllChars: (selectedChars: string, chars: CharGroup) => {
-    const obj = get()
-
     // TODO: fix type errors
     set({
-      [selectedChars]: obj[selectedChars].flat().every((char) => char !== '')
+      [selectedChars]: get()
+        [selectedChars].flat()
+        .every((char) => char !== '')
         ? chars.map((group) => group.map(() => ''))
         : chars.map((group) => group.slice()),
+    })
+  },
+
+  reset: () => {
+    set({
+      scripts: ['Hiragana', 'Katakana'],
+
+      selectedScript: 'Hiragana',
+
+      totalHiragana: 0,
+      selectedHiraganaMonographs: MONOGRAPHS.map((group) =>
+        group.map(() => '')
+      ),
+      selectedHiraganaMonographDiacritics: MONOGRAPH_DIACRITICS.map((group) =>
+        group.map(() => '')
+      ),
+      selectedHiraganaDiagraphs: DIAGRAPHS.map((group) => group.map(() => '')),
+      selectedHiraganaDiagraphDiacritics: DIAGRAPH_DIACRITICS.map((group) =>
+        group.map(() => '')
+      ),
+
+      totalKatakana: 0,
+      selectedKatakanaMonographs: MONOGRAPHS.map((group) =>
+        group.map(() => '')
+      ),
+      selectedKatakanaMonographDiacritics: MONOGRAPH_DIACRITICS.map((group) =>
+        group.map(() => '')
+      ),
+      selectedKatakanaDiagraphs: DIAGRAPHS.map((group) => group.map(() => '')),
+      selectedKatakanaDiagraphDiacritics: DIAGRAPH_DIACRITICS.map((group) =>
+        group.map(() => '')
+      ),
+
+      questions: [],
+      currentQuestion: 0,
     })
   },
 }))
