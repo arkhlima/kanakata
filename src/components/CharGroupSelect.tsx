@@ -65,9 +65,9 @@ const Char = (props: CharProps) => {
         ref={(el) => (kanaText = el)}
         class="flex items-end justify-center font-sans text-xl font-bold leading-none"
       >
-        <span class="text-slate-400">◕‿◕</span>
+        <span class="text-slate-500">◕‿◕</span>
       </span>
-      <span class="flex justify-center text-xs leading-none text-slate-400">
+      <span class="flex justify-center text-xs leading-none text-slate-500">
         {toRomaji(props.char)}
       </span>
     </>
@@ -80,7 +80,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
 
   const CHAR_STATE_CLASSES: Record<string, string> = {
     active: 'border-blue-300 bg-blue-50',
-    inactive: 'border-slate-300 bg-slate-100',
+    inactive: 'border-slate-300 bg-slate-50',
   }
 
   const isCharSelected = (groupIndex: number): boolean => {
@@ -100,8 +100,8 @@ const CharGroupSelect = (props: CharGroupProps) => {
   return (
     <div class="grid gap-y-1">
       {/* header */}
-      <header class="flex items-center justify-between rounded-t-xl border-2 border-b-0 border-slate-300 bg-slate-100 p-2 pb-1">
-        <h2 class="xs:text-base order-last flex text-right text-sm font-bold text-slate-400">
+      <header class="flex items-center justify-between rounded-t-xl border-2 border-b-0 border-slate-300 bg-slate-50 p-2 pb-1">
+        <h2 class="xs:text-base order-last flex text-right text-sm font-bold text-slate-500">
           {getCharGroupTitle(props.selectedChars)}
         </h2>
 
@@ -127,11 +127,12 @@ const CharGroupSelect = (props: CharGroupProps) => {
             // eslint-disable-next-line solid/style-prop
             style={`grid-template-columns: auto repeat(${charGroup.length},1fr)`}
           >
-            <div class="flex items-center rounded-l-xl border-2 border-r-0 border-slate-300 bg-slate-100 p-2 pr-1">
+            <div class="flex items-center rounded-l-xl border-2 border-r-0 border-slate-300 bg-slate-50 p-2 pr-1">
               {/* select char group */}
               <Checkbox
-                label=""
+                label={toRomaji(props.chars[groupIndex][0] ?? '')}
                 isChecked={isCharSelected(groupIndex)}
+                isLabelHidden
                 onChange={() => {
                   props.toggleChars(
                     props.selectedChars,

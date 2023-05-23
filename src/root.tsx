@@ -28,7 +28,7 @@ export default function Root() {
           rel="stylesheet"
         />
       </Head>
-      <Body class="bg-slate-100 bg-fixed font-sans text-slate-700">
+      <Body class="bg-slate-50 bg-fixed font-sans text-slate-800">
         <Suspense>
           <ErrorBoundary>
             <Routes>

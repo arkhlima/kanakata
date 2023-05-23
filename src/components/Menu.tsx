@@ -46,9 +46,9 @@ const Menu = (): JSX.Element => {
 
             {/* menu button */}
             <button
-              class={`text-2xl lowercase text-slate-400 decoration-blue-300 decoration-wavy ${DEFAULT_INTERACTION_CLASS}`}
+              class={`text-2xl lowercase text-slate-500 decoration-blue-300 decoration-wavy ${DEFAULT_INTERACTION_CLASS}`}
               classList={{
-                'underline text-slate-700': isMenuActive(menu),
+                'underline text-slate-800': isMenuActive(menu),
               }}
               onClick={() => handleClickMenuButton(menu)}
             >

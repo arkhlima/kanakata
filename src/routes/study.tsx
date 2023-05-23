@@ -107,7 +107,7 @@ const Study = () => {
 
   const QUESTION_STATE_CLASSES: Record<string, string> = {
     active: 'border-blue-300 bg-blue-50',
-    inactive: 'border-slate-300 bg-slate-100',
+    inactive: 'border-slate-300 bg-slate-50',
     correct: 'border-green-300 bg-green-50',
     incorrect: 'border-pink-300 bg-pink-50',
   }
@@ -154,7 +154,7 @@ const Study = () => {
 
         <div class="order-1">
           <button
-            class={`text-lg lowercase text-slate-400 decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl ${DEFAULT_INTERACTION_CLASS}`}
+            class={`text-lg lowercase text-slate-500 decoration-blue-300 decoration-wavy hover:text-slate-800 focus:underline md:text-2xl ${DEFAULT_INTERACTION_CLASS}`}
             onClick={() => navigate('/')}
           >
             back
@@ -162,7 +162,7 @@ const Study = () => {
         </div>
         <div class="order-3 flex justify-end">
           <button
-            class={`text-lg lowercase text-slate-400 decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl ${DEFAULT_INTERACTION_CLASS}`}
+            class={`text-lg lowercase text-slate-500 decoration-blue-300 decoration-wavy hover:text-slate-800 focus:underline md:text-2xl ${DEFAULT_INTERACTION_CLASS}`}
             onClick={() => alert('coming soon!')}
           >
             settings
@@ -185,12 +185,11 @@ const Study = () => {
                         getQuestionStateClass(question, idx())
                       ]
                     }`}
-                    // classList={{ current: state.currentQuestion === idx() }}
                   >
                     <span class="flex items-end justify-center font-sans text-3xl font-bold leading-none">
                       {question.char}
                     </span>
-                    <span class="flex justify-center text-xl lowercase leading-none text-slate-400">
+                    <span class="flex justify-center text-xl lowercase leading-none text-slate-500">
                       {state.currentQuestion === idx() && !question.answer ? (
                         <For each={currentAnswer()}>
                           {(char) => <AnimatedChar>{char}</AnimatedChar>}
@@ -218,7 +217,7 @@ const Study = () => {
             onKeyDown={handleKeyPress}
             placeholder="answer..."
             required
-            class={`w-32 appearance-none rounded-full border-2 border-slate-300 bg-slate-50 px-3 py-2 text-center lowercase placeholder:text-slate-400 ${DEFAULT_INTERACTION_CLASS}`}
+            class={`w-32 appearance-none rounded-full border-2 border-slate-300 bg-slate-50 px-3 py-2 text-center lowercase placeholder:text-slate-500 ${DEFAULT_INTERACTION_CLASS}`}
             onInput={handleAnswerInput}
           />
         </form>

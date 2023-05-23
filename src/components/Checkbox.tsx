@@ -5,6 +5,7 @@ import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
 interface CheckboxProps {
   label: string
   isChecked: boolean
+  isLabelHidden?: boolean
   onChange: () => void
 }
 
@@ -22,7 +23,13 @@ const Checkbox = (props: CheckboxProps): JSX.Element => {
         class={`cursor-pointer ${DEFAULT_INTERACTION_CLASS}`}
         onClick={() => props.onChange()}
       />
-      {props.label}
+      <span
+        classList={{
+          'absolute z-[-1] left-[-999px] overflow-hidden': props.isLabelHidden,
+        }}
+      >
+        {props.label}
+      </span>
     </label>
   )
 }
