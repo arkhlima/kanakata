@@ -52,15 +52,11 @@ const Study = () => {
   const [answerInputValue, setAnswerInputValue] = createSignal<string>()
 
   onMount(() => {
-    if (state.questions.length === 0) {
-      navigate('/', { replace: true })
-    }
-
-    answerInput.focus()
+    if (state.questions.length === 0) navigate('/', { replace: true })
   })
 
   createEffect(() => {
-    if (state.questions.length > state.currentQuestion) {
+    if (state.questions.length >= state.currentQuestion) {
       const calcValue =
         -8 * state.currentQuestion - 0.25 * state.currentQuestion
 
@@ -90,11 +86,16 @@ const Study = () => {
             ease: 'expo.out',
           }
         )
-        .to(questionList, {
-          x: `${calcValue}rem`,
-          duration: 0.2,
-          ease: 'expo.out',
-        })
+        .to(
+          questionList,
+          state.questions.length !== state.currentQuestion
+            ? {
+                x: `${calcValue}rem`,
+                duration: 0.2,
+                ease: 'expo.out',
+              }
+            : {}
+        )
       answerInput.focus()
       answerInput.value = ''
     }
@@ -153,7 +154,7 @@ const Study = () => {
 
         <div class="order-1">
           <button
-            class={`text-2xl lowercase text-slate-400 decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline ${DEFAULT_INTERACTION_CLASS}`}
+            class={`text-lg lowercase text-slate-400 decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl ${DEFAULT_INTERACTION_CLASS}`}
             onClick={() => navigate('/')}
           >
             back
@@ -161,8 +162,8 @@ const Study = () => {
         </div>
         <div class="order-3 flex justify-end">
           <button
-            class="cursor-not-allowed text-2xl lowercase text-slate-400 decoration-blue-300 decoration-wavy transition-all duration-75 ease-linear hover:text-slate-700 focus:underline"
-            disabled
+            class={`text-lg lowercase text-slate-400 decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl ${DEFAULT_INTERACTION_CLASS}`}
+            onClick={() => alert('coming soon!')}
           >
             settings
           </button>
