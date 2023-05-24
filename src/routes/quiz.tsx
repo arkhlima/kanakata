@@ -30,13 +30,13 @@ const AnimatedChar = (props: AnimatedCharProps) => {
   })
 
   onCleanup(() => {
-    if (animation) animation.kill()
+    if (animation.length) animation.kill()
   })
 
   return <span ref={(el) => (char = el)}>{props.children}</span>
 }
 
-const Study = () => {
+const Quiz = () => {
   const state = useStore()
   const { setAnswer } = state
 
@@ -88,13 +88,18 @@ const Study = () => {
         )
         .to(
           questionList,
-          state.questions.length !== state.currentQuestion
+          state.questions.length > 0 &&
+            state.questions.length === state.currentQuestion
             ? {
+                onComplete: () => {
+                  console.log('end')
+                },
+              }
+            : {
                 x: `${calcValue}rem`,
                 duration: 0.2,
                 ease: 'expo.out',
               }
-            : {}
         )
       answerInput.focus()
       answerInput.value = ''
@@ -102,7 +107,7 @@ const Study = () => {
   })
 
   onCleanup(() => {
-    if (animation) animation.kill()
+    if (animation.length) animation.kill()
   })
 
   const QUESTION_STATE_CLASSES: Record<string, string> = {
@@ -154,7 +159,7 @@ const Study = () => {
 
         <div class="order-1">
           <button
-            class={`text-lg lowercase text-slate-500 decoration-blue-300 decoration-wavy hover:text-slate-800 focus:underline md:text-2xl ${DEFAULT_INTERACTION_CLASS}`}
+            class={`text-lg lowercase text-slate-500 decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl ${DEFAULT_INTERACTION_CLASS}`}
             onClick={() => navigate('/')}
           >
             back
@@ -162,7 +167,7 @@ const Study = () => {
         </div>
         <div class="order-3 flex justify-end">
           <button
-            class={`text-lg lowercase text-slate-500 decoration-blue-300 decoration-wavy hover:text-slate-800 focus:underline md:text-2xl ${DEFAULT_INTERACTION_CLASS}`}
+            class={`text-lg lowercase text-slate-500 decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl ${DEFAULT_INTERACTION_CLASS}`}
             onClick={() => alert('coming soon!')}
           >
             settings
@@ -228,4 +233,4 @@ const Study = () => {
   )
 }
 
-export default Study
+export default Quiz

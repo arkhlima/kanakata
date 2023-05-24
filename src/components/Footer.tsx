@@ -10,7 +10,7 @@ const Header = (props: FooterProps) => {
       classList={props.class ? { [props.class]: true } : {}}
     >
       <a
-        class={`text-slate-800 underline decoration-blue-300 decoration-wavy ${DEFAULT_INTERACTION_CLASS}`}
+        class={`text-slate-700 underline decoration-blue-300 decoration-wavy ${DEFAULT_INTERACTION_CLASS}`}
         href="https://arkhlima.xyz"
         target="_blank"
         rel="noopener"

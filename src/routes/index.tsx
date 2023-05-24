@@ -85,10 +85,10 @@ const App = () => {
                 class={`w-full rounded-xl bg-slate-700 px-4 py-2 text-lg text-slate-50 decoration-slate-50 decoration-wavy shadow-lg shadow-slate-300 hover:bg-slate-600 focus:underline ${DEFAULT_INTERACTION_CLASS}`}
                 onClick={() => {
                   setQuestions()
-                  navigate('/study')
+                  navigate('/quiz')
                 }}
               >
-                let's study!
+                let's start!
               </button>
             </div>
           </aside>
