@@ -2,18 +2,18 @@
 const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
-   content: ['./src/**/*.{html,js,jsx,ts,tsx}'],
-   theme: {
-      extend: {
-         fontFamily: {
-            sans: ['"Poppins"', ...defaultTheme.fontFamily.sans],
-            japan: ['"Noto Sans JP"', ...defaultTheme.fontFamily.sans],
-         },
+  content: ['./src/**/*.{html,js,jsx,ts,tsx}'],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['"Poppins"', ...defaultTheme.fontFamily.sans],
+        japan: ['"Noto Sans JP"', ...defaultTheme.fontFamily.sans],
       },
-      screens: {
-         xs: '480px',
-         ...defaultTheme.screens,
-      },
-   },
-   plugins: [],
+    },
+    screens: {
+      xs: '480px',
+      ...defaultTheme.screens,
+    },
+  },
+  plugins: [],
 }
