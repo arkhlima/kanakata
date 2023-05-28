@@ -56,7 +56,7 @@ const Char = (props: CharProps) => {
   })
 
   onCleanup(() => {
-    if (animation.length) animation.kill()
+    if (animation.data) animation.kill()
   })
 
   return (
@@ -83,17 +83,19 @@ const CharGroupSelect = (props: CharGroupProps) => {
     inactive: 'border-slate-300 bg-slate-50',
   }
 
+  const isNotEmptyAndDefined = (char: string): boolean => {
+    return char !== '' && char !== undefined
+  }
+
   const isCharSelected = (groupIndex: number): boolean => {
     // TODO: fix type errors
-    return state[props.selectedChars][groupIndex].every(
-      (char: string) => char !== '' && char !== undefined
-    )
+    return state[props.selectedChars][groupIndex].every(isNotEmptyAndDefined)
   }
 
   const isCharGroupSelected = (): boolean => {
     // TODO: fix type errors
     return state[props.selectedChars].every((group) =>
-      group.every((char) => char !== '' && char !== undefined)
+      group.every(isNotEmptyAndDefined)
     )
   }
 

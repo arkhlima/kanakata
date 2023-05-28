@@ -1,10 +1,19 @@
 import gsap from 'gsap'
 
-import { For, createEffect, createSignal, onMount, onCleanup } from 'solid-js'
+import {
+  For,
+  createEffect,
+  createSignal,
+  onMount,
+  onCleanup,
+  Show,
+} from 'solid-js'
+import { Transition } from 'solid-transition-group'
 import { useNavigate } from 'solid-start'
 
 import useStore from '~/store/kanaStore'
 import General from '~/layouts/general'
+import Dialog from '~/components/Dialog'
 import Footer from '~/components/Footer'
 
 import { toRomaji } from 'wanakana'
@@ -20,7 +29,7 @@ const AnimatedChar = (props: AnimatedCharProps) => {
   let char: HTMLSpanElement
   let animation: gsap.core.Tween
 
-  createEffect(() => {
+  onMount(() => {
     // individual char animation
     animation = gsap.fromTo(
       char,
@@ -30,7 +39,7 @@ const AnimatedChar = (props: AnimatedCharProps) => {
   })
 
   onCleanup(() => {
-    if (animation.length) animation.kill()
+    if (animation.data) animation.kill()
   })
 
   return <span ref={(el) => (char = el)}>{props.children}</span>
@@ -46,10 +55,17 @@ const Quiz = () => {
   let animation: gsap.core.Timeline
 
   const DEFAULT_ANSWER: string[] = ['.', '.', '.']
+  const QUESTION_STATE_CLASSES: Record<string, string> = {
+    active: 'border-blue-300 bg-blue-50',
+    inactive: 'border-slate-300 bg-slate-50',
+    correct: 'border-emerald-300 bg-emerald-50',
+    incorrect: 'border-pink-300 bg-pink-50',
+  }
 
   const [currentAnswer, setCurrentAnswer] =
     createSignal<string[]>(DEFAULT_ANSWER)
   const [answerInputValue, setAnswerInputValue] = createSignal<string>()
+  const [isResultVisible, setResultVisibility] = createSignal<boolean>(false)
 
   onMount(() => {
     if (state.questions.length === 0) navigate('/', { replace: true })
@@ -57,8 +73,7 @@ const Quiz = () => {
 
   createEffect(() => {
     if (state.questions.length >= state.currentQuestion) {
-      const calcValue =
-        -8 * state.currentQuestion - 0.25 * state.currentQuestion
+      const calculatedTranslate = calculateTranslateValue(state.currentQuestion)
 
       animation = gsap
         .timeline()
@@ -92,11 +107,11 @@ const Quiz = () => {
             state.questions.length === state.currentQuestion
             ? {
                 onComplete: () => {
-                  console.log('end')
+                  setResultVisibility(true)
                 },
               }
             : {
-                x: `${calcValue}rem`,
+                x: `${calculatedTranslate}rem`,
                 duration: 0.2,
                 ease: 'expo.out',
               }
@@ -107,14 +122,11 @@ const Quiz = () => {
   })
 
   onCleanup(() => {
-    if (animation.length) animation.kill()
+    if (animation.data) animation.kill()
   })
 
-  const QUESTION_STATE_CLASSES: Record<string, string> = {
-    active: 'border-blue-300 bg-blue-50',
-    inactive: 'border-slate-300 bg-slate-50',
-    correct: 'border-green-300 bg-green-50',
-    incorrect: 'border-pink-300 bg-pink-50',
+  const calculateTranslateValue = (question: number): number => {
+    return -8 * question - 0.5 * question
   }
 
   const getQuestionStateClass = (question: Questions, idx: number): string => {
@@ -146,8 +158,10 @@ const Quiz = () => {
   const handleSubmit = (event: Event): void => {
     event.preventDefault()
 
-    setAnswer(currentAnswer().join(''))
-    setCurrentAnswer(DEFAULT_ANSWER)
+    if (state.questions.length !== state.currentQuestion) {
+      setAnswer(currentAnswer().join(''))
+      setCurrentAnswer(DEFAULT_ANSWER)
+    }
   }
 
   return (
@@ -175,37 +189,54 @@ const Quiz = () => {
         </div>
       </header>
 
-      <section class="col-span-12 flex flex-col items-center justify-center gap-y-4">
-        <div class="relative flex w-full justify-center overflow-x-hidden">
+      <Transition name="tr--from-bottom">
+        <Show when={!!isResultVisible()}>
+          <Dialog isVisible={isResultVisible}>
+            <header>
+              <h2 class="xs:text-2xl text-center text-xs font-bold text-slate-500">
+                complete!
+              </h2>
+            </header>
+            {/* TODO: add statistic & try again button here */}
+          </Dialog>
+        </Show>
+      </Transition>
+
+      <section class="col-span-12 flex flex-col items-center justify-center gap-y-8">
+        <div
+          class="relative flex w-full justify-center overflow-x-hidden"
+          style={{
+            '-webkit-mask-image':
+              'linear-gradient(to right, #0000, #000, #000, #0000)',
+          }}
+        >
           <ul
             ref={(el) => (questionList = el)}
-            class="relative grid w-32 grid-flow-col gap-x-1"
+            class="relative grid w-32 grid-flow-col gap-x-2 py-8"
           >
             <For each={state.questions}>
-              {(question, idx) =>
-                question && (
-                  <li
-                    class={`question grid h-24 w-32 grid-flow-row justify-center gap-y-4 rounded-xl border-2 p-2 ${
-                      QUESTION_STATE_CLASSES[
-                        getQuestionStateClass(question, idx())
-                      ]
-                    }`}
-                  >
-                    <span class="flex items-end justify-center font-sans text-3xl font-bold leading-none">
-                      {question.char}
-                    </span>
-                    <span class="flex justify-center text-xl lowercase leading-none text-slate-500">
-                      {state.currentQuestion === idx() && !question.answer ? (
-                        <For each={currentAnswer()}>
-                          {(char) => <AnimatedChar>{char}</AnimatedChar>}
-                        </For>
-                      ) : (
-                        question.answer || '...'
-                      )}
-                    </span>
-                  </li>
-                )
-              }
+              {(question, idx) => (
+                <li
+                  class={`question grid h-24 w-32 grid-flow-row justify-center gap-y-4 rounded-xl border-2 p-2 ${
+                    QUESTION_STATE_CLASSES[
+                      getQuestionStateClass(question, idx())
+                    ]
+                  }`}
+                >
+                  <span class="flex items-end justify-center font-sans text-3xl font-bold leading-none">
+                    {question.char}
+                  </span>
+                  <span class="flex justify-center text-xl lowercase leading-none text-slate-500">
+                    {state.currentQuestion === idx() && !question.answer ? (
+                      <For each={currentAnswer()}>
+                        {(char) => <AnimatedChar>{char}</AnimatedChar>}
+                      </For>
+                    ) : (
+                      question.answer || '...'
+                    )}
+                  </span>
+                </li>
+              )}
             </For>
           </ul>
         </div>
@@ -222,7 +253,7 @@ const Quiz = () => {
             onKeyDown={handleKeyPress}
             placeholder="answer..."
             required
-            class={`w-32 appearance-none rounded-full border-2 border-slate-300 bg-slate-50 px-3 py-2 text-center lowercase placeholder:text-slate-500 ${DEFAULT_INTERACTION_CLASS}`}
+            class={`w-32 appearance-none rounded-full border-2 border-slate-300 bg-slate-50 px-3 py-2 text-center lowercase shadow-lg shadow-slate-200 placeholder:text-slate-500 ${DEFAULT_INTERACTION_CLASS}`}
             onInput={handleAnswerInput}
           />
         </form>

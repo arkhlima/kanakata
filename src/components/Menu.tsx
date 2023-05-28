@@ -15,7 +15,7 @@ const Menu = (): JSX.Element => {
     inactive: 'bg-slate-300 text-slate-50',
   }
 
-  const isMenuActive = (menu: string) => {
+  const isMenuSelected = (menu: string) => {
     return state.selectedScript === menu
   }
 
@@ -34,7 +34,7 @@ const Menu = (): JSX.Element => {
                 <span
                   class={`absolute -top-6 right-0 flex h-[24px] w-[24px] items-center justify-center rounded-full text-xs ${
                     MENU_STATE_CLASSES[
-                      isMenuActive(menu) ? 'active' : 'inactive'
+                      isMenuSelected(menu) ? 'active' : 'inactive'
                     ]
                   }`}
                 >
@@ -48,7 +48,7 @@ const Menu = (): JSX.Element => {
             <button
               class={`text-2xl lowercase text-slate-500 decoration-blue-300 decoration-wavy ${DEFAULT_INTERACTION_CLASS}`}
               classList={{
-                'underline text-slate-700': isMenuActive(menu),
+                'underline text-slate-700': isMenuSelected(menu),
               }}
               onClick={() => handleClickMenuButton(menu)}
             >

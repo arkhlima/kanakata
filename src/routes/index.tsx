@@ -82,7 +82,7 @@ const App = () => {
           <aside class="fixed bottom-8 left-0 w-full">
             <div class="relative mx-auto flex h-full w-full max-w-5xl justify-end px-4 md:px-8">
               <button
-                class={`w-full rounded-xl bg-slate-700 px-4 py-2 text-lg text-slate-50 decoration-slate-50 decoration-wavy shadow-lg shadow-slate-300 hover:bg-slate-600 focus:underline ${DEFAULT_INTERACTION_CLASS}`}
+                class={`w-full rounded-xl bg-slate-700 px-4 py-2 text-lg text-slate-50 decoration-slate-50 decoration-wavy shadow-lg shadow-slate-200 hover:bg-slate-600 focus:underline ${DEFAULT_INTERACTION_CLASS}`}
                 onClick={() => {
                   setQuestions()
                   navigate('/quiz')
