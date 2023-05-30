@@ -1,30 +1,23 @@
-# SolidStart
+# kanakata — a simple kana (hiragana & katakana) quiz
 
-Everything you need to build a Solid project, powered by [`solid-start`](https://start.solidjs.com);
+> **kanakata** gets its name from "kana" — referring to the Japanese alphabets, and "kata" — a term for individual training exercises in martial arts.
 
-## Creating a project
+I made this just to learn about and explore a new tech stack in my free time - evenings after work and weekends.
 
-```bash
-# create a new project in the current directory
-npm init solid@latest
+What's next? Take a look at [this issue](https://github.com/arkhlima/kanakata/issues/1)~
 
-# create a new project in my-app
-npm init solid@latest my-app
-```
+## Stack
+
+- [SolidStart](https://github.com/solidjs/solid-start)
+- [solid-zustand](https://github.com/wobsoriano/solid-zustand)
+- [TailwindCSS](https://github.com/tailwindlabs/tailwindcss)
+- [GSAP](https://github.com/greensock/GSAP)
+- [Wanakana](https://github.com/WaniKani/WanaKana)
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+To start a development server:
 
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+pnpm run dev
 ```
-
-## Building
-
-Solid apps are built with _adapters_, which optimise your project for deployment to different environments.
-
-By default, `npm run build` will generate a Node app that you can run with `npm start`. To use a different adapter, add it to the `devDependencies` in `package.json` and specify in your `vite.config.js`.
