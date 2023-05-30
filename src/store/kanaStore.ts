@@ -6,7 +6,7 @@ import {
   MONOGRAPH_DIACRITICS,
   DIAGRAPHS,
   DIAGRAPH_DIACRITICS,
-  LOOK_ALIKE,
+  KATAKANA_LOOK_ALIKE,
 } from '~/constants/kana'
 import type { CharGroup, Script } from '~/constants/kana'
 
@@ -61,7 +61,9 @@ const initialState: State = {
   selectedKatakanaDiagraphDiacritics: DIAGRAPH_DIACRITICS.map((group) =>
     group.map(() => '')
   ),
-  selectedKatakanaLookAlike: LOOK_ALIKE.map((group) => group.map(() => '')),
+  selectedKatakanaLookAlike: KATAKANA_LOOK_ALIKE.map((group) =>
+    group.map(() => '')
+  ),
 
   questions: [],
   currentQuestion: 0,
@@ -177,8 +179,6 @@ const useStore = create<State & Actions>((set, get) => ({
 
   reset: () => {
     set({
-      scripts: ['Hiragana', 'Katakana'],
-
       selectedScript: 'Hiragana',
 
       totalHiragana: 0,
@@ -204,7 +204,9 @@ const useStore = create<State & Actions>((set, get) => ({
       selectedKatakanaDiagraphDiacritics: DIAGRAPH_DIACRITICS.map((group) =>
         group.map(() => '')
       ),
-      selectedKatakanaLookAlike: LOOK_ALIKE.map((group) => group.map(() => '')),
+      selectedKatakanaLookAlike: KATAKANA_LOOK_ALIKE.map((group) =>
+        group.map(() => '')
+      ),
 
       questions: [],
       currentQuestion: 0,

@@ -39,7 +39,7 @@ const AnimatedChar = (props: AnimatedCharProps) => {
   })
 
   onCleanup(() => {
-    if (animation.data) animation.kill()
+    if (animation) animation.kill()
   })
 
   return <span ref={(el) => (char = el)}>{props.children}</span>
@@ -47,7 +47,7 @@ const AnimatedChar = (props: AnimatedCharProps) => {
 
 const Quiz = () => {
   const state = useStore()
-  const { setAnswer } = state
+  const { setAnswer, reset } = state
 
   const navigate = useNavigate()
   let answerInput: HTMLInputElement
@@ -122,7 +122,7 @@ const Quiz = () => {
   })
 
   onCleanup(() => {
-    if (animation.data) animation.kill()
+    if (animation) animation.kill()
   })
 
   const calculateTranslateValue = (question: number): number => {

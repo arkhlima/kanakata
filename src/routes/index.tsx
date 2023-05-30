@@ -17,7 +17,7 @@ import {
   MONOGRAPHS,
   MONOGRAPH_DIACRITICS,
   DIAGRAPH_DIACRITICS,
-  LOOK_ALIKE,
+  KATAKANA_LOOK_ALIKE,
 } from '~/constants/kana'
 
 const App = () => {
@@ -75,7 +75,7 @@ const App = () => {
           />
           <Show when={state.selectedScript === 'Katakana'}>
             <CharGroupSelect
-              chars={LOOK_ALIKE}
+              chars={KATAKANA_LOOK_ALIKE}
               selectedChars={`selected${state.selectedScript}LookAlike`}
               toggleChars={toggleChars}
               toggleAllChars={toggleAllChars}

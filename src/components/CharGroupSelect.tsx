@@ -56,7 +56,7 @@ const Char = (props: CharProps) => {
   })
 
   onCleanup(() => {
-    if (animation.data) animation.kill()
+    if (animation) animation.kill()
   })
 
   return (
