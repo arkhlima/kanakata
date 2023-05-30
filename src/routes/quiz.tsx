@@ -202,7 +202,7 @@ const Quiz = () => {
         </Show>
       </Transition>
 
-      <section class="col-span-12 flex flex-col items-center justify-center gap-y-8">
+      <section class="col-span-12 flex flex-col items-center gap-y-8">
         <div
           class="relative flex w-full justify-center overflow-x-hidden"
           style={{
@@ -212,7 +212,7 @@ const Quiz = () => {
         >
           <ul
             ref={(el) => (questionList = el)}
-            class="relative grid w-32 grid-flow-col gap-x-2 py-8"
+            class="relative grid w-32 grid-flow-col gap-x-2"
           >
             <For each={state.questions}>
               {(question, idx) => (

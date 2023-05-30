@@ -40,3 +40,9 @@ export const DIAGRAPH_DIACRITICS: CharGroup = [
   ['びゃ', 'びゅ', 'びょ'], // BY
   ['ぴゃ', 'ぴゅ', 'ぴょ'], // PY
 ]
+
+export const LOOK_ALIKE: CharGroup = [
+  ['し', 'つ', 'そ', 'ん', 'の'],
+  ['う', 'ふ', 'わ', 'ら', 'を'],
+  ['す', 'ぬ', null, null, null],
+]

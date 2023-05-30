@@ -6,6 +6,7 @@ import {
   MONOGRAPH_DIACRITICS,
   DIAGRAPHS,
   DIAGRAPH_DIACRITICS,
+  LOOK_ALIKE,
 } from '~/constants/kana'
 import type { CharGroup, Script } from '~/constants/kana'
 
@@ -30,6 +31,7 @@ interface State {
   selectedKatakanaMonographDiacritics: CharGroup
   selectedKatakanaDiagraphs: CharGroup
   selectedKatakanaDiagraphDiacritics: CharGroup
+  selectedKatakanaLookAlike: CharGroup
 
   questions: Questions[]
   currentQuestion: number
@@ -59,6 +61,7 @@ const initialState: State = {
   selectedKatakanaDiagraphDiacritics: DIAGRAPH_DIACRITICS.map((group) =>
     group.map(() => '')
   ),
+  selectedKatakanaLookAlike: LOOK_ALIKE.map((group) => group.map(() => '')),
 
   questions: [],
   currentQuestion: 0,
@@ -98,6 +101,7 @@ const useStore = create<State & Actions>((set, get) => ({
       ...get().selectedKatakanaMonographDiacritics,
       ...get().selectedKatakanaDiagraphs,
       ...get().selectedKatakanaDiagraphDiacritics,
+      ...get().selectedKatakanaLookAlike,
     ]
       .flat()
       .filter((char): char is string => !!char)
@@ -136,6 +140,9 @@ const useStore = create<State & Actions>((set, get) => ({
         ...get()[`selected${get().selectedScript}MonographDiacritics`],
         ...get()[`selected${get().selectedScript}Diagraphs`],
         ...get()[`selected${get().selectedScript}DiagraphDiacritics`],
+        ...(get().selectedScript === 'Katakana'
+          ? get().selectedKatakanaLookAlike
+          : []),
       ].filter((group) => group.some((char) => char !== '')).length,
     })
   },
@@ -197,6 +204,7 @@ const useStore = create<State & Actions>((set, get) => ({
       selectedKatakanaDiagraphDiacritics: DIAGRAPH_DIACRITICS.map((group) =>
         group.map(() => '')
       ),
+      selectedKatakanaLookAlike: LOOK_ALIKE.map((group) => group.map(() => '')),
 
       questions: [],
       currentQuestion: 0,
