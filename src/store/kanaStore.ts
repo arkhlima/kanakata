@@ -7,6 +7,7 @@ import {
   DIAGRAPHS,
   DIAGRAPH_DIACRITICS,
   KATAKANA_LOOK_ALIKE,
+  HIRAGANA_LOOK_ALIKE,
 } from '~/constants/kana'
 import type { CharGroup, Script } from '~/constants/kana'
 
@@ -25,6 +26,7 @@ interface State {
   selectedHiraganaMonographDiacritics: CharGroup
   selectedHiraganaDiagraphs: CharGroup
   selectedHiraganaDiagraphDiacritics: CharGroup
+  selectedHiraganaLookAlike: CharGroup
 
   totalKatakana: number
   selectedKatakanaMonographs: CharGroup
@@ -49,6 +51,9 @@ const initialState: State = {
   ),
   selectedHiraganaDiagraphs: DIAGRAPHS.map((group) => group.map(() => '')),
   selectedHiraganaDiagraphDiacritics: DIAGRAPH_DIACRITICS.map((group) =>
+    group.map(() => '')
+  ),
+  selectedHiraganaLookAlike: HIRAGANA_LOOK_ALIKE.map((group) =>
     group.map(() => '')
   ),
 
@@ -94,6 +99,7 @@ const useStore = create<State & Actions>((set, get) => ({
       ...get().selectedHiraganaMonographDiacritics,
       ...get().selectedHiraganaDiagraphs,
       ...get().selectedHiraganaDiagraphDiacritics,
+      ...get().selectedHiraganaLookAlike,
     ]
       .flat()
       .filter((char): char is string => !!char)
@@ -142,9 +148,9 @@ const useStore = create<State & Actions>((set, get) => ({
         ...get()[`selected${get().selectedScript}MonographDiacritics`],
         ...get()[`selected${get().selectedScript}Diagraphs`],
         ...get()[`selected${get().selectedScript}DiagraphDiacritics`],
-        ...(get().selectedScript === 'Katakana'
-          ? get().selectedKatakanaLookAlike
-          : []),
+        ...(get().selectedScript === 'Hiragana'
+          ? get().selectedHiraganaLookAlike
+          : get().selectedKatakanaLookAlike),
       ].filter((group) => group.some((char) => char !== '')).length,
     })
   },
@@ -190,6 +196,9 @@ const useStore = create<State & Actions>((set, get) => ({
       ),
       selectedHiraganaDiagraphs: DIAGRAPHS.map((group) => group.map(() => '')),
       selectedHiraganaDiagraphDiacritics: DIAGRAPH_DIACRITICS.map((group) =>
+        group.map(() => '')
+      ),
+      selectedHiraganaLookAlike: HIRAGANA_LOOK_ALIKE.map((group) =>
         group.map(() => '')
       ),
 

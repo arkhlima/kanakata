@@ -41,6 +41,16 @@ export const DIAGRAPH_DIACRITICS: CharGroup = [
   ['ぴゃ', 'ぴゅ', 'ぴょ'], // PY
 ]
 
+export const HIRAGANA_LOOK_ALIKE: CharGroup = [
+  ['こ', 'て', 'る', 'ろ', null],
+  ['き', 'さ', 'ち', null, null],
+  ['ぬ', 'め', 'ゆ', null, null],
+  ['ね', 'れ', 'わ', null, null],
+  ['は', 'ほ', null, null, null],
+  ['ま', 'よ', null, null, null],
+  ['あ', 'お', null, null, null],
+]
+
 export const KATAKANA_LOOK_ALIKE: CharGroup = [
   ['し', 'つ', 'そ', 'ん', 'の'],
   ['う', 'ふ', 'わ', 'ら', 'を'],

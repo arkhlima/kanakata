@@ -1,6 +1,6 @@
 import { Transition } from 'solid-transition-group'
 
-import { Show, onMount } from 'solid-js'
+import { Show, Switch, Match, onMount } from 'solid-js'
 import { useNavigate } from 'solid-start'
 
 import useStore from '~/store/kanaStore'
@@ -17,6 +17,7 @@ import {
   MONOGRAPHS,
   MONOGRAPH_DIACRITICS,
   DIAGRAPH_DIACRITICS,
+  HIRAGANA_LOOK_ALIKE,
   KATAKANA_LOOK_ALIKE,
 } from '~/constants/kana'
 
@@ -73,14 +74,24 @@ const App = () => {
             toggleChars={toggleChars}
             toggleAllChars={toggleAllChars}
           />
-          <Show when={state.selectedScript === 'Katakana'}>
-            <CharGroupSelect
-              chars={KATAKANA_LOOK_ALIKE}
-              selectedChars={`selected${state.selectedScript}LookAlike`}
-              toggleChars={toggleChars}
-              toggleAllChars={toggleAllChars}
-            />
-          </Show>
+          <Switch>
+            <Match when={state.selectedScript === 'Hiragana'}>
+              <CharGroupSelect
+                chars={HIRAGANA_LOOK_ALIKE}
+                selectedChars={`selected${state.selectedScript}LookAlike`}
+                toggleChars={toggleChars}
+                toggleAllChars={toggleAllChars}
+              />
+            </Match>
+            <Match when={state.selectedScript === 'Katakana'}>
+              <CharGroupSelect
+                chars={KATAKANA_LOOK_ALIKE}
+                selectedChars={`selected${state.selectedScript}LookAlike`}
+                toggleChars={toggleChars}
+                toggleAllChars={toggleAllChars}
+              />
+            </Match>
+          </Switch>
         </div>
       </section>
       {/* /content */}
