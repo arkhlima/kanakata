@@ -301,7 +301,7 @@ const Quiz = () => {
           <div class="flex min-w-0 shrink-[1] grow-[1] basis-0 justify-end">
             <button
               type="button"
-              aria-labelledby="replay-button"
+              aria-labelledby="reset-button"
               class={twMerge(
                 'w-12 h-12 flex items-center justify-center rounded-full bg-slate-500 text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 hover:bg-slate-600 active:bg-slate-700 active:scale-90',
                 DEFAULT_INTERACTION_CLASS
@@ -311,8 +311,8 @@ const Quiz = () => {
                 setResetState(true)
               }}
             >
-              <span id="replay-button" hidden>
-                replay
+              <span id="reset-button" hidden>
+                reset
               </span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
