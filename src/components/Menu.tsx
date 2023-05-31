@@ -1,3 +1,5 @@
+import { twMerge } from 'tailwind-merge'
+
 import { JSX, For, Show } from 'solid-js'
 import { Transition } from 'solid-transition-group'
 
@@ -32,11 +34,12 @@ const Menu = (): JSX.Element => {
             <Transition name="tr--from-bottom">
               <Show when={!!state[`total${menu}`]}>
                 <span
-                  class={`absolute -top-6 right-0 flex h-[24px] w-[24px] items-center justify-center rounded-full text-xs ${
+                  class={twMerge(
+                    'absolute -top-6 right-0 flex h-[24px] w-[24px] items-center justify-center rounded-full text-xs',
                     MENU_STATE_CLASSES[
                       isMenuSelected(menu) ? 'active' : 'inactive'
                     ]
-                  }`}
+                  )}
                 >
                   {state[`total${menu}`]}
                 </span>
@@ -46,10 +49,11 @@ const Menu = (): JSX.Element => {
 
             {/* menu button */}
             <button
-              class={`text-2xl lowercase text-slate-500 decoration-blue-300 decoration-wavy ${DEFAULT_INTERACTION_CLASS}`}
-              classList={{
-                'underline text-slate-700': isMenuSelected(menu),
-              }}
+              class={twMerge(
+                'text-2xl lowercase text-slate-500 decoration-blue-300 decoration-wavy',
+                DEFAULT_INTERACTION_CLASS,
+                isMenuSelected(menu) && 'underline text-slate-700'
+              )}
               onClick={() => handleClickMenuButton(menu)}
             >
               #{menu}

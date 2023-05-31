@@ -1,4 +1,5 @@
 import gsap from 'gsap'
+import { twMerge } from 'tailwind-merge'
 
 import {
   For,
@@ -47,7 +48,7 @@ const AnimatedChar = (props: AnimatedCharProps) => {
 
 const Quiz = () => {
   const state = useStore()
-  const { setAnswer, reset } = state
+  const { setAnswer } = state
 
   const navigate = useNavigate()
   let answerInput: HTMLInputElement
@@ -173,7 +174,10 @@ const Quiz = () => {
 
         <div class="order-1">
           <button
-            class={`text-lg lowercase text-slate-500 decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl ${DEFAULT_INTERACTION_CLASS}`}
+            class={twMerge(
+              'text-lg lowercase text-slate-500 decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl',
+              DEFAULT_INTERACTION_CLASS
+            )}
             onClick={() => navigate('/')}
           >
             back
@@ -181,7 +185,10 @@ const Quiz = () => {
         </div>
         <div class="order-3 flex justify-end">
           <button
-            class={`text-lg lowercase text-slate-500 decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl ${DEFAULT_INTERACTION_CLASS}`}
+            class={twMerge(
+              'text-lg lowercase text-slate-500 decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl',
+              DEFAULT_INTERACTION_CLASS
+            )}
             onClick={() => alert('coming soon!')}
           >
             settings
@@ -217,11 +224,12 @@ const Quiz = () => {
             <For each={state.questions}>
               {(question, idx) => (
                 <li
-                  class={`question grid h-24 w-32 grid-flow-row justify-center gap-y-4 rounded-xl border-2 p-2 ${
+                  class={twMerge(
+                    'question grid h-24 w-32 grid-flow-row justify-center gap-y-4 rounded-xl border-2 p-2',
                     QUESTION_STATE_CLASSES[
                       getQuestionStateClass(question, idx())
                     ]
-                  }`}
+                  )}
                 >
                   <span class="flex items-end justify-center font-sans text-3xl font-bold leading-none">
                     {question.char}
@@ -253,7 +261,10 @@ const Quiz = () => {
             onKeyDown={handleKeyPress}
             placeholder="answer..."
             required
-            class={`w-32 appearance-none rounded-full border-2 border-slate-300 bg-slate-50 px-3 py-2 text-center lowercase shadow-lg shadow-slate-200 placeholder:text-slate-500 ${DEFAULT_INTERACTION_CLASS}`}
+            class={twMerge(
+              'w-32 appearance-none rounded-full border-2 border-slate-300 bg-slate-50 px-3 py-2 text-center lowercase shadow-lg shadow-slate-200 placeholder:text-slate-500',
+              DEFAULT_INTERACTION_CLASS
+            )}
             onInput={handleAnswerInput}
           />
         </form>

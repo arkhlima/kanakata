@@ -35,6 +35,7 @@
     "solid-start-vercel": "^0.2.26",
     "solid-transition-group": "^0.2.2",
     "solid-zustand": "^1.5.0",
+    "tailwind-merge": "^1.12.0",
     "undici": "^5.15.1",
     "wanakana": "^5.1.0",
     "zustand": "^4.3.7"

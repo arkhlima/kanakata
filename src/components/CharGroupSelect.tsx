@@ -1,4 +1,5 @@
 import gsap from 'gsap'
+import { twMerge } from 'tailwind-merge'
 
 import { For, createEffect, onCleanup } from 'solid-js'
 
@@ -149,11 +150,12 @@ const CharGroupSelect = (props: CharGroupProps) => {
             <For each={charGroup}>
               {(char) => (
                 <div
-                  class={`grid grid-flow-row justify-center gap-y-2 rounded-xl border-2 p-2 transition-all duration-75 ease-linear ${
+                  class={twMerge(
+                    'grid grid-flow-row justify-center gap-y-2 rounded-xl border-2 p-2 transition-all duration-75 ease-linear',
                     CHAR_STATE_CLASSES[
                       isCharSelected(groupIndex) ? 'active' : 'inactive'
                     ]
-                  }`}
+                  )}
                 >
                   {!!char && <Char char={char} />}
                 </div>

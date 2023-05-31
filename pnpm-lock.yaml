@@ -24,6 +24,7 @@ specifiers:
   solid-start-vercel: ^0.2.26
   solid-transition-group: ^0.2.2
   solid-zustand: ^1.5.0
+  tailwind-merge: ^1.12.0
   tailwindcss: ^3.2.4
   typescript: ^4.9.4
   undici: ^5.15.1
@@ -40,6 +41,7 @@ dependencies:
   solid-start-vercel: 0.2.26_sqz3tnbgiqyjstyl465zp6m6oq
   solid-transition-group: 0.2.2_solid-js@1.7.3
   solid-zustand: 1.5.0_3no3tv3gaj4jvkaijvnto63olm
+  tailwind-merge: 1.12.0
   undici: 5.22.0
   wanakana: 5.1.0
   zustand: 4.3.7
@@ -4436,6 +4438,10 @@ packages:
   /supports-preserve-symlinks-flag/1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  /tailwind-merge/1.12.0:
+    resolution: {integrity: sha512-Y17eDp7FtN1+JJ4OY0Bqv9OA41O+MS8c1Iyr3T6JFLnOgLg3EvcyMKZAnQ8AGyvB5Nxm3t9Xb5Mhe139m8QT/g==}
+    dev: false
 
   /tailwindcss/3.3.2:
     resolution: {integrity: sha512-9jPkMiIBXvPc2KywkraqsUfbfj+dHDb+JPWtSJa9MLFdrPyazI7q6WX2sUrm7R9eVR7qqv3Pas7EvQFzxKnI6w==}

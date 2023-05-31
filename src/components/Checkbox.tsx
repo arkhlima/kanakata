@@ -1,3 +1,5 @@
+import { twMerge } from 'tailwind-merge'
+
 import { JSX } from 'solid-js'
 
 import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
@@ -20,7 +22,7 @@ const Checkbox = (props: CheckboxProps): JSX.Element => {
       <input
         type="checkbox"
         checked={props.isChecked}
-        class={`cursor-pointer ${DEFAULT_INTERACTION_CLASS}`}
+        class={twMerge('cursor-pointer', DEFAULT_INTERACTION_CLASS)}
         onClick={() => props.onChange()}
       />
       <span
