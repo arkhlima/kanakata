@@ -35,6 +35,8 @@ interface State {
   selectedKatakanaDiagraphDiacritics: CharGroup
   selectedKatakanaLookAlike: CharGroup
 
+  resetState: boolean
+
   questions: Questions[]
   currentQuestion: number
 }
@@ -70,6 +72,8 @@ const initialState: State = {
     group.map(() => '')
   ),
 
+  resetState: false,
+
   questions: [],
   currentQuestion: 0,
 }
@@ -87,7 +91,10 @@ interface Actions {
     groupIndex: number
   ) => void
   toggleAllChars: (selectedChars: string, chars: CharGroup) => void
-  reset: () => void
+
+  setResetState: (value: boolean) => void
+  resetQuiz: () => void
+  resetAll: () => void
 }
 
 const useStore = create<State & Actions>((set, get) => ({
@@ -128,7 +135,7 @@ const useStore = create<State & Actions>((set, get) => ({
     })
   },
 
-  setAnswer: (value: string) => {
+  setAnswer: (value) => {
     set({
       questions: get().questions.map((question, index) =>
         index === get().currentQuestion
@@ -155,11 +162,7 @@ const useStore = create<State & Actions>((set, get) => ({
     })
   },
 
-  toggleChars: (
-    selectedChars: string,
-    chars: CharGroup,
-    groupIndex: number
-  ) => {
+  toggleChars: (selectedChars, chars, groupIndex) => {
     // TODO: fix type errors
     set({
       [selectedChars]: get()[selectedChars].map((group, index) =>
@@ -172,7 +175,7 @@ const useStore = create<State & Actions>((set, get) => ({
     })
   },
 
-  toggleAllChars: (selectedChars: string, chars: CharGroup) => {
+  toggleAllChars: (selectedChars, chars) => {
     // TODO: fix type errors
     set({
       [selectedChars]: get()
@@ -183,7 +186,15 @@ const useStore = create<State & Actions>((set, get) => ({
     })
   },
 
-  reset: () => {
+  setResetState: (value) => {
+    set({ resetState: value })
+  },
+
+  resetQuiz: () => {
+    set({ currentQuestion: 0 })
+  },
+
+  resetAll: () => {
     set({
       selectedScript: 'Hiragana',
 

@@ -43,11 +43,10 @@ export const DIAGRAPH_DIACRITICS: CharGroup = [
 
 export const HIRAGANA_LOOK_ALIKE: CharGroup = [
   ['こ', 'て', 'る', 'ろ', null],
+  ['は', 'ほ', 'よ', 'ま', null],
   ['き', 'さ', 'ち', null, null],
   ['ぬ', 'め', 'ゆ', null, null],
   ['ね', 'れ', 'わ', null, null],
-  ['は', 'ほ', null, null, null],
-  ['ま', 'よ', null, null, null],
   ['あ', 'お', null, null, null],
 ]
 

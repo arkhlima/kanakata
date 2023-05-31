@@ -22,11 +22,15 @@ import { toRomaji } from 'wanakana'
 import type { Questions } from '~/store/kanaStore'
 import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
 
-interface AnimatedCharProps {
+interface RomajiCharProps {
   children: string
 }
 
-const AnimatedChar = (props: AnimatedCharProps) => {
+interface KanaCharProps {
+  char: string
+}
+
+const RomajiChar = (props: RomajiCharProps) => {
   let char: HTMLSpanElement
   let animation: gsap.core.Tween
 
@@ -46,9 +50,51 @@ const AnimatedChar = (props: AnimatedCharProps) => {
   return <span ref={(el) => (char = el)}>{props.children}</span>
 }
 
+const KanaChar = (props: KanaCharProps) => {
+  const state = useStore()
+  const { setQuestions, setResetState } = state
+
+  let kanaText: HTMLSpanElement
+  let animation: gsap.core.Timeline
+
+  createEffect(() => {
+    // scale-in & scale-out chars animation
+    if (state.resetState) {
+      animation = gsap
+        .timeline()
+        .to(kanaText, {
+          scale: 0,
+          duration: 0.2,
+          ease: 'expo.in',
+          onComplete: () => {
+            setQuestions()
+          },
+        })
+        .to(kanaText, {
+          scale: 1,
+          duration: 0.2,
+          ease: 'expo.out',
+          onComplete: () => {
+            setResetState(false)
+          },
+        })
+    }
+  })
+
+  onCleanup(() => {
+    if (animation) animation.kill()
+  })
+
+  return (
+    <span class="flex items-end justify-center font-sans text-3xl font-bold leading-none">
+      <span ref={(el) => (kanaText = el)}>{props.char}</span>
+    </span>
+  )
+}
+
 const Quiz = () => {
   const state = useStore()
-  const { setAnswer } = state
+  const { setAnswer, resetQuiz, setResetState } = state
 
   const navigate = useNavigate()
   let answerInput: HTMLInputElement
@@ -75,7 +121,7 @@ const Quiz = () => {
   createEffect(() => {
     if (state.questions.length >= state.currentQuestion) {
       const calculatedTranslate = calculateTranslateValue(state.currentQuestion)
-
+      // slide animation
       animation = gsap
         .timeline()
         .to(
@@ -119,6 +165,10 @@ const Quiz = () => {
         )
       answerInput.focus()
       answerInput.value = ''
+    }
+
+    if (state.resetState) {
+      setCurrentAnswer(DEFAULT_ANSWER)
     }
   })
 
@@ -231,13 +281,11 @@ const Quiz = () => {
                     ]
                   )}
                 >
-                  <span class="flex items-end justify-center font-sans text-3xl font-bold leading-none">
-                    {question.char}
-                  </span>
+                  <KanaChar char={question.char} />
                   <span class="flex justify-center text-xl lowercase leading-none text-slate-500">
                     {state.currentQuestion === idx() && !question.answer ? (
                       <For each={currentAnswer()}>
-                        {(char) => <AnimatedChar>{char}</AnimatedChar>}
+                        {(char) => <RomajiChar>{char}</RomajiChar>}
                       </For>
                     ) : (
                       question.answer || '...'
@@ -249,24 +297,85 @@ const Quiz = () => {
           </ul>
         </div>
 
-        <form class="" onSubmit={handleSubmit}>
+        <form class="flex w-full items-center gap-x-4" onSubmit={handleSubmit}>
+          <div class="flex min-w-0 shrink-[1] grow-[1] basis-0 justify-end">
+            <button
+              type="button"
+              aria-labelledby="replay-button"
+              class={twMerge(
+                'w-12 h-12 flex items-center justify-center rounded-full bg-slate-500 text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 hover:bg-slate-600 active:bg-slate-700 active:scale-90',
+                DEFAULT_INTERACTION_CLASS
+              )}
+              onClick={() => {
+                resetQuiz()
+                setResetState(true)
+              }}
+            >
+              <span id="replay-button" hidden>
+                replay
+              </span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="3"
+                stroke="currentColor"
+                aria-hidden="true"
+                class="h-5 w-5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+                />
+              </svg>
+            </button>
+          </div>
           <input
             ref={(el) => (answerInput = el)}
             id="answer"
             type="text"
             maxlength="3"
             minlength="1"
-            tabindex="2"
             value={answerInputValue()}
             onKeyDown={handleKeyPress}
             placeholder="answer..."
             required
             class={twMerge(
-              'w-32 appearance-none rounded-full border-2 border-slate-300 bg-slate-50 px-3 py-2 text-center lowercase shadow-lg shadow-slate-200 placeholder:text-slate-500',
+              'w-32 h-12 appearance-none rounded-full border-2 border-slate-300 bg-slate-50 px-3 py-2 text-center lowercase shadow-md shadow-slate-200 placeholder:text-slate-500',
               DEFAULT_INTERACTION_CLASS
             )}
             onInput={handleAnswerInput}
           />
+          <div class="min-w-0 shrink-[1] grow-[1] basis-0">
+            <button
+              type="submit"
+              aria-labelledby="submit-button"
+              class={twMerge(
+                'w-12 h-12 flex items-center justify-center rounded-full bg-slate-500 text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 hover:bg-slate-600 active:bg-slate-700 active:scale-90',
+                DEFAULT_INTERACTION_CLASS
+              )}
+            >
+              <span id="submit-button" hidden>
+                check
+              </span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="4"
+                stroke="currentColor"
+                aria-hidden="true"
+                class="h-5 w-5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M4.5 12.75l6 6 9-13.5"
+                />
+              </svg>
+            </button>
+          </div>
         </form>
       </section>
 

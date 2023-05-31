@@ -25,12 +25,12 @@ import {
 
 const App = () => {
   const state = useStore()
-  const { toggleAllChars, toggleChars, setQuestions, reset } = state
+  const { toggleAllChars, toggleChars, setQuestions, resetAll } = state
 
   const navigate = useNavigate()
 
   onMount(() => {
-    reset()
+    resetAll()
   })
 
   return (
@@ -105,7 +105,7 @@ const App = () => {
             <div class="relative mx-auto flex h-full w-full max-w-5xl justify-end px-4 md:px-8">
               <button
                 class={twMerge(
-                  'w-full rounded-xl bg-slate-700 px-4 py-2 text-lg text-slate-50 decoration-slate-50 decoration-wavy shadow-lg shadow-slate-200 hover:bg-slate-600 focus:underline',
+                  'w-full h-12 flex justify-center items-center rounded-xl bg-slate-700 text-lg text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 hover:bg-slate-600 active:bg-slate-500 focus:underline',
                   DEFAULT_INTERACTION_CLASS
                 )}
                 onClick={() => {

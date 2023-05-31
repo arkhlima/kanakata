@@ -33,7 +33,7 @@ const Char = (props: CharProps) => {
   let animation: gsap.core.Timeline
 
   createEffect(() => {
-    // scale-in & scale-out animation for chars by detecting selectedScript state
+    // scale-in & scale-out chars animation by detecting selectedScript state
     if (state.selectedScript) {
       animation = gsap
         .timeline()
