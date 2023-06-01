@@ -26,10 +26,6 @@ interface RomajiCharProps {
   children: string
 }
 
-interface KanaCharProps {
-  char: string
-}
-
 const RomajiChar = (props: RomajiCharProps) => {
   let char: HTMLSpanElement
   let animation: gsap.core.Tween
@@ -50,51 +46,9 @@ const RomajiChar = (props: RomajiCharProps) => {
   return <span ref={(el) => (char = el)}>{props.children}</span>
 }
 
-const KanaChar = (props: KanaCharProps) => {
-  const state = useStore()
-  const { setQuestions, setResetState } = state
-
-  let kanaText: HTMLSpanElement
-  let animation: gsap.core.Timeline
-
-  createEffect(() => {
-    // scale-in & scale-out chars animation
-    if (state.resetState) {
-      animation = gsap
-        .timeline()
-        .to(kanaText, {
-          scale: 0,
-          duration: 0.2,
-          ease: 'expo.in',
-          onComplete: () => {
-            setQuestions()
-          },
-        })
-        .to(kanaText, {
-          scale: 1,
-          duration: 0.2,
-          ease: 'expo.out',
-          onComplete: () => {
-            setResetState(false)
-          },
-        })
-    }
-  })
-
-  onCleanup(() => {
-    if (animation) animation.kill()
-  })
-
-  return (
-    <span class="flex items-end justify-center font-sans text-3xl font-bold leading-none">
-      <span ref={(el) => (kanaText = el)}>{props.char}</span>
-    </span>
-  )
-}
-
 const Quiz = () => {
   const state = useStore()
-  const { setAnswer, resetQuiz, setResetState } = state
+  const { setQuestions, setAnswer, resetQuiz, setResetState } = state
 
   const navigate = useNavigate()
   let answerInput: HTMLInputElement
@@ -119,7 +73,8 @@ const Quiz = () => {
   })
 
   createEffect(() => {
-    if (state.questions.length >= state.currentQuestion) {
+    // quiz animation
+    if (!state.resetState && state.questions.length >= state.currentQuestion) {
       const calculatedTranslate = calculateTranslateValue(state.currentQuestion)
       // slide animation
       animation = gsap
@@ -169,6 +124,31 @@ const Quiz = () => {
 
     if (state.resetState) {
       setCurrentAnswer(DEFAULT_ANSWER)
+    }
+  })
+
+  createEffect(() => {
+    // scale-in & scale-out chars animation
+    if (state.resetState) {
+      animation = gsap
+        .timeline()
+        .to('.question-kana', {
+          opacity: 0,
+          duration: 0.2,
+          ease: 'expo.in',
+          onComplete: () => {
+            resetQuiz()
+            setQuestions()
+          },
+        })
+        .to('.question-kana', {
+          opacity: 1,
+          duration: 0.2,
+          ease: 'expo.out',
+          onComplete: () => {
+            setResetState(false)
+          },
+        })
     }
   })
 
@@ -281,7 +261,9 @@ const Quiz = () => {
                     ]
                   )}
                 >
-                  <KanaChar char={question.char} />
+                  <span class="question-kana flex items-end justify-center font-sans text-3xl font-bold leading-none">
+                    {question.char}
+                  </span>
                   <span class="flex justify-center text-xl lowercase leading-none text-slate-500">
                     {state.currentQuestion === idx() && !question.answer ? (
                       <For each={currentAnswer()}>
@@ -306,10 +288,7 @@ const Quiz = () => {
                 'w-12 h-12 flex items-center justify-center rounded-full bg-slate-500 text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 hover:bg-slate-600 active:bg-slate-700 active:scale-90',
                 DEFAULT_INTERACTION_CLASS
               )}
-              onClick={() => {
-                resetQuiz()
-                setResetState(true)
-              }}
+              onClick={() => state.currentQuestion && setResetState(true)}
             >
               <span id="reset-button" hidden>
                 reset
