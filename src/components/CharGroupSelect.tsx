@@ -151,7 +151,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
               {(char) => (
                 <div
                   class={twMerge(
-                    'grid grid-flow-row justify-center gap-y-2 rounded-xl border-2 p-2 transition-all duration-75 ease-linear',
+                    'grid grid-flow-row justify-center gap-y-2 rounded-xl border-2 p-2 transition-all duration-100 ease-linear',
                     CHAR_STATE_CLASSES[
                       isCharSelected(groupIndex) ? 'active' : 'inactive'
                     ]

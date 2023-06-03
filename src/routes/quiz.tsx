@@ -88,7 +88,7 @@ const Quiz = () => {
           {
             scale: 0.8,
             duration: 0.2,
-            ease: 'expo.out',
+            ease: 'expo.in',
           }
         )
         .to(
@@ -114,8 +114,8 @@ const Quiz = () => {
               }
             : {
                 x: `${calculatedTranslate}rem`,
-                duration: 0.2,
-                ease: 'expo.out',
+                duration: 0.1,
+                ease: 'expo.in.out',
               }
         )
       answerInput.focus()
@@ -132,10 +132,15 @@ const Quiz = () => {
     if (state.resetState) {
       animation = gsap
         .timeline()
-        .to('.question-kana', {
-          opacity: 0,
+        .to('.reset-icon', {
+          rotate: '75deg',
           duration: 0.2,
           ease: 'expo.in',
+        })
+        .to('.question-kana', {
+          opacity: 0,
+          duration: 0.1,
+          ease: 'expo.in.out',
           onComplete: () => {
             resetQuiz()
             setQuestions()
@@ -143,11 +148,17 @@ const Quiz = () => {
         })
         .to('.question-kana', {
           opacity: 1,
-          duration: 0.2,
-          ease: 'expo.out',
+          duration: 0.1,
+          ease: 'expo.in.out',
           onComplete: () => {
             setResetState(false)
           },
+        })
+        .to('.reset-icon', {
+          rotate: '0deg',
+          delay: 0.4,
+          duration: 0.2,
+          ease: 'expo.out',
         })
     }
   })
@@ -261,7 +272,12 @@ const Quiz = () => {
                     ]
                   )}
                 >
-                  <span class="question-kana flex items-end justify-center font-sans text-3xl font-bold leading-none">
+                  <span
+                    class={twMerge(
+                      'question-kana',
+                      'flex items-end justify-center font-sans text-3xl font-bold leading-none'
+                    )}
+                  >
                     {question.char}
                   </span>
                   <span class="flex justify-center text-xl lowercase leading-none text-slate-500">
@@ -285,9 +301,10 @@ const Quiz = () => {
               type="button"
               aria-labelledby="reset-button"
               class={twMerge(
-                'w-12 h-12 flex items-center justify-center rounded-full bg-slate-500 text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 hover:bg-slate-600 active:bg-slate-700 active:scale-90',
+                'w-12 h-12 flex items-center justify-center rounded-full bg-slate-500 text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 hover:bg-slate-600 [&:not(:disabled)]:active:bg-slate-700 [&:not(:disabled)]:active:scale-90 disabled:bg-slate-300',
                 DEFAULT_INTERACTION_CLASS
               )}
+              disabled={!state.currentQuestion}
               onClick={() => state.currentQuestion && setResetState(true)}
             >
               <span id="reset-button" hidden>
@@ -300,7 +317,7 @@ const Quiz = () => {
                 stroke-width="3"
                 stroke="currentColor"
                 aria-hidden="true"
-                class="h-5 w-5"
+                class={twMerge('reset-icon', 'h-5 w-5')}
               >
                 <path
                   stroke-linecap="round"
@@ -331,7 +348,7 @@ const Quiz = () => {
               type="submit"
               aria-labelledby="submit-button"
               class={twMerge(
-                'w-12 h-12 flex items-center justify-center rounded-full bg-slate-500 text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 hover:bg-slate-600 active:bg-slate-700 active:scale-90',
+                'w-12 h-12 flex items-center justify-center rounded-full bg-slate-500 text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 [&:not(:disabled)]:active:bg-slate-700 [&:not(:disabled)]:active:scale-90 disabled:bg-slate-300',
                 DEFAULT_INTERACTION_CLASS
               )}
             >
@@ -342,7 +359,7 @@ const Quiz = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="4"
+                stroke-width="3"
                 stroke="currentColor"
                 aria-hidden="true"
                 class="h-5 w-5"
@@ -350,7 +367,7 @@ const Quiz = () => {
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  d="M4.5 12.75l6 6 9-13.5"
+                  d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
                 />
               </svg>
             </button>
