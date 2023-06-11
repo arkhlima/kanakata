@@ -1,6 +1,6 @@
 import { twMerge } from 'tailwind-merge'
 
-import { JSX } from 'solid-js'
+import type { JSX } from 'solid-js'
 
 import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
 

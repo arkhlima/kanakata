@@ -1,6 +1,7 @@
 import { twMerge } from 'tailwind-merge'
 
-import { JSX, For, Show } from 'solid-js'
+import { For, Show } from 'solid-js'
+import type { JSX } from 'solid-js'
 import { Transition } from 'solid-transition-group'
 
 import useStore from '~/store/kanaStore'

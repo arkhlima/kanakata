@@ -114,7 +114,7 @@ const Quiz = () => {
               }
             : {
                 x: `${calculatedTranslate}rem`,
-                duration: 0.1,
+                duration: 0.2,
                 ease: 'expo.in.out',
               }
         )
@@ -251,48 +251,54 @@ const Quiz = () => {
       </Transition>
 
       <section class="col-span-12 flex flex-col items-center gap-y-8">
-        <div
-          class="relative flex w-full justify-center overflow-x-hidden"
-          style={{
-            '-webkit-mask-image':
-              'linear-gradient(to right, #0000, #000, #000, #0000)',
-          }}
-        >
-          <ul
-            ref={(el) => (questionList = el)}
-            class="relative grid w-32 grid-flow-col gap-x-2"
+        <div class="w-full">
+          <div class="mb-2 flex h-6 w-full items-center justify-center rounded-full border-2 border-slate-200">
+            <small class="text-xs text-slate-500">13 of 25</small>
+          </div>
+
+          <div
+            class="relative flex w-full justify-center overflow-x-hidden"
+            style={{
+              '-webkit-mask-image':
+                'linear-gradient(to right, #0000, #000, #000, #0000)',
+            }}
           >
-            <For each={state.questions}>
-              {(question, idx) => (
-                <li
-                  class={twMerge(
-                    'question grid h-24 w-32 grid-flow-row justify-center gap-y-4 rounded-xl border-2 p-2',
-                    QUESTION_STATE_CLASSES[
-                      getQuestionStateClass(question, idx())
-                    ]
-                  )}
-                >
-                  <span
+            <ul
+              ref={(el) => (questionList = el)}
+              class="relative grid w-32 grid-flow-col gap-x-2"
+            >
+              <For each={state.questions}>
+                {(question, idx) => (
+                  <li
                     class={twMerge(
-                      'question-kana',
-                      'flex items-end justify-center font-sans text-3xl font-bold leading-none'
+                      'question grid h-24 w-32 grid-flow-row justify-center gap-y-4 rounded-xl border-2 p-2',
+                      QUESTION_STATE_CLASSES[
+                        getQuestionStateClass(question, idx())
+                      ]
                     )}
                   >
-                    {question.char}
-                  </span>
-                  <span class="flex justify-center text-xl lowercase leading-none text-slate-500">
-                    {state.currentQuestion === idx() && !question.answer ? (
-                      <For each={currentAnswer()}>
-                        {(char) => <RomajiChar>{char}</RomajiChar>}
-                      </For>
-                    ) : (
-                      question.answer || '...'
-                    )}
-                  </span>
-                </li>
-              )}
-            </For>
-          </ul>
+                    <span
+                      class={twMerge(
+                        'question-kana',
+                        'flex items-end justify-center font-sans text-3xl font-bold leading-none'
+                      )}
+                    >
+                      {question.char}
+                    </span>
+                    <span class="flex justify-center text-xl lowercase leading-none text-slate-500">
+                      {state.currentQuestion === idx() && !question.answer ? (
+                        <For each={currentAnswer()}>
+                          {(char) => <RomajiChar>{char}</RomajiChar>}
+                        </For>
+                      ) : (
+                        question.answer || '...'
+                      )}
+                    </span>
+                  </li>
+                )}
+              </For>
+            </ul>
+          </div>
         </div>
 
         <form class="flex w-full items-center gap-x-4" onSubmit={handleSubmit}>
