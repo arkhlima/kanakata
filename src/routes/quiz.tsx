@@ -252,9 +252,9 @@ const Quiz = () => {
 
       <section class="col-span-12 flex flex-col items-center gap-y-8">
         <div class="w-full">
-          <div class="mb-2 flex h-6 w-full items-center justify-center rounded-full border-2 border-slate-200">
+          {/* <div class="mb-2 flex h-6 w-full items-center justify-center rounded-full border-2 border-slate-200">
             <small class="text-xs text-slate-500">13 of 25</small>
-          </div>
+          </div> */}
 
           <div
             class="relative flex w-full justify-center overflow-x-hidden"
