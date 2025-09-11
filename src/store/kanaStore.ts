@@ -1,138 +1,23 @@
 import create from 'solid-zustand'
-import { toKatakana } from 'wanakana'
+import type { CharGroup } from '~/constants/kana'
 
+import type { StateWithActions } from './types'
+import { initialState } from './initialState'
 import {
-  MONOGRAPHS,
-  MONOGRAPH_DIACRITICS,
-  DIAGRAPHS,
-  DIAGRAPH_DIACRITICS,
-  KATAKANA_LOOK_ALIKE,
-  HIRAGANA_LOOK_ALIKE,
-} from '~/constants/kana'
-import type { CharGroup, Script } from '~/constants/kana'
+  generateQuestions,
+  calculateTotal,
+  createResetState
+} from './utils'
 
-export interface Questions {
-  char: string
-  answer: string
-}
+export type { Questions } from './types'
+export { getSelectedCharGroup } from './types'
 
-interface State {
-  scripts: Script[]
-
-  selectedScript: Script
-
-  totalHiragana: number
-  selectedHiraganaMonographs: CharGroup
-  selectedHiraganaMonographDiacritics: CharGroup
-  selectedHiraganaDiagraphs: CharGroup
-  selectedHiraganaDiagraphDiacritics: CharGroup
-  selectedHiraganaLookAlike: CharGroup
-
-  totalKatakana: number
-  selectedKatakanaMonographs: CharGroup
-  selectedKatakanaMonographDiacritics: CharGroup
-  selectedKatakanaDiagraphs: CharGroup
-  selectedKatakanaDiagraphDiacritics: CharGroup
-  selectedKatakanaLookAlike: CharGroup
-
-  resetState: boolean
-
-  questions: Questions[]
-  currentQuestion: number
-}
-
-const initialState: State = {
-  scripts: ['Hiragana', 'Katakana'],
-
-  selectedScript: 'Hiragana',
-
-  totalHiragana: 0,
-  selectedHiraganaMonographs: MONOGRAPHS.map((group) => group.map(() => '')),
-  selectedHiraganaMonographDiacritics: MONOGRAPH_DIACRITICS.map((group) =>
-    group.map(() => '')
-  ),
-  selectedHiraganaDiagraphs: DIAGRAPHS.map((group) => group.map(() => '')),
-  selectedHiraganaDiagraphDiacritics: DIAGRAPH_DIACRITICS.map((group) =>
-    group.map(() => '')
-  ),
-  selectedHiraganaLookAlike: HIRAGANA_LOOK_ALIKE.map((group) =>
-    group.map(() => '')
-  ),
-
-  totalKatakana: 0,
-  selectedKatakanaMonographs: MONOGRAPHS.map((group) => group.map(() => '')),
-  selectedKatakanaMonographDiacritics: MONOGRAPH_DIACRITICS.map((group) =>
-    group.map(() => '')
-  ),
-  selectedKatakanaDiagraphs: DIAGRAPHS.map((group) => group.map(() => '')),
-  selectedKatakanaDiagraphDiacritics: DIAGRAPH_DIACRITICS.map((group) =>
-    group.map(() => '')
-  ),
-  selectedKatakanaLookAlike: KATAKANA_LOOK_ALIKE.map((group) =>
-    group.map(() => '')
-  ),
-
-  resetState: false,
-
-  questions: [],
-  currentQuestion: 0,
-}
-
-interface Actions {
-  setQuestions: () => void
-  setAnswer: (value: string) => void
-
-  setSelectedScript: (value: Script) => void
-  setTotalSelected: () => void
-
-  toggleChars: (
-    selectedChars: string,
-    chars: CharGroup,
-    groupIndex: number
-  ) => void
-  toggleAllChars: (selectedChars: string, chars: CharGroup) => void
-
-  setResetState: (value: boolean) => void
-  resetQuiz: () => void
-  resetAll: () => void
-}
-
-const useStore = create<State & Actions>((set, get) => ({
+const useStore = create<StateWithActions>((set, get) => ({
   ...initialState,
 
   setQuestions: () => {
-    const filteredSelectedHiragana = [
-      ...get().selectedHiraganaMonographs,
-      ...get().selectedHiraganaMonographDiacritics,
-      ...get().selectedHiraganaDiagraphs,
-      ...get().selectedHiraganaDiagraphDiacritics,
-      ...get().selectedHiraganaLookAlike,
-    ]
-      .flat()
-      .filter((char): char is string => !!char)
-
-    const filteredSelectedKatakana = [
-      ...get().selectedKatakanaMonographs,
-      ...get().selectedKatakanaMonographDiacritics,
-      ...get().selectedKatakanaDiagraphs,
-      ...get().selectedKatakanaDiagraphDiacritics,
-      ...get().selectedKatakanaLookAlike,
-    ]
-      .flat()
-      .filter((char): char is string => !!char)
-      .map((char) => char && toKatakana(char))
-
-    const composedQuestions = shuffleQuestions([
-      ...shuffleQuestions(filteredSelectedHiragana),
-      ...shuffleQuestions(filteredSelectedKatakana),
-    ]).map((char) => ({
-      char,
-      answer: '',
-    }))
-
-    set({
-      questions: composedQuestions,
-    })
+    const questions = generateQuestions(get())
+    set({ questions })
   },
 
   setAnswer: (value) => {
@@ -149,26 +34,22 @@ const useStore = create<State & Actions>((set, get) => ({
   setSelectedScript: (value) => set({ selectedScript: value }),
 
   setTotalSelected: () => {
+    const state = get()
+    const total = calculateTotal(state, state.selectedScript)
     set({
-      [`total${get().selectedScript}`]: [
-        ...get()[`selected${get().selectedScript}Monographs`],
-        ...get()[`selected${get().selectedScript}MonographDiacritics`],
-        ...get()[`selected${get().selectedScript}Diagraphs`],
-        ...get()[`selected${get().selectedScript}DiagraphDiacritics`],
-        ...(get().selectedScript === 'Hiragana'
-          ? get().selectedHiraganaLookAlike
-          : get().selectedKatakanaLookAlike),
-      ].filter((group) => group.some((char) => char !== '')).length,
+      [`total${state.selectedScript}`]: total,
     })
   },
 
   toggleChars: (selectedChars, chars, groupIndex) => {
-    // TODO: fix type errors
+    const state = get()
+    const currentSelection = state[selectedChars] as CharGroup
+
     set({
-      [selectedChars]: get()[selectedChars].map((group, index) =>
+      [selectedChars]: currentSelection.map((group, index) =>
         index === groupIndex
           ? group.map((groupChar, groupCharIndex) =>
-              groupChar === '' ? chars[index][groupCharIndex] : ''
+              groupChar === '' ? chars[groupIndex][groupCharIndex] : ''
             )
           : group
       ),
@@ -176,11 +57,18 @@ const useStore = create<State & Actions>((set, get) => ({
   },
 
   toggleAllChars: (selectedChars, chars) => {
-    // TODO: fix type errors
+    const state = get()
+    const currentSelection = state[selectedChars] as CharGroup
+
+    const allSelected = chars.every((originalGroup, groupIndex) =>
+      originalGroup.every((char, charIndex) => {
+        if (char === null) return true
+        return currentSelection[groupIndex][charIndex] !== ''
+      })
+    )
+
     set({
-      [selectedChars]: get()
-        [selectedChars].flat()
-        .every((char) => char !== '')
+      [selectedChars]: allSelected
         ? chars.map((group) => group.map(() => ''))
         : chars.map((group) => group.slice()),
     })
@@ -195,51 +83,8 @@ const useStore = create<State & Actions>((set, get) => ({
   },
 
   resetAll: () => {
-    set({
-      selectedScript: 'Hiragana',
-
-      totalHiragana: 0,
-      selectedHiraganaMonographs: MONOGRAPHS.map((group) =>
-        group.map(() => '')
-      ),
-      selectedHiraganaMonographDiacritics: MONOGRAPH_DIACRITICS.map((group) =>
-        group.map(() => '')
-      ),
-      selectedHiraganaDiagraphs: DIAGRAPHS.map((group) => group.map(() => '')),
-      selectedHiraganaDiagraphDiacritics: DIAGRAPH_DIACRITICS.map((group) =>
-        group.map(() => '')
-      ),
-      selectedHiraganaLookAlike: HIRAGANA_LOOK_ALIKE.map((group) =>
-        group.map(() => '')
-      ),
-
-      totalKatakana: 0,
-      selectedKatakanaMonographs: MONOGRAPHS.map((group) =>
-        group.map(() => '')
-      ),
-      selectedKatakanaMonographDiacritics: MONOGRAPH_DIACRITICS.map((group) =>
-        group.map(() => '')
-      ),
-      selectedKatakanaDiagraphs: DIAGRAPHS.map((group) => group.map(() => '')),
-      selectedKatakanaDiagraphDiacritics: DIAGRAPH_DIACRITICS.map((group) =>
-        group.map(() => '')
-      ),
-      selectedKatakanaLookAlike: KATAKANA_LOOK_ALIKE.map((group) =>
-        group.map(() => '')
-      ),
-
-      questions: [],
-      currentQuestion: 0,
-    })
+    set(createResetState())
   },
 }))
-
-const shuffleQuestions = (questions: string[]): string[] => {
-  for (let i = questions.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[questions[i], questions[j]] = [questions[j], questions[i]]
-  }
-  return questions
-}
 
 export default useStore

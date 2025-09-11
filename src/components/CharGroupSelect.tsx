@@ -3,7 +3,7 @@ import { twMerge } from 'tailwind-merge'
 
 import { For, createEffect, onCleanup } from 'solid-js'
 
-import useStore from '~/store/kanaStore'
+import useStore, { getSelectedCharGroup } from '~/store/kanaStore'
 
 import Checkbox from '~/components/Checkbox'
 
@@ -84,20 +84,31 @@ const CharGroupSelect = (props: CharGroupProps) => {
     inactive: 'border-slate-300 bg-slate-50',
   }
 
-  const isNotEmptyAndDefined = (char: string): boolean => {
-    return char !== '' && char !== undefined
+  const isNotEmptyAndDefined = (char: string | null): boolean => {
+    return char !== '' && char !== undefined && char !== null
   }
 
   const isCharSelected = (groupIndex: number): boolean => {
-    // TODO: fix type errors
-    return state[props.selectedChars][groupIndex].every(isNotEmptyAndDefined)
+    const selectedCharGroup = getSelectedCharGroup(state, props.selectedChars)
+    const originalGroup = props.chars[groupIndex]
+
+    // check if all non-null positions are selected
+    return originalGroup.every((char, index) => {
+      if (char === null) return true // ignore null positions
+      return isNotEmptyAndDefined(selectedCharGroup[groupIndex][index])
+    })
   }
 
   const isCharGroupSelected = (): boolean => {
-    // TODO: fix type errors
-    return state[props.selectedChars].every((group) =>
-      group.every(isNotEmptyAndDefined)
-    )
+    const selectedCharGroup = getSelectedCharGroup(state, props.selectedChars)
+
+    // check if all groups with non-null chars are selected
+    return props.chars.every((originalGroup, groupIndex) => {
+      return originalGroup.every((char, charIndex) => {
+        if (char === null) return true // ignore null positions
+        return isNotEmptyAndDefined(selectedCharGroup[groupIndex][charIndex])
+      })
+    })
   }
 
   return (
@@ -111,7 +122,6 @@ const CharGroupSelect = (props: CharGroupProps) => {
         {/* select all char group */}
         <Checkbox
           label="select all"
-          // TODO: fix type errors
           isChecked={isCharGroupSelected()}
           onChange={() => {
             props.toggleAllChars(props.selectedChars, props.chars)
