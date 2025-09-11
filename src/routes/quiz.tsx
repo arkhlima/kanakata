@@ -30,12 +30,17 @@ const RomajiChar = (props: RomajiCharProps) => {
   let char: HTMLSpanElement
   let animation: gsap.core.Tween
 
+  const ROMAJI_ANIMATION = {
+    DURATION: 0.2,
+    EASE: 'expo.in.out',
+  } as const
+
   onMount(() => {
     // individual char animation
     animation = gsap.fromTo(
       char,
       { opacity: 0, scale: 0 },
-      { opacity: 1, scale: 1, ease: 'expo.in.out', duration: 0.2 }
+      { opacity: 1, scale: 1, ease: ROMAJI_ANIMATION.EASE, duration: ROMAJI_ANIMATION.DURATION }
     )
   })
 
@@ -53,7 +58,8 @@ const Quiz = () => {
   const navigate = useNavigate()
   let answerInput: HTMLInputElement
   let questionList: HTMLUListElement
-  let animation: gsap.core.Timeline
+  let questionAnimation: gsap.core.Timeline
+  let resetAnimation: gsap.core.Timeline
 
   const DEFAULT_ANSWER: string[] = ['.', '.', '.']
   const QUESTION_STATE_CLASSES: Record<string, string> = {
@@ -62,6 +68,21 @@ const Quiz = () => {
     correct: 'border-emerald-300 bg-emerald-50',
     incorrect: 'border-pink-300 bg-pink-50',
   }
+
+  const ANIMATION = {
+    DURATION: {
+      SCALE: 0.2,
+      SLIDE: 0.2,
+      FADE: 0.1,
+      RESET_DELAY: 0.4,
+    },
+    EASING: {
+      EXPO_IN: 'expo.in',
+      EXPO_OUT: 'expo.out',
+      EXPO_IN_OUT: 'expo.in.out',
+    },
+    RESET_ROTATION: '75deg',
+  } as const
 
   const [currentAnswer, setCurrentAnswer] =
     createSignal<string[]>(DEFAULT_ANSWER)
@@ -75,32 +96,31 @@ const Quiz = () => {
   createEffect(() => {
     // quiz animation
     if (!state.resetState && state.questions.length >= state.currentQuestion) {
+      // cleanup previous animation
+      if (questionAnimation) questionAnimation.kill()
+
       const calculatedTranslate = calculateTranslateValue(state.currentQuestion)
+      const currentQuestionIndex = state.currentQuestion === 0
+        ? state.currentQuestion + 1
+        : state.currentQuestion
+
       // slide animation
-      animation = gsap
+      questionAnimation = gsap
         .timeline()
         .to(
-          `.question:nth-child(${
-            state.currentQuestion === 0
-              ? state.currentQuestion + 1
-              : state.currentQuestion
-          })`,
+          `.question:nth-child(${currentQuestionIndex})`,
           {
             scale: 0.8,
-            duration: 0.2,
-            ease: 'expo.in',
+            duration: ANIMATION.DURATION.SCALE,
+            ease: ANIMATION.EASING.EXPO_IN,
           }
         )
         .to(
-          `.question:nth-child(${
-            state.currentQuestion === 0
-              ? state.currentQuestion + 1
-              : state.currentQuestion
-          })`,
+          `.question:nth-child(${currentQuestionIndex})`,
           {
             scale: 1,
-            duration: 0.2,
-            ease: 'expo.out',
+            duration: ANIMATION.DURATION.SCALE,
+            ease: ANIMATION.EASING.EXPO_OUT,
           }
         )
         .to(
@@ -114,8 +134,8 @@ const Quiz = () => {
               }
             : {
                 x: `${calculatedTranslate}rem`,
-                duration: 0.2,
-                ease: 'expo.in.out',
+                duration: ANIMATION.DURATION.SLIDE,
+                ease: ANIMATION.EASING.EXPO_IN_OUT,
               }
         )
       answerInput.focus()
@@ -130,17 +150,20 @@ const Quiz = () => {
   createEffect(() => {
     // scale-in & scale-out chars animation
     if (state.resetState) {
-      animation = gsap
+      // cleanup previous reset animation
+      if (resetAnimation) resetAnimation.kill()
+
+      resetAnimation = gsap
         .timeline()
         .to('.reset-icon', {
-          rotate: '75deg',
-          duration: 0.2,
-          ease: 'expo.in',
+          rotate: ANIMATION.RESET_ROTATION,
+          duration: ANIMATION.DURATION.SCALE,
+          ease: ANIMATION.EASING.EXPO_IN,
         })
         .to('.question-kana', {
           opacity: 0,
-          duration: 0.1,
-          ease: 'expo.in.out',
+          duration: ANIMATION.DURATION.FADE,
+          ease: ANIMATION.EASING.EXPO_IN_OUT,
           onComplete: () => {
             resetQuiz()
             setQuestions()
@@ -148,23 +171,24 @@ const Quiz = () => {
         })
         .to('.question-kana', {
           opacity: 1,
-          duration: 0.1,
-          ease: 'expo.in.out',
+          duration: ANIMATION.DURATION.FADE,
+          ease: ANIMATION.EASING.EXPO_IN_OUT,
           onComplete: () => {
             setResetState(false)
           },
         })
         .to('.reset-icon', {
           rotate: '0deg',
-          delay: 0.4,
-          duration: 0.2,
-          ease: 'expo.out',
+          delay: ANIMATION.DURATION.RESET_DELAY,
+          duration: ANIMATION.DURATION.SCALE,
+          ease: ANIMATION.EASING.EXPO_OUT,
         })
     }
   })
 
   onCleanup(() => {
-    if (animation) animation.kill()
+    if (questionAnimation) questionAnimation.kill()
+    if (resetAnimation) resetAnimation.kill()
   })
 
   const calculateTranslateValue = (question: number): number => {
@@ -252,9 +276,9 @@ const Quiz = () => {
 
       <section class="col-span-12 flex flex-col items-center gap-y-8">
         <div class="w-full">
-          {/* <div class="mb-2 flex h-6 w-full items-center justify-center rounded-full border-2 border-slate-200">
+          <div class="mb-4 flex h-6 w-full items-center justify-center rounded-full border-2 border-slate-200">
             <small class="text-xs text-slate-500">13 of 25</small>
-          </div> */}
+          </div>
 
           <div
             class="relative flex w-full justify-center overflow-x-hidden"

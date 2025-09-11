@@ -32,15 +32,26 @@ const Char = (props: CharProps) => {
   let kanaText: HTMLSpanElement
   let animation: gsap.core.Timeline
 
+  const CHAR_ANIMATION = {
+    DURATION: 0.2,
+    EASING: {
+      EXPO_IN: 'expo.in',
+      EXPO_OUT: 'expo.out',
+    },
+  } as const
+
   createEffect(() => {
     // scale-in & scale-out chars animation by detecting selectedScript state
     if (state.selectedScript) {
+      // cleanup previous animation
+      if (animation) animation.kill()
+
       animation = gsap
         .timeline()
         .to(kanaText, {
           scale: 0,
-          duration: 0.2,
-          ease: 'expo.in',
+          duration: CHAR_ANIMATION.DURATION,
+          ease: CHAR_ANIMATION.EASING.EXPO_IN,
           onComplete: () => {
             kanaText.textContent =
               state.selectedScript === 'Katakana'
@@ -50,8 +61,8 @@ const Char = (props: CharProps) => {
         })
         .to(kanaText, {
           scale: 1,
-          duration: 0.2,
-          ease: 'expo.out',
+          duration: CHAR_ANIMATION.DURATION,
+          ease: CHAR_ANIMATION.EASING.EXPO_OUT,
         })
     }
   })
