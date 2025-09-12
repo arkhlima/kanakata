@@ -3,6 +3,7 @@ import type { CharGroup, Script } from '~/constants/kana'
 export interface Questions {
   char: string
   answer: string
+  isCorrect?: boolean
 }
 
 export type CharType = 'Monographs' | 'MonographDiacritics' | 'Diagraphs' | 'DiagraphDiacritics' | 'LookAlike'
@@ -22,6 +23,8 @@ export interface State {
   resetState: boolean
   questions: Questions[]
   currentQuestion: number
+  correctAnswers: number
+  incorrectAnswers: number
 
   // hiragana state
   totalHiragana: number

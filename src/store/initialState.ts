@@ -18,6 +18,8 @@ export const initialState: State = {
   resetState: false,
   questions: [],
   currentQuestion: 0,
+  correctAnswers: 0,
+  incorrectAnswers: 0,
 
   // hiragana state
   totalHiragana: 0,

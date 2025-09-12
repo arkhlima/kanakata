@@ -95,4 +95,6 @@ export const createResetState = () => ({
 
   questions: [] as Questions[],
   currentQuestion: 0,
+  correctAnswers: 0,
+  incorrectAnswers: 0,
 })

@@ -88,14 +88,51 @@ const Quiz = () => {
     createSignal<string[]>(DEFAULT_ANSWER)
   const [answerInputValue, setAnswerInputValue] = createSignal<string>()
   const [isResultVisible, setResultVisibility] = createSignal<boolean>(false)
+  const [isResetting, setIsResetting] = createSignal<boolean>(false)
 
   onMount(() => {
     if (state.questions.length === 0) navigate('/', { replace: true })
+
+    // keyboard navigation
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // escape key
+      if (event.key === 'Escape') {
+        navigate('/')
+        return
+      }
+
+      // enter key
+      if (event.key === 'Enter') {
+        const currentAnswerValue = answerInputValue()
+        if (currentAnswerValue && currentAnswerValue.trim().length > 0) {
+          const submitEvent = new Event('submit', { bubbles: true, cancelable: true })
+          answerInput.form?.dispatchEvent(submitEvent)
+        } else {
+          // autofocus input when enter with blank input
+          answerInput.focus()
+        }
+        return
+      }
+
+      // spacebar
+      if (event.key === ' ' && state.currentQuestion > 0) {
+        event.preventDefault()
+        setResetState(true)
+        return
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+
+    // cleanup event listener
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
   })
 
   createEffect(() => {
     // quiz animation
-    if (!state.resetState && state.questions.length >= state.currentQuestion) {
+    if (!state.resetState && state.questions.length >= state.currentQuestion && !isResetting()) {
       // cleanup previous animation
       if (questionAnimation) questionAnimation.kill()
 
@@ -104,42 +141,76 @@ const Quiz = () => {
         ? state.currentQuestion + 1
         : state.currentQuestion
 
-      // slide animation
-      questionAnimation = gsap
-        .timeline()
-        .to(
-          `.question:nth-child(${currentQuestionIndex})`,
-          {
-            scale: 0.8,
-            duration: ANIMATION.DURATION.SCALE,
-            ease: ANIMATION.EASING.EXPO_IN,
-          }
-        )
-        .to(
-          `.question:nth-child(${currentQuestionIndex})`,
-          {
-            scale: 1,
-            duration: ANIMATION.DURATION.SCALE,
-            ease: ANIMATION.EASING.EXPO_OUT,
-          }
-        )
-        .to(
-          questionList,
-          state.questions.length > 0 &&
-            state.questions.length === state.currentQuestion
-            ? {
-                onComplete: () => {
-                  setResultVisibility(true)
-                },
+      // only animate if not the first question
+      const isShowFeedbackAnimation = state.currentQuestion > 0
+
+      questionAnimation = gsap.timeline()
+
+      if (isShowFeedbackAnimation) {
+        // get the previous question to check if answer was correct
+        const previousQuestion = state.questions[state.currentQuestion - 1]
+        const isCorrect = previousQuestion?.isCorrect
+
+        if (isCorrect) {
+          // scale animation for correct answers
+          questionAnimation
+            .to(
+              `.question:nth-child(${currentQuestionIndex})`,
+              {
+                scale: 0.8,
+                duration: ANIMATION.DURATION.SCALE,
+                ease: ANIMATION.EASING.EXPO_IN,
               }
-            : {
-                x: `${calculatedTranslate}rem`,
-                duration: ANIMATION.DURATION.SLIDE,
+            )
+            .to(
+              `.question:nth-child(${currentQuestionIndex})`,
+              {
+                scale: 1,
+                duration: ANIMATION.DURATION.SCALE,
+                ease: ANIMATION.EASING.EXPO_OUT,
+              }
+            )
+        } else {
+          // shake animation for incorrect answers
+          questionAnimation
+            .to(
+              `.question:nth-child(${currentQuestionIndex})`,
+              {
+                x: -8,
+                duration: ANIMATION.DURATION.SCALE / 3,
                 ease: ANIMATION.EASING.EXPO_IN_OUT,
+                yoyo: true,
+                repeat: 3,
               }
-        )
+            )
+            .set(
+              `.question:nth-child(${currentQuestionIndex})`,
+              {
+                x: 0,
+                clearProps: "transform"
+              }
+            )
+        }
+      }
+
+      questionAnimation.to(
+        questionList,
+        state.questions.length > 0 &&
+          state.questions.length === state.currentQuestion
+          ? {
+              onComplete: () => {
+                setResultVisibility(true)
+              },
+            }
+          : {
+              x: `${calculatedTranslate}rem`,
+              duration: ANIMATION.DURATION.SLIDE,
+              ease: ANIMATION.EASING.EXPO_IN_OUT,
+            }
+      )
+
       answerInput.focus()
-      answerInput.value = ''
+      setAnswerInputValue('')
     }
 
     if (state.resetState) {
@@ -165,6 +236,7 @@ const Quiz = () => {
           duration: ANIMATION.DURATION.FADE,
           ease: ANIMATION.EASING.EXPO_IN_OUT,
           onComplete: () => {
+            setIsResetting(true)
             resetQuiz()
             setQuestions()
           },
@@ -175,6 +247,7 @@ const Quiz = () => {
           ease: ANIMATION.EASING.EXPO_IN_OUT,
           onComplete: () => {
             setResetState(false)
+            setIsResetting(false)
           },
         })
         .to('.reset-icon', {
@@ -215,8 +288,9 @@ const Quiz = () => {
 
   const handleKeyPress = (event: KeyboardEvent) => {
     const isAlphabet = /[a-zA-Z]/i.test(event.key)
+    const isAllowedKey = ['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(event.key)
 
-    if (!isAlphabet) {
+    if (!isAlphabet && !isAllowedKey) {
       event.preventDefault()
     }
   }
@@ -224,9 +298,18 @@ const Quiz = () => {
   const handleSubmit = (event: Event): void => {
     event.preventDefault()
 
+    // manual validation — check if answer is not empty
+    const currentAnswerValue = answerInputValue()
+    if (!currentAnswerValue || currentAnswerValue.trim().length === 0) {
+      // autofocus input when submit with blank input
+      answerInput.focus()
+      return // don't submit if empty
+    }
+
     if (state.questions.length !== state.currentQuestion) {
-      setAnswer(currentAnswer().join(''))
+      setAnswer(currentAnswerValue)
       setCurrentAnswer(DEFAULT_ANSWER)
+      setAnswerInputValue('')
     }
   }
 
@@ -238,15 +321,16 @@ const Quiz = () => {
         </h1>
 
         <div class="order-1">
-          <button
-            class={twMerge(
-              'text-lg lowercase text-slate-500 decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl',
-              DEFAULT_INTERACTION_CLASS
-            )}
-            onClick={() => navigate('/')}
-          >
-            back
-          </button>
+            <button
+              class={twMerge(
+                'text-lg lowercase text-slate-500 decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl flex items-center gap-1',
+                DEFAULT_INTERACTION_CLASS
+              )}
+              onClick={() => navigate('/')}
+            >
+              back
+              <kbd class="rounded bg-slate-200 px-1 py-0.5 text-xs lowercase">Esc</kbd>
+            </button>
         </div>
         <div class="order-3 flex justify-end">
           <button
@@ -264,12 +348,60 @@ const Quiz = () => {
       <Transition name="tr--from-bottom">
         <Show when={!!isResultVisible()}>
           <Dialog isVisible={isResultVisible}>
-            <header>
-              <h2 class="xs:text-2xl text-center text-xs font-bold text-slate-500">
-                complete!
+            <header class="mb-4">
+              <h2 class="xs:text-2xl text-center text-lg font-bold text-slate-700">
+                quiz complete!
               </h2>
             </header>
-            {/* TODO: add statistic & try again button here */}
+
+            {/* statistics */}
+            <article class="space-y-4">
+              {/* score overview */}
+              <p class="text-center text-2xl font-bold text-slate-700">
+                {Math.round((state.correctAnswers / state.questions.length) * 100)}%
+              </p>
+              {/* /score overview */}
+
+              {/* detailed stats */}
+              <div class="grid grid-cols-2 gap-4 text-center">
+                <div class="rounded-lg bg-emerald-50 p-3">
+                  <div class="text-lg font-bold text-emerald-700">{state.correctAnswers}</div>
+                  <div class="text-xs text-emerald-600">correct</div>
+                </div>
+                <div class="rounded-lg bg-pink-50 p-3">
+                  <div class="text-lg font-bold text-pink-700">{state.incorrectAnswers}</div>
+                  <div class="text-xs text-pink-600">incorrect</div>
+                </div>
+              </div>
+              {/* /detailed stats */}
+
+              {/* try again button */}
+              <div class="flex gap-2">
+                <button
+                  class={twMerge(
+                    'flex-1 rounded-lg bg-slate-500 px-4 py-2 text-sm text-slate-50 hover:bg-slate-600 active:bg-slate-700',
+                    DEFAULT_INTERACTION_CLASS
+                  )}
+                  onClick={() => {
+                    setResetState(true)
+                    setResultVisibility(false)
+                  }}
+                >
+                  try again
+                </button>
+                <button
+                  class={twMerge(
+                    'flex-1 rounded-lg border-2 border-slate-300 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50',
+                    DEFAULT_INTERACTION_CLASS
+                  )}
+                  onClick={() => navigate('/')}
+                >
+                  new quiz
+                </button>
+              </div>
+              {/* /try again button */}
+            </article>
+            {/* /statistics */}
           </Dialog>
         </Show>
       </Transition>
@@ -277,7 +409,9 @@ const Quiz = () => {
       <section class="col-span-12 flex flex-col items-center gap-y-8">
         <div class="w-full">
           <div class="mb-4 flex h-6 w-full items-center justify-center rounded-full border-2 border-slate-200">
-            <small class="text-xs text-slate-500">13 of 25</small>
+            <small class="text-xs text-slate-500">
+              {state.currentQuestion} of {state.questions.length}
+            </small>
           </div>
 
           <div
@@ -330,6 +464,7 @@ const Quiz = () => {
             <button
               type="button"
               aria-labelledby="reset-button"
+              title="Reset quiz"
               class={twMerge(
                 'w-12 h-12 flex items-center justify-center rounded-full bg-slate-500 text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 hover:bg-slate-600 [&:not(:disabled)]:active:bg-slate-700 [&:not(:disabled)]:active:scale-90 disabled:bg-slate-300',
                 DEFAULT_INTERACTION_CLASS
@@ -366,7 +501,6 @@ const Quiz = () => {
             value={answerInputValue()}
             onKeyDown={handleKeyPress}
             placeholder="answer..."
-            required
             class={twMerge(
               'w-32 h-12 appearance-none rounded-full border-2 border-slate-300 bg-slate-50 px-3 py-2 text-center lowercase shadow-md shadow-slate-200 placeholder:text-slate-500',
               DEFAULT_INTERACTION_CLASS
