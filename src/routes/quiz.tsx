@@ -5,6 +5,7 @@ import {
   For,
   createEffect,
   createSignal,
+  createMemo,
   onMount,
   onCleanup,
   Show,
@@ -45,7 +46,13 @@ const RomajiChar = (props: RomajiCharProps) => {
   })
 
   onCleanup(() => {
-    if (animation) animation.kill()
+    // kill animations and clear properties
+    if (animation) {
+      animation.kill()
+      if (char) {
+        gsap.set(char, { clearProps: "all" })
+      }
+    }
   })
 
   return <span ref={(el) => (char = el)}>{props.children}</span>
@@ -136,7 +143,7 @@ const Quiz = () => {
       // cleanup previous animation
       if (questionAnimation) questionAnimation.kill()
 
-      const calculatedTranslate = calculateTranslateValue(state.currentQuestion)
+      const calculatedTranslate = translateValue()
       const currentQuestionIndex = state.currentQuestion === 0
         ? state.currentQuestion + 1
         : state.currentQuestion
@@ -260,23 +267,41 @@ const Quiz = () => {
   })
 
   onCleanup(() => {
-    if (questionAnimation) questionAnimation.kill()
-    if (resetAnimation) resetAnimation.kill()
+    // kill animations and clear properties
+    if (questionAnimation) {
+      questionAnimation.kill()
+      if (questionList) {
+        gsap.set(questionList, { clearProps: "all" })
+      }
+      gsap.set(".question", { clearProps: "all" })
+      gsap.set(".question-kana", { clearProps: "all" })
+    }
+    if (resetAnimation) {
+      resetAnimation.kill()
+      gsap.set(".reset-icon", { clearProps: "all" })
+      gsap.set(".question-kana", { clearProps: "all" })
+    }
   })
 
-  const calculateTranslateValue = (question: number): number => {
-    return -8 * question - 0.5 * question
-  }
+  const translateValue = createMemo(() => {
+    return -8 * state.currentQuestion - 0.5 * state.currentQuestion
+  })
 
-  const getQuestionStateClass = (question: Questions, idx: number): string => {
-    return idx === state.currentQuestion
-      ? 'active'
-      : question.answer
-      ? question.answer.toLowerCase() === toRomaji(question.char)
-        ? 'correct'
-        : 'incorrect'
-      : 'inactive'
-  }
+  const getQuestionStateClass = createMemo(() => {
+    return (question: Questions, idx: number): string => {
+      return idx === state.currentQuestion
+        ? 'active'
+        : question.answer
+        ? question.answer.toLowerCase() === toRomaji(question.char)
+          ? 'correct'
+          : 'incorrect'
+        : 'inactive'
+    }
+  })
+
+  const completionPercentage = createMemo(() => {
+    return Math.round((state.correctAnswers / state.questions.length) * 100)
+  })
 
   const handleAnswerInput = (event: InputEvent) => {
     const target = event.target as HTMLInputElement
@@ -358,7 +383,7 @@ const Quiz = () => {
             <article class="space-y-4">
               {/* score overview */}
               <p class="text-center text-2xl font-bold text-slate-700">
-                {Math.round((state.correctAnswers / state.questions.length) * 100)}%
+                {completionPercentage()}%
               </p>
               {/* /score overview */}
 
@@ -431,7 +456,7 @@ const Quiz = () => {
                     class={twMerge(
                       'question grid h-24 w-32 grid-flow-row justify-center gap-y-4 rounded-xl border-2 p-2',
                       QUESTION_STATE_CLASSES[
-                        getQuestionStateClass(question, idx())
+                        getQuestionStateClass()(question, idx())
                       ]
                     )}
                   >

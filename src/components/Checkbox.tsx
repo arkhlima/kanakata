@@ -14,7 +14,7 @@ interface CheckboxProps {
 const Checkbox = (props: CheckboxProps): JSX.Element => {
   return (
     <label
-      class="flex cursor-pointer items-center gap-x-2"
+      class="flex cursor-pointer items-center gap-x-2 lowercase"
       classList={{
         'underline decoration-blue-300 decoration-wavy': props.isChecked,
       }}

@@ -105,7 +105,7 @@ const App = () => {
             <div class="relative mx-auto flex h-full w-full max-w-5xl justify-end px-4 md:px-8">
               <button
                 class={twMerge(
-                  'w-full h-12 flex justify-center items-center rounded-xl bg-slate-700 text-lg text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 hover:bg-slate-600 active:bg-slate-500 focus:underline',
+                  'w-full h-12 flex justify-center items-center rounded-xl bg-slate-700 text-lg text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 hover:bg-slate-600 active:bg-slate-500 focus:underline lowercase',
                   DEFAULT_INTERACTION_CLASS
                 )}
                 onClick={() => {
@@ -113,7 +113,7 @@ const App = () => {
                   navigate('/quiz')
                 }}
               >
-                let's start!
+                Let's start!
               </button>
             </div>
           </aside>

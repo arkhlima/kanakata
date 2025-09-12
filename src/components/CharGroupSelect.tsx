@@ -1,7 +1,7 @@
 import gsap from 'gsap'
 import { twMerge } from 'tailwind-merge'
 
-import { For, createEffect, onCleanup } from 'solid-js'
+import { For, createEffect, createMemo, onCleanup } from 'solid-js'
 
 import useStore, { getSelectedCharGroup } from '~/store/kanaStore'
 
@@ -40,6 +40,14 @@ const Char = (props: CharProps) => {
     },
   } as const
 
+  const displayChar = createMemo(() => {
+    return state.selectedScript === 'Katakana'
+      ? toKatakana(props.char)
+      : props.char
+  })
+
+  const romajiChar = createMemo(() => toRomaji(props.char))
+
   createEffect(() => {
     // scale-in & scale-out chars animation by detecting selectedScript state
     if (state.selectedScript) {
@@ -53,10 +61,7 @@ const Char = (props: CharProps) => {
           duration: CHAR_ANIMATION.DURATION,
           ease: CHAR_ANIMATION.EASING.EXPO_IN,
           onComplete: () => {
-            kanaText.textContent =
-              state.selectedScript === 'Katakana'
-                ? toKatakana(props.char)
-                : props.char
+            kanaText.textContent = displayChar()
           },
         })
         .to(kanaText, {
@@ -68,7 +73,13 @@ const Char = (props: CharProps) => {
   })
 
   onCleanup(() => {
-    if (animation) animation.kill()
+    // kill animations and clear properties
+    if (animation) {
+      animation.kill()
+      if (kanaText) {
+        gsap.set(kanaText, { clearProps: "all" })
+      }
+    }
   })
 
   return (
@@ -80,7 +91,7 @@ const Char = (props: CharProps) => {
         <span class="text-slate-500">◕‿◕</span>
       </span>
       <span class="flex justify-center text-xs leading-none text-slate-500">
-        {toRomaji(props.char)}
+        {romajiChar()}
       </span>
     </>
   )
@@ -99,28 +110,34 @@ const CharGroupSelect = (props: CharGroupProps) => {
     return char !== '' && char !== undefined && char !== null
   }
 
-  const isCharSelected = (groupIndex: number): boolean => {
-    const selectedCharGroup = getSelectedCharGroup(state, props.selectedChars)
-    const originalGroup = props.chars[groupIndex]
+  const selectedCharGroup = createMemo(() =>
+    getSelectedCharGroup(state, props.selectedChars)
+  )
 
-    // check if all non-null positions are selected
-    return originalGroup.every((char, index) => {
-      if (char === null) return true // ignore null positions
-      return isNotEmptyAndDefined(selectedCharGroup[groupIndex][index])
-    })
-  }
+  const isCharSelected = createMemo(() => {
+    return (groupIndex: number): boolean => {
+      const selected = selectedCharGroup()
+      const originalGroup = props.chars[groupIndex]
 
-  const isCharGroupSelected = (): boolean => {
-    const selectedCharGroup = getSelectedCharGroup(state, props.selectedChars)
+      // check if all non-null positions are selected
+      return originalGroup.every((char, index) => {
+        if (char === null) return true // ignore null positions
+        return isNotEmptyAndDefined(selected[groupIndex][index])
+      })
+    }
+  })
+
+  const isCharGroupSelected = createMemo(() => {
+    const selected = selectedCharGroup()
 
     // check if all groups with non-null chars are selected
     return props.chars.every((originalGroup, groupIndex) => {
       return originalGroup.every((char, charIndex) => {
         if (char === null) return true // ignore null positions
-        return isNotEmptyAndDefined(selectedCharGroup[groupIndex][charIndex])
+        return isNotEmptyAndDefined(selected[groupIndex][charIndex])
       })
     })
-  }
+  })
 
   return (
     <div class="grid gap-y-1">
@@ -132,7 +149,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
 
         {/* select all char group */}
         <Checkbox
-          label="select all"
+          label="Select all"
           isChecked={isCharGroupSelected()}
           onChange={() => {
             props.toggleAllChars(props.selectedChars, props.chars)
@@ -143,9 +160,8 @@ const CharGroupSelect = (props: CharGroupProps) => {
       </header>
       {/* /header */}
 
-      {
-        // eslint-disable-next-line solid/prefer-for
-        props.chars.map((charGroup, groupIndex) => (
+        <For each={props.chars}>
+        {(charGroup, groupIndex) => (
           <div
             class="grid min-h-[60px] gap-x-1 rounded-xl"
             // eslint-disable-next-line solid/style-prop
@@ -154,14 +170,14 @@ const CharGroupSelect = (props: CharGroupProps) => {
             <div class="flex items-center rounded-l-xl border-2 border-r-0 border-slate-300 bg-slate-50 p-2 pr-1">
               {/* select char group */}
               <Checkbox
-                label={toRomaji(props.chars[groupIndex][0] ?? '')}
-                isChecked={isCharSelected(groupIndex)}
+                label={toRomaji(props.chars[groupIndex()][0] ?? '')}
+                isChecked={isCharSelected()(groupIndex())}
                 isLabelHidden
                 onChange={() => {
                   props.toggleChars(
                     props.selectedChars,
                     props.chars,
-                    groupIndex
+                    groupIndex()
                   )
                   setTotalSelected()
                 }}
@@ -174,7 +190,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
                   class={twMerge(
                     'grid grid-flow-row justify-center gap-y-2 rounded-xl border-2 p-2 transition-all duration-100 ease-linear',
                     CHAR_STATE_CLASSES[
-                      isCharSelected(groupIndex) ? 'active' : 'inactive'
+                      isCharSelected()(groupIndex()) ? 'active' : 'inactive'
                     ]
                   )}
                 >
@@ -183,8 +199,8 @@ const CharGroupSelect = (props: CharGroupProps) => {
               )}
             </For>
           </div>
-        ))
-      }
+        )}
+        </For>
     </div>
   )
 }
