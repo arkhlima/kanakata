@@ -1,27 +1,19 @@
 import gsap from 'gsap'
 import { twMerge } from 'tailwind-merge'
 
-import {
-  For,
-  createEffect,
-  createSignal,
-  createMemo,
-  onMount,
-  onCleanup,
-  Show,
-} from 'solid-js'
-import { Transition } from 'solid-transition-group'
+import { For, Show, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js'
 import { useNavigate } from 'solid-start'
+import { Transition } from 'solid-transition-group'
 
-import useStore from '~/store/kanaStore'
-import General from '~/layouts/general'
 import Dialog from '~/components/Dialog'
 import Footer from '~/components/Footer'
+import General from '~/layouts/general'
+import useStore from '~/store/kanaStore'
 
 import { toRomaji } from 'wanakana'
 
-import type { Questions } from '~/store/kanaStore'
 import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
+import type { Questions } from '~/store/kanaStore'
 
 interface RomajiCharProps {
   children: string
@@ -50,7 +42,7 @@ const RomajiChar = (props: RomajiCharProps) => {
     if (animation) {
       animation.kill()
       if (char) {
-        gsap.set(char, { clearProps: "all" })
+        gsap.set(char, { clearProps: 'all' })
       }
     }
   })
@@ -60,7 +52,7 @@ const RomajiChar = (props: RomajiCharProps) => {
 
 const Quiz = () => {
   const state = useStore()
-  const { setQuestions, setAnswer, resetQuiz, setResetState } = state
+  const { setQuestions, setAnswer, resetQuiz, setResetState, setQuestionsFromWrongAnswers } = state
 
   const navigate = useNavigate()
   let answerInput: HTMLInputElement
@@ -91,8 +83,7 @@ const Quiz = () => {
     RESET_ROTATION: '75deg',
   } as const
 
-  const [currentAnswer, setCurrentAnswer] =
-    createSignal<string[]>(DEFAULT_ANSWER)
+  const [currentAnswer, setCurrentAnswer] = createSignal<string[]>(DEFAULT_ANSWER)
   const [answerInputValue, setAnswerInputValue] = createSignal<string>()
   const [isResultVisible, setResultVisibility] = createSignal<boolean>(false)
   const [isResetting, setIsResetting] = createSignal<boolean>(false)
@@ -144,9 +135,8 @@ const Quiz = () => {
       if (questionAnimation) questionAnimation.kill()
 
       const calculatedTranslate = translateValue()
-      const currentQuestionIndex = state.currentQuestion === 0
-        ? state.currentQuestion + 1
-        : state.currentQuestion
+      const currentQuestionIndex =
+        state.currentQuestion === 0 ? state.currentQuestion + 1 : state.currentQuestion
 
       // only animate if not the first question
       const isShowFeedbackAnimation = state.currentQuestion > 0
@@ -161,49 +151,36 @@ const Quiz = () => {
         if (isCorrect) {
           // scale animation for correct answers
           questionAnimation
-            .to(
-              `.question:nth-child(${currentQuestionIndex})`,
-              {
-                scale: 0.8,
-                duration: ANIMATION.DURATION.SCALE,
-                ease: ANIMATION.EASING.EXPO_IN,
-              }
-            )
-            .to(
-              `.question:nth-child(${currentQuestionIndex})`,
-              {
-                scale: 1,
-                duration: ANIMATION.DURATION.SCALE,
-                ease: ANIMATION.EASING.EXPO_OUT,
-              }
-            )
+            .to(`.question:nth-child(${currentQuestionIndex})`, {
+              scale: 0.8,
+              duration: ANIMATION.DURATION.SCALE,
+              ease: ANIMATION.EASING.EXPO_IN,
+            })
+            .to(`.question:nth-child(${currentQuestionIndex})`, {
+              scale: 1,
+              duration: ANIMATION.DURATION.SCALE,
+              ease: ANIMATION.EASING.EXPO_OUT,
+            })
         } else {
           // shake animation for incorrect answers
           questionAnimation
-            .to(
-              `.question:nth-child(${currentQuestionIndex})`,
-              {
-                x: -8,
-                duration: ANIMATION.DURATION.SCALE / 3,
-                ease: ANIMATION.EASING.EXPO_IN_OUT,
-                yoyo: true,
-                repeat: 3,
-              }
-            )
-            .set(
-              `.question:nth-child(${currentQuestionIndex})`,
-              {
-                x: 0,
-                clearProps: "transform"
-              }
-            )
+            .to(`.question:nth-child(${currentQuestionIndex})`, {
+              x: -8,
+              duration: ANIMATION.DURATION.SCALE / 3,
+              ease: ANIMATION.EASING.EXPO_IN_OUT,
+              yoyo: true,
+              repeat: 3,
+            })
+            .set(`.question:nth-child(${currentQuestionIndex})`, {
+              x: 0,
+              clearProps: 'transform',
+            })
         }
       }
 
       questionAnimation.to(
         questionList,
-        state.questions.length > 0 &&
-          state.questions.length === state.currentQuestion
+        state.questions.length > 0 && state.questions.length === state.currentQuestion
           ? {
               onComplete: () => {
                 setResultVisibility(true)
@@ -271,15 +248,15 @@ const Quiz = () => {
     if (questionAnimation) {
       questionAnimation.kill()
       if (questionList) {
-        gsap.set(questionList, { clearProps: "all" })
+        gsap.set(questionList, { clearProps: 'all' })
       }
-      gsap.set(".question", { clearProps: "all" })
-      gsap.set(".question-kana", { clearProps: "all" })
+      gsap.set('.question', { clearProps: 'all' })
+      gsap.set('.question-kana', { clearProps: 'all' })
     }
     if (resetAnimation) {
       resetAnimation.kill()
-      gsap.set(".reset-icon", { clearProps: "all" })
-      gsap.set(".question-kana", { clearProps: "all" })
+      gsap.set('.reset-icon', { clearProps: 'all' })
+      gsap.set('.question-kana', { clearProps: 'all' })
     }
   })
 
@@ -292,15 +269,15 @@ const Quiz = () => {
       return idx === state.currentQuestion
         ? 'active'
         : question.answer
-        ? question.answer.toLowerCase() === toRomaji(question.char)
-          ? 'correct'
-          : 'incorrect'
-        : 'inactive'
+          ? question.answer.toLowerCase() === toRomaji(question.char)
+            ? 'correct'
+            : 'incorrect'
+          : 'inactive'
     }
   })
 
   const completionPercentage = createMemo(() => {
-    return Math.round((state.correctAnswers / state.questions.length) * 100)
+    return Math.round((state.correctAnswersTotal / state.questions.length) * 100)
   })
 
   const handleAnswerInput = (event: InputEvent) => {
@@ -313,7 +290,9 @@ const Quiz = () => {
 
   const handleKeyPress = (event: KeyboardEvent) => {
     const isAlphabet = /[a-zA-Z]/i.test(event.key)
-    const isAllowedKey = ['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(event.key)
+    const isAllowedKey = ['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(
+      event.key
+    )
 
     if (!isAlphabet && !isAllowedKey) {
       event.preventDefault()
@@ -346,19 +325,21 @@ const Quiz = () => {
         </h1>
 
         <div class="order-1">
-            <button
-              class={twMerge(
-                'text-lg lowercase text-slate-500 decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl flex items-center gap-1',
-                DEFAULT_INTERACTION_CLASS
-              )}
-              onClick={() => navigate('/')}
-            >
-              back
-              <kbd class="rounded bg-slate-200 px-1 py-0.5 text-xs lowercase">Esc</kbd>
-            </button>
+          <button
+            type="button"
+            class={twMerge(
+              'text-lg lowercase text-slate-500 decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl flex items-center gap-1',
+              DEFAULT_INTERACTION_CLASS
+            )}
+            onClick={() => navigate('/')}
+          >
+            back
+            <kbd class="rounded bg-slate-200 px-1 py-0.5 text-xs lowercase">Esc</kbd>
+          </button>
         </div>
         <div class="order-3 flex justify-end">
           <button
+            type="button"
             class={twMerge(
               'text-lg lowercase text-slate-500 decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl',
               DEFAULT_INTERACTION_CLASS
@@ -382,49 +363,116 @@ const Quiz = () => {
             {/* statistics */}
             <article class="space-y-4">
               {/* score overview */}
-              <p class="text-center text-2xl font-bold text-slate-700">
-                {completionPercentage()}%
-              </p>
+              <p class="text-center text-2xl font-bold text-slate-700">{completionPercentage()}%</p>
               {/* /score overview */}
 
               {/* detailed stats */}
               <div class="grid grid-cols-2 gap-4 text-center">
                 <div class="rounded-lg bg-emerald-50 p-3">
-                  <div class="text-lg font-bold text-emerald-700">{state.correctAnswers}</div>
-                  <div class="text-xs text-emerald-600">correct</div>
+                  <p class="text-lg font-bold text-emerald-700">{state.correctAnswersTotal}</p>
+                  <p class="text-xs text-emerald-600">correct</p>
                 </div>
                 <div class="rounded-lg bg-pink-50 p-3">
-                  <div class="text-lg font-bold text-pink-700">{state.incorrectAnswers}</div>
-                  <div class="text-xs text-pink-600">incorrect</div>
+                  <p class="text-lg font-bold text-pink-700">{state.incorrectAnswersTotal}</p>
+                  <p class="text-xs text-pink-600">incorrect</p>
                 </div>
               </div>
               {/* /detailed stats */}
 
-              {/* try again button */}
-              <div class="flex gap-2">
-                <button
-                  class={twMerge(
-                    'flex-1 rounded-lg bg-slate-500 px-4 py-2 text-sm text-slate-50 hover:bg-slate-600 active:bg-slate-700',
-                    DEFAULT_INTERACTION_CLASS
-                  )}
-                  onClick={() => {
-                    setResetState(true)
-                    setResultVisibility(false)
-                  }}
-                >
-                  try again
-                </button>
-                <button
-                  class={twMerge(
-                    'flex-1 rounded-lg border-2 border-slate-300 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50',
-                    DEFAULT_INTERACTION_CLASS
-                  )}
-                  onClick={() => navigate('/')}
-                >
-                  new quiz
-                </button>
+              {/* answers detail */}
+              <div class="space-y-3">
+                <Show when={state.correctAnswers.length > 0}>
+                  <div class="space-y-2">
+                    <h3 class="text-sm font-semibold text-emerald-700">Correct Answers:</h3>
+                    <div class="max-h-32 overflow-y-auto space-y-1 rounded-lg bg-emerald-50 p-3">
+                      <For each={state.correctAnswers}>
+                        {(correctAnswer) => (
+                          <div class="flex items-center justify-between rounded bg-white p-2 text-xs">
+                            <div class="flex items-center gap-2">
+                              <p class="text-lg font-bold">{correctAnswer.char}</p>
+                              <span class="text-slate-500">→</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-right">
+                              <p class="text-emerald-600">your: {correctAnswer.userAnswer}</p>
+                              <p class="text-emerald-600">correct: {correctAnswer.correctAnswer}</p>
+                            </div>
+                          </div>
+                        )}
+                      </For>
+                    </div>
+                  </div>
+                </Show>
+
+                <Show when={state.incorrectAnswers.length > 0}>
+                  <div class="space-y-2">
+                    <h3 class="text-sm font-semibold text-pink-700">Incorrect Answers:</h3>
+                    <div class="max-h-32 overflow-y-auto space-y-1 rounded-lg bg-pink-50 p-3">
+                      <For each={state.incorrectAnswers}>
+                        {(incorrectAnswer) => (
+                          <div class="flex items-center justify-between rounded bg-white p-2 text-xs">
+                            <div class="flex items-center gap-2">
+                              <p class="text-lg font-bold">{incorrectAnswer.char}</p>
+                              <span class="text-slate-500">→</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-right">
+                              <p class="text-pink-600">your: {incorrectAnswer.userAnswer}</p>
+                              <p class="text-emerald-600">
+                                correct: {incorrectAnswer.correctAnswer}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </For>
+                    </div>
+                  </div>
+                </Show>
               </div>
-              {/* /try again button */}
+              {/* /answers detail */}
+
+              {/* action buttons */}
+              <div class="space-y-2">
+                <Show when={state.incorrectAnswers.length > 0}>
+                  <button
+                    type="button"
+                    class={twMerge(
+                      'w-full rounded-lg bg-pink-500 px-4 py-2 text-sm text-pink-50 hover:bg-pink-600 active:bg-pink-700',
+                      DEFAULT_INTERACTION_CLASS
+                    )}
+                    onClick={() => {
+                      setQuestionsFromWrongAnswers()
+                      setResultVisibility(false)
+                    }}
+                  >
+                    quiz from incorrect answers
+                  </button>
+                </Show>
+                <div class="flex gap-2">
+                  <button
+                    type="button"
+                    class={twMerge(
+                      'flex-1 rounded-lg bg-slate-500 px-4 py-2 text-sm text-slate-50 hover:bg-slate-600 active:bg-slate-700',
+                      DEFAULT_INTERACTION_CLASS
+                    )}
+                    onClick={() => {
+                      setResetState(true)
+                      setResultVisibility(false)
+                    }}
+                  >
+                    try again
+                  </button>
+                  <button
+                    type="button"
+                    class={twMerge(
+                      'flex-1 rounded-lg border-2 border-slate-300 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50',
+                      DEFAULT_INTERACTION_CLASS
+                    )}
+                    onClick={() => navigate('/')}
+                  >
+                    new quiz
+                  </button>
+                </div>
+              </div>
+              {/* /action buttons */}
             </article>
             {/* /statistics */}
           </Dialog>
@@ -442,22 +490,16 @@ const Quiz = () => {
           <div
             class="relative flex w-full justify-center overflow-x-hidden"
             style={{
-              '-webkit-mask-image':
-                'linear-gradient(to right, #0000, #000, #000, #0000)',
+              '-webkit-mask-image': 'linear-gradient(to right, #0000, #000, #000, #0000)',
             }}
           >
-            <ul
-              ref={(el) => (questionList = el)}
-              class="relative grid w-32 grid-flow-col gap-x-2"
-            >
+            <ul ref={(el) => (questionList = el)} class="relative grid w-32 grid-flow-col gap-x-2">
               <For each={state.questions}>
                 {(question, idx) => (
                   <li
                     class={twMerge(
                       'question grid h-24 w-32 grid-flow-row justify-center gap-y-4 rounded-xl border-2 p-2',
-                      QUESTION_STATE_CLASSES[
-                        getQuestionStateClass()(question, idx())
-                      ]
+                      QUESTION_STATE_CLASSES[getQuestionStateClass()(question, idx())]
                     )}
                   >
                     <span

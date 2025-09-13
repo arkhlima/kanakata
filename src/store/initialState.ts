@@ -1,10 +1,10 @@
 import {
-  MONOGRAPHS,
-  MONOGRAPH_DIACRITICS,
   DIAGRAPHS,
   DIAGRAPH_DIACRITICS,
-  KATAKANA_LOOK_ALIKE,
   HIRAGANA_LOOK_ALIKE,
+  KATAKANA_LOOK_ALIKE,
+  MONOGRAPHS,
+  MONOGRAPH_DIACRITICS,
 } from '~/constants/kana'
 import type { State } from './types'
 
@@ -18,8 +18,10 @@ export const initialState: State = {
   resetState: false,
   questions: [],
   currentQuestion: 0,
-  correctAnswers: 0,
-  incorrectAnswers: 0,
+  correctAnswersTotal: 0,
+  incorrectAnswersTotal: 0,
+  correctAnswers: [],
+  incorrectAnswers: [],
 
   // hiragana state
   totalHiragana: 0,

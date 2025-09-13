@@ -1,4 +1,4 @@
-import { createEffect, JSX } from 'solid-js'
+import { type JSX, createEffect } from 'solid-js'
 
 interface DialogProps {
   isVisible: () => boolean

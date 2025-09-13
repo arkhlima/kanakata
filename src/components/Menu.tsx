@@ -37,9 +37,7 @@ const Menu = (): JSX.Element => {
                 <span
                   class={twMerge(
                     'absolute -top-6 right-0 flex h-[24px] w-[24px] items-center justify-center rounded-full text-xs',
-                    MENU_STATE_CLASSES[
-                      isMenuSelected(menu) ? 'active' : 'inactive'
-                    ]
+                    MENU_STATE_CLASSES[isMenuSelected(menu) ? 'active' : 'inactive']
                   )}
                 >
                   {state[`total${menu}`]}
@@ -50,6 +48,7 @@ const Menu = (): JSX.Element => {
 
             {/* menu button */}
             <button
+              type="button"
               class={twMerge(
                 'text-2xl lowercase text-slate-500 decoration-blue-300 decoration-wavy',
                 DEFAULT_INTERACTION_CLASS,

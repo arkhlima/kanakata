@@ -1,14 +1,14 @@
 import { toKatakana } from 'wanakana'
-import type { Questions, State } from './types'
 import type { Script } from '~/constants/kana'
 import {
-  MONOGRAPHS,
-  MONOGRAPH_DIACRITICS,
   DIAGRAPHS,
   DIAGRAPH_DIACRITICS,
-  KATAKANA_LOOK_ALIKE,
   HIRAGANA_LOOK_ALIKE,
+  KATAKANA_LOOK_ALIKE,
+  MONOGRAPHS,
+  MONOGRAPH_DIACRITICS,
 } from '~/constants/kana'
+import type { Questions, State } from './types'
 
 // util function to shuffle questions
 export const shuffleQuestions = (questions: string[]): string[] => {
@@ -35,9 +35,7 @@ export const getSelectedCharacters = (state: State, script: Script): string[] =>
     .filter((char): char is string => !!char && char !== '')
 
   // convert to katakana if needed
-  return script === 'Katakana'
-    ? selectedChars.map((char) => toKatakana(char))
-    : selectedChars
+  return script === 'Katakana' ? selectedChars.map((char) => toKatakana(char)) : selectedChars
 }
 
 // generate questions from selected chars
@@ -66,9 +64,7 @@ export const calculateTotal = (state: State, script: Script): number => {
     ...state[`selected${script}LookAlike`],
   ] as string[][]
 
-  return allCharGroups.filter((group) =>
-    group.some((char) => char !== '')
-  ).length
+  return allCharGroups.filter((group) => group.some((char) => char !== '')).length
 }
 
 // helper function to create empty char groups (used in reset)
@@ -95,6 +91,8 @@ export const createResetState = () => ({
 
   questions: [] as Questions[],
   currentQuestion: 0,
-  correctAnswers: 0,
-  incorrectAnswers: 0,
+  correctAnswersTotal: 0,
+  incorrectAnswersTotal: 0,
+  correctAnswers: [],
+  incorrectAnswers: [],
 })

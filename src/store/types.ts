@@ -6,7 +6,24 @@ export interface Questions {
   isCorrect?: boolean
 }
 
-export type CharType = 'Monographs' | 'MonographDiacritics' | 'Diagraphs' | 'DiagraphDiacritics' | 'LookAlike'
+export interface IncorrectAnswer {
+  char: string
+  userAnswer: string
+  correctAnswer: string
+}
+
+export interface CorrectAnswer {
+  char: string
+  userAnswer: string
+  correctAnswer: string
+}
+
+export type CharType =
+  | 'Monographs'
+  | 'MonographDiacritics'
+  | 'Diagraphs'
+  | 'DiagraphDiacritics'
+  | 'LookAlike'
 
 export interface ScriptState {
   selectedMonographs: CharGroup
@@ -23,8 +40,10 @@ export interface State {
   resetState: boolean
   questions: Questions[]
   currentQuestion: number
-  correctAnswers: number
-  incorrectAnswers: number
+  correctAnswersTotal: number
+  incorrectAnswersTotal: number
+  correctAnswers: CorrectAnswer[]
+  incorrectAnswers: IncorrectAnswer[]
 
   // hiragana state
   totalHiragana: number
@@ -41,8 +60,6 @@ export interface State {
   selectedKatakanaDiagraphs: CharGroup
   selectedKatakanaDiagraphDiacritics: CharGroup
   selectedKatakanaLookAlike: CharGroup
-
-  [key: string]: any
 }
 
 export interface Actions {
@@ -50,15 +67,12 @@ export interface Actions {
   setAnswer: (value: string) => void
   setSelectedScript: (value: Script) => void
   setTotalSelected: () => void
-  toggleChars: (
-    selectedChars: string,
-    chars: CharGroup,
-    groupIndex: number
-  ) => void
+  toggleChars: (selectedChars: string, chars: CharGroup, groupIndex: number) => void
   toggleAllChars: (selectedChars: string, chars: CharGroup) => void
   setResetState: (value: boolean) => void
   resetQuiz: () => void
   resetAll: () => void
+  setQuestionsFromWrongAnswers: () => void
 }
 
 export type StateWithActions = State & Actions
@@ -66,5 +80,17 @@ export type SelectedCharsKey = `selected${Script}${CharType}`
 export type TotalKey = `total${Script}`
 
 export const getSelectedCharGroup = (state: State, key: string): CharGroup => {
-  return state[key] as CharGroup
+  // Type-safe property access for dynamic keys
+  const stateWithDynamicAccess = state as unknown as Record<
+    string,
+    | CharGroup
+    | number
+    | Script[]
+    | Script
+    | boolean
+    | Questions[]
+    | CorrectAnswer[]
+    | IncorrectAnswer[]
+  >
+  return stateWithDynamicAccess[key] as CharGroup
 }

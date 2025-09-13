@@ -7,19 +7,15 @@ import useStore, { getSelectedCharGroup } from '~/store/kanaStore'
 
 import Checkbox from '~/components/Checkbox'
 
+import { toKatakana, toRomaji } from 'wanakana'
 import { getCharGroupTitle } from '~/utils/chars'
-import { toRomaji, toKatakana } from 'wanakana'
 
 import type { CharGroup } from '~/constants/kana'
 
 interface CharGroupProps {
   chars: CharGroup
   selectedChars: string
-  toggleChars: (
-    selectedChars: string,
-    char: CharGroup,
-    groupIndex: number
-  ) => void
+  toggleChars: (selectedChars: string, char: CharGroup, groupIndex: number) => void
   toggleAllChars: (selectedChars: string, char: CharGroup) => void
 }
 interface CharProps {
@@ -41,9 +37,7 @@ const Char = (props: CharProps) => {
   } as const
 
   const displayChar = createMemo(() => {
-    return state.selectedScript === 'Katakana'
-      ? toKatakana(props.char)
-      : props.char
+    return state.selectedScript === 'Katakana' ? toKatakana(props.char) : props.char
   })
 
   const romajiChar = createMemo(() => toRomaji(props.char))
@@ -77,7 +71,7 @@ const Char = (props: CharProps) => {
     if (animation) {
       animation.kill()
       if (kanaText) {
-        gsap.set(kanaText, { clearProps: "all" })
+        gsap.set(kanaText, { clearProps: 'all' })
       }
     }
   })
@@ -90,9 +84,7 @@ const Char = (props: CharProps) => {
       >
         <span class="text-slate-500">◕‿◕</span>
       </span>
-      <span class="flex justify-center text-xs leading-none text-slate-500">
-        {romajiChar()}
-      </span>
+      <span class="flex justify-center text-xs leading-none text-slate-500">{romajiChar()}</span>
     </>
   )
 }
@@ -110,9 +102,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
     return char !== '' && char !== undefined && char !== null
   }
 
-  const selectedCharGroup = createMemo(() =>
-    getSelectedCharGroup(state, props.selectedChars)
-  )
+  const selectedCharGroup = createMemo(() => getSelectedCharGroup(state, props.selectedChars))
 
   const isCharSelected = createMemo(() => {
     return (groupIndex: number): boolean => {
@@ -160,7 +150,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
       </header>
       {/* /header */}
 
-        <For each={props.chars}>
+      <For each={props.chars}>
         {(charGroup, groupIndex) => (
           <div
             class="grid min-h-[60px] gap-x-1 rounded-xl"
@@ -174,11 +164,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
                 isChecked={isCharSelected()(groupIndex())}
                 isLabelHidden
                 onChange={() => {
-                  props.toggleChars(
-                    props.selectedChars,
-                    props.chars,
-                    groupIndex()
-                  )
+                  props.toggleChars(props.selectedChars, props.chars, groupIndex())
                   setTotalSelected()
                 }}
               />
@@ -189,9 +175,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
                 <div
                   class={twMerge(
                     'grid grid-flow-row justify-center gap-y-2 rounded-xl border-2 p-2 transition-all duration-100 ease-linear',
-                    CHAR_STATE_CLASSES[
-                      isCharSelected()(groupIndex()) ? 'active' : 'inactive'
-                    ]
+                    CHAR_STATE_CLASSES[isCharSelected()(groupIndex()) ? 'active' : 'inactive']
                   )}
                 >
                   {!!char && <Char char={char} />}
@@ -200,7 +184,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
             </For>
           </div>
         )}
-        </For>
+      </For>
     </div>
   )
 }

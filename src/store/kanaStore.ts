@@ -1,16 +1,12 @@
 import create from 'solid-zustand'
 import { toRomaji } from 'wanakana'
-import type { CharGroup } from '~/constants/kana'
+import type { CharGroup, Script } from '~/constants/kana'
 
-import type { StateWithActions } from './types'
 import { initialState } from './initialState'
-import {
-  generateQuestions,
-  calculateTotal,
-  createResetState
-} from './utils'
+import type { CorrectAnswer, IncorrectAnswer, Questions, StateWithActions } from './types'
+import { calculateTotal, createResetState, generateQuestions } from './utils'
 
-export type { Questions } from './types'
+export type { Questions, IncorrectAnswer, CorrectAnswer } from './types'
 export { getSelectedCharGroup } from './types'
 
 const useStore = create<StateWithActions>((set, get) => ({
@@ -29,15 +25,31 @@ const useStore = create<StateWithActions>((set, get) => ({
     const correctAnswer = toRomaji(currentQuestion.char)
     const isCorrect = value.toLowerCase() === correctAnswer
 
+    const answerData = {
+      char: currentQuestion.char,
+      userAnswer: value,
+      correctAnswer: correctAnswer,
+    }
+
+    const newCorrectAnswers = isCorrect
+      ? [...get().correctAnswers, answerData]
+      : get().correctAnswers
+
+    const newIncorrectAnswers = !isCorrect
+      ? [...get().incorrectAnswers, answerData]
+      : get().incorrectAnswers
+
     set({
       questions: get().questions.map((question, index) =>
-        index === currentQuestionIndex
-          ? { ...question, answer: value, isCorrect }
-          : question
+        index === currentQuestionIndex ? { ...question, answer: value, isCorrect } : question
       ),
       currentQuestion: get().currentQuestion + 1,
-      correctAnswers: isCorrect ? get().correctAnswers + 1 : get().correctAnswers,
-      incorrectAnswers: !isCorrect ? get().incorrectAnswers + 1 : get().incorrectAnswers,
+      correctAnswersTotal: isCorrect ? get().correctAnswersTotal + 1 : get().correctAnswersTotal,
+      incorrectAnswersTotal: !isCorrect
+        ? get().incorrectAnswersTotal + 1
+        : get().incorrectAnswersTotal,
+      correctAnswers: newCorrectAnswers,
+      incorrectAnswers: newIncorrectAnswers,
     })
   },
 
@@ -54,7 +66,18 @@ const useStore = create<StateWithActions>((set, get) => ({
 
   // toggle entire char group selection
   toggleChars: (selectedChars, chars, groupIndex) => {
-    const currentSelection = get()[selectedChars] as CharGroup
+    const state = get() as unknown as Record<
+      string,
+      | CharGroup
+      | number
+      | Script[]
+      | Script
+      | boolean
+      | Questions[]
+      | CorrectAnswer[]
+      | IncorrectAnswer[]
+    >
+    const currentSelection = state[selectedChars] as CharGroup
 
     set({
       [selectedChars]: currentSelection.map((group, index) =>
@@ -69,7 +92,18 @@ const useStore = create<StateWithActions>((set, get) => ({
 
   // toggle all chars
   toggleAllChars: (selectedChars, chars) => {
-    const currentSelection = get()[selectedChars] as CharGroup
+    const state = get() as unknown as Record<
+      string,
+      | CharGroup
+      | number
+      | Script[]
+      | Script
+      | boolean
+      | Questions[]
+      | CorrectAnswer[]
+      | IncorrectAnswer[]
+    >
+    const currentSelection = state[selectedChars] as CharGroup
 
     const allSelected = chars.every((originalGroup, groupIndex) =>
       originalGroup.every((char, charIndex) => {
@@ -94,8 +128,29 @@ const useStore = create<StateWithActions>((set, get) => ({
   resetQuiz: () => {
     set({
       currentQuestion: 0,
-      correctAnswers: 0,
-      incorrectAnswers: 0,
+      correctAnswersTotal: 0,
+      incorrectAnswersTotal: 0,
+      correctAnswers: [],
+      incorrectAnswers: [],
+    })
+  },
+
+  // create quiz from wrong answers only
+  setQuestionsFromWrongAnswers: () => {
+    const incorrectAnswers = get().incorrectAnswers
+    const questions = incorrectAnswers.map((incorrectAnswer) => ({
+      char: incorrectAnswer.char,
+      answer: '',
+      isCorrect: undefined,
+    }))
+
+    set({
+      questions,
+      currentQuestion: 0,
+      correctAnswersTotal: 0,
+      incorrectAnswersTotal: 0,
+      correctAnswers: [],
+      incorrectAnswers: [],
     })
   },
 

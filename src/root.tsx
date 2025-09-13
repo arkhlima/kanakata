@@ -6,11 +6,11 @@ import {
   FileRoutes,
   Head,
   Html,
+  Link,
   Meta,
   Routes,
   Scripts,
   Title,
-  Link,
 } from 'solid-start'
 import './root.css'
 
@@ -22,7 +22,10 @@ export default function Root() {
         <Meta charset="utf-8" />
         <Meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta name="description" content="A simple kana (hiragana & katakana) quiz" />
-        <Meta name="keywords" content="japanese, hiragana, katakana, kana, learn japanese, japanese characters, japanese quiz, language learning, nihongo" />
+        <Meta
+          name="keywords"
+          content="japanese, hiragana, katakana, kana, learn japanese, japanese characters, japanese quiz, language learning, nihongo"
+        />
         <Meta name="author" content="arkhlima" />
         <Meta name="robots" content="index, follow" />
         <Meta name="language" content="en" />

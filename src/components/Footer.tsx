@@ -18,7 +18,7 @@ const Header = (props: FooterProps) => {
         )}
         href="https://arkhlima.xyz"
         target="_blank"
-        rel="noopener"
+        rel="noreferrer noopener"
       >
         @arkhlima
       </a>
