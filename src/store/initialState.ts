@@ -1,10 +1,10 @@
 import {
-  DIAGRAPHS,
   DIAGRAPH_DIACRITICS,
+  DIAGRAPHS,
   HIRAGANA_LOOK_ALIKE,
   KATAKANA_LOOK_ALIKE,
-  MONOGRAPHS,
   MONOGRAPH_DIACRITICS,
+  MONOGRAPHS,
 } from '~/constants/kana'
 import type { State } from './types'
 

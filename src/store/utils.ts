@@ -1,12 +1,12 @@
 import { toKatakana } from 'wanakana'
 import type { Script } from '~/constants/kana'
 import {
-  DIAGRAPHS,
   DIAGRAPH_DIACRITICS,
+  DIAGRAPHS,
   HIRAGANA_LOOK_ALIKE,
   KATAKANA_LOOK_ALIKE,
-  MONOGRAPHS,
   MONOGRAPH_DIACRITICS,
+  MONOGRAPHS,
 } from '~/constants/kana'
 import type { Questions, State } from './types'
 

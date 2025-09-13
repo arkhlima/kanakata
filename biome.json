@@ -1,8 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "organizeImports": {
-    "enabled": true
-  },
+  "$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
   "linter": {
     "enabled": true,
     "rules": {
@@ -14,7 +11,11 @@
         "noUnusedImports": "error"
       },
       "suspicious": {
-        "noAssignInExpressions": "off"
+        "noAssignInExpressions": "off",
+        "noUnknownAtRules": "off"
+      },
+      "nursery": {
+        "useSortedClasses": "error"
       }
     }
   },
@@ -45,7 +46,18 @@
     }
   },
   "files": {
-    "include": ["src/**/*", "*.ts", "*.tsx", "*.js", "*.jsx", "*.json"],
-    "ignore": ["node_modules", "dist", "build", ".solid", ".vinxi"]
+    "includes": [
+      "**/src/**/*",
+      "**/*.ts",
+      "**/*.tsx",
+      "**/*.js",
+      "**/*.jsx",
+      "**/*.json",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/build",
+      "!**/.solid",
+      "!**/.vinxi"
+    ]
   }
 }

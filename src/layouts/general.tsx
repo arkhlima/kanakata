@@ -6,7 +6,7 @@ interface GeneralProps {
 
 const General = (props: GeneralProps) => {
   return (
-    <main class="relative mx-auto grid min-h-screen max-w-5xl grid-cols-12 grid-rows-[auto_1fr_auto] gap-y-16 overflow-x-hidden px-4 pb-20 pt-16 md:px-8">
+    <main class="relative mx-auto grid min-h-screen max-w-5xl grid-cols-12 grid-rows-[auto_1fr_auto] gap-y-16 overflow-x-hidden px-4 pt-16 pb-20 md:px-8">
       {props.children}
     </main>
   )

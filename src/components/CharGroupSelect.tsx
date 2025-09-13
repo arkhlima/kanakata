@@ -1,16 +1,12 @@
 import gsap from 'gsap'
-import { twMerge } from 'tailwind-merge'
-
-import { For, createEffect, createMemo, onCleanup } from 'solid-js'
-
-import useStore, { getSelectedCharGroup } from '~/store/kanaStore'
+import { createEffect, createMemo, For, onCleanup } from 'solid-js'
+import { toKatakana, toRomaji } from 'wanakana'
 
 import Checkbox from '~/components/Checkbox'
-
-import { toKatakana, toRomaji } from 'wanakana'
-import { getCharGroupTitle } from '~/utils/chars'
-
 import type { CharGroup } from '~/constants/kana'
+import useStore, { getSelectedCharGroup } from '~/store/kanaStore'
+import { getCharGroupTitle } from '~/utils/chars'
+import { cn } from '~/utils/cn'
 
 interface CharGroupProps {
   chars: CharGroup
@@ -80,11 +76,11 @@ const Char = (props: CharProps) => {
     <>
       <span
         ref={(el) => (kanaText = el)}
-        class="flex items-end justify-center font-sans text-xl font-bold leading-none"
+        class="flex items-end justify-center font-bold font-sans text-xl leading-none"
       >
         <span class="text-slate-500">◕‿◕</span>
       </span>
-      <span class="flex justify-center text-xs leading-none text-slate-500">{romajiChar()}</span>
+      <span class="flex justify-center text-slate-500 text-xs leading-none">{romajiChar()}</span>
     </>
   )
 }
@@ -132,8 +128,8 @@ const CharGroupSelect = (props: CharGroupProps) => {
   return (
     <div class="grid gap-y-1">
       {/* header */}
-      <header class="flex items-center justify-between rounded-t-xl border-2 border-b-0 border-slate-300 bg-slate-50 p-2 pb-1">
-        <h2 class="xs:text-base order-last flex text-right text-sm font-bold text-slate-500">
+      <header class="flex items-center justify-between rounded-t-xl border-2 border-slate-300 border-b-0 bg-slate-50 p-2 pb-1">
+        <h2 class="order-last flex text-right font-bold text-slate-500 text-sm xs:text-base">
           {getCharGroupTitle(props.selectedChars)}
         </h2>
 
@@ -157,7 +153,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
             // eslint-disable-next-line solid/style-prop
             style={`grid-template-columns: auto repeat(${charGroup.length},1fr)`}
           >
-            <div class="flex items-center rounded-l-xl border-2 border-r-0 border-slate-300 bg-slate-50 p-2 pr-1">
+            <div class="flex items-center rounded-l-xl border-2 border-slate-300 border-r-0 bg-slate-50 p-2 pr-1">
               {/* select char group */}
               <Checkbox
                 label={toRomaji(props.chars[groupIndex()][0] ?? '')}
@@ -173,7 +169,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
             <For each={charGroup}>
               {(char) => (
                 <div
-                  class={twMerge(
+                  class={cn(
                     'grid grid-flow-row justify-center gap-y-2 rounded-xl border-2 p-2 transition-all duration-100 ease-linear',
                     CHAR_STATE_CLASSES[isCharSelected()(groupIndex()) ? 'active' : 'inactive']
                   )}

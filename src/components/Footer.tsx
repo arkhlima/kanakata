@@ -1,6 +1,6 @@
-import { twMerge } from 'tailwind-merge'
-
 import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
+import { cn } from '~/utils/cn'
+
 interface FooterProps {
   class?: string
 }
@@ -12,8 +12,8 @@ const Header = (props: FooterProps) => {
       classList={props.class ? { [props.class]: true } : {}}
     >
       <a
-        class={twMerge(
-          'text-sm text-slate-700 underline decoration-blue-300 decoration-wavy',
+        class={cn(
+          'text-slate-700 text-sm underline decoration-blue-300 decoration-wavy',
           DEFAULT_INTERACTION_CLASS
         )}
         href="https://arkhlima.xyz"

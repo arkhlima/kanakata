@@ -1,29 +1,23 @@
-import { twMerge } from 'tailwind-merge'
-
+import { useNavigate } from '@solidjs/router'
+import { Match, onMount, Show, Switch } from 'solid-js'
 import { Transition } from 'solid-transition-group'
-
-import { Match, Show, Switch, onMount } from 'solid-js'
-import { useNavigate } from 'solid-start'
-
-import useStore from '~/store/kanaStore'
-
-import General from '~/layouts/general'
-
 import CharGroupSelect from '~/components/CharGroupSelect'
 import Footer from '~/components/Footer'
 import Menu from '~/components/Menu'
-
 import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
 import {
-  DIAGRAPHS,
   DIAGRAPH_DIACRITICS,
+  DIAGRAPHS,
   HIRAGANA_LOOK_ALIKE,
   KATAKANA_LOOK_ALIKE,
-  MONOGRAPHS,
   MONOGRAPH_DIACRITICS,
+  MONOGRAPHS,
 } from '~/constants/kana'
+import General from '~/layouts/general'
+import useStore from '~/store/kanaStore'
+import { cn } from '~/utils/cn'
 
-const App = () => {
+const Home = () => {
   const state = useStore()
   const { toggleAllChars, toggleChars, setQuestions, resetAll } = state
 
@@ -37,7 +31,7 @@ const App = () => {
     <General>
       {/* header */}
       <header class="col-span-12 grid grid-cols-1 items-end gap-2 md:grid-cols-2 md:justify-center">
-        <h1 class="text-center text-5xl font-bold md:order-last md:text-right">kanakata</h1>
+        <h1 class="text-center font-bold text-5xl md:order-last md:text-right">kanakata</h1>
 
         {/* menu */}
         <Menu />
@@ -103,8 +97,8 @@ const App = () => {
             <div class="relative mx-auto flex h-full w-full max-w-5xl justify-end px-4 md:px-8">
               <button
                 type="button"
-                class={twMerge(
-                  'w-full h-12 flex justify-center items-center rounded-xl bg-slate-700 text-lg text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 hover:bg-slate-600 active:bg-slate-500 focus:underline lowercase',
+                class={cn(
+                  'flex h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-slate-700 text-lg text-slate-50 lowercase decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 hover:bg-slate-600 focus:underline active:bg-slate-500',
                   DEFAULT_INTERACTION_CLASS
                 )}
                 onClick={() => {
@@ -127,4 +121,4 @@ const App = () => {
   )
 }
 
-export default App
+export default Home

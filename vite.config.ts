@@ -1,7 +1,15 @@
-import vercel from 'solid-start-vercel'
-import solid from 'solid-start/vite'
+import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
+import solid from 'vite-plugin-solid'
 
 export default defineConfig({
-  plugins: [solid({ adapter: vercel(), ssr: false })],
+  plugins: [solid(), tailwindcss()],
+  server: {
+    port: 3000,
+  },
+  resolve: {
+    alias: {
+      '~': '/src',
+    },
+  },
 })

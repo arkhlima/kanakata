@@ -1,19 +1,15 @@
+import { useNavigate } from '@solidjs/router'
 import gsap from 'gsap'
-import { twMerge } from 'tailwind-merge'
 
-import { For, Show, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js'
-import { useNavigate } from 'solid-start'
+import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
 import { Transition } from 'solid-transition-group'
-
-import Dialog from '~/components/Dialog'
-import Footer from '~/components/Footer'
-import General from '~/layouts/general'
-import useStore from '~/store/kanaStore'
-
 import { toRomaji } from 'wanakana'
-
+import Dialog from '~/components/Dialog'
 import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
+import General from '~/layouts/general'
 import type { Questions } from '~/store/kanaStore'
+import useStore from '~/store/kanaStore'
+import { cn } from '~/utils/cn'
 
 interface RomajiCharProps {
   children: string
@@ -320,15 +316,15 @@ const Quiz = () => {
   return (
     <General>
       <header class="col-span-12 grid grid-cols-1 items-end gap-2 md:grid-cols-3 md:justify-center">
-        <h1 class="order-1 col-span-2 text-center text-5xl font-bold md:order-2 md:col-span-1">
+        <h1 class="order-1 col-span-2 text-center font-bold text-5xl md:order-2 md:col-span-1">
           kanakata
         </h1>
 
         <div class="order-1">
           <button
             type="button"
-            class={twMerge(
-              'text-lg lowercase text-slate-500 decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl flex items-center gap-1',
+            class={cn(
+              'flex cursor-pointer items-center gap-1 text-lg text-slate-500 lowercase decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl',
               DEFAULT_INTERACTION_CLASS
             )}
             onClick={() => navigate('/')}
@@ -340,8 +336,8 @@ const Quiz = () => {
         <div class="order-3 flex justify-end">
           <button
             type="button"
-            class={twMerge(
-              'text-lg lowercase text-slate-500 decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl',
+            class={cn(
+              'cursor-pointer text-lg text-slate-500 lowercase decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl',
               DEFAULT_INTERACTION_CLASS
             )}
             onClick={() => alert('coming soon!')}
@@ -355,7 +351,7 @@ const Quiz = () => {
         <Show when={!!isResultVisible()}>
           <Dialog isVisible={isResultVisible}>
             <header class="mb-4">
-              <h2 class="xs:text-2xl text-center text-lg font-bold text-slate-700">
+              <h2 class="text-center font-bold text-lg text-slate-700 xs:text-2xl">
                 quiz complete!
               </h2>
             </header>
@@ -363,18 +359,18 @@ const Quiz = () => {
             {/* statistics */}
             <article class="space-y-4">
               {/* score overview */}
-              <p class="text-center text-2xl font-bold text-slate-700">{completionPercentage()}%</p>
+              <p class="text-center font-bold text-2xl text-slate-700">{completionPercentage()}%</p>
               {/* /score overview */}
 
               {/* detailed stats */}
               <div class="grid grid-cols-2 gap-4 text-center">
                 <div class="rounded-lg bg-emerald-50 p-3">
-                  <p class="text-lg font-bold text-emerald-700">{state.correctAnswersTotal}</p>
-                  <p class="text-xs text-emerald-600">correct</p>
+                  <p class="font-bold text-emerald-700 text-lg">{state.correctAnswersTotal}</p>
+                  <p class="text-emerald-600 text-xs">correct</p>
                 </div>
                 <div class="rounded-lg bg-pink-50 p-3">
-                  <p class="text-lg font-bold text-pink-700">{state.incorrectAnswersTotal}</p>
-                  <p class="text-xs text-pink-600">incorrect</p>
+                  <p class="font-bold text-lg text-pink-700">{state.incorrectAnswersTotal}</p>
+                  <p class="text-pink-600 text-xs">incorrect</p>
                 </div>
               </div>
               {/* /detailed stats */}
@@ -383,13 +379,13 @@ const Quiz = () => {
               <div class="space-y-3">
                 <Show when={state.correctAnswers.length > 0}>
                   <div class="space-y-2">
-                    <h3 class="text-sm font-semibold text-emerald-700">Correct Answers:</h3>
-                    <div class="max-h-32 overflow-y-auto space-y-1 rounded-lg bg-emerald-50 p-3">
+                    <h3 class="font-semibold text-emerald-700 text-sm">Correct Answers:</h3>
+                    <div class="max-h-32 space-y-1 overflow-y-auto rounded-lg bg-emerald-50 p-3">
                       <For each={state.correctAnswers}>
                         {(correctAnswer) => (
                           <div class="flex items-center justify-between rounded bg-white p-2 text-xs">
                             <div class="flex items-center gap-2">
-                              <p class="text-lg font-bold">{correctAnswer.char}</p>
+                              <p class="font-bold text-lg">{correctAnswer.char}</p>
                               <span class="text-slate-500">→</span>
                             </div>
                             <div class="flex items-center gap-2 text-right">
@@ -405,13 +401,13 @@ const Quiz = () => {
 
                 <Show when={state.incorrectAnswers.length > 0}>
                   <div class="space-y-2">
-                    <h3 class="text-sm font-semibold text-pink-700">Incorrect Answers:</h3>
-                    <div class="max-h-32 overflow-y-auto space-y-1 rounded-lg bg-pink-50 p-3">
+                    <h3 class="font-semibold text-pink-700 text-sm">Incorrect Answers:</h3>
+                    <div class="max-h-32 space-y-1 overflow-y-auto rounded-lg bg-pink-50 p-3">
                       <For each={state.incorrectAnswers}>
                         {(incorrectAnswer) => (
                           <div class="flex items-center justify-between rounded bg-white p-2 text-xs">
                             <div class="flex items-center gap-2">
-                              <p class="text-lg font-bold">{incorrectAnswer.char}</p>
+                              <p class="font-bold text-lg">{incorrectAnswer.char}</p>
                               <span class="text-slate-500">→</span>
                             </div>
                             <div class="flex items-center gap-2 text-right">
@@ -434,8 +430,8 @@ const Quiz = () => {
                 <Show when={state.incorrectAnswers.length > 0}>
                   <button
                     type="button"
-                    class={twMerge(
-                      'w-full rounded-lg bg-pink-500 px-4 py-2 text-sm text-pink-50 hover:bg-pink-600 active:bg-pink-700',
+                    class={cn(
+                      'w-full cursor-pointer rounded-lg bg-pink-500 px-4 py-2 text-pink-50 text-sm hover:bg-pink-600 active:bg-pink-700',
                       DEFAULT_INTERACTION_CLASS
                     )}
                     onClick={() => {
@@ -449,8 +445,8 @@ const Quiz = () => {
                 <div class="flex gap-2">
                   <button
                     type="button"
-                    class={twMerge(
-                      'flex-1 rounded-lg bg-slate-500 px-4 py-2 text-sm text-slate-50 hover:bg-slate-600 active:bg-slate-700',
+                    class={cn(
+                      'flex-1 cursor-pointer rounded-lg bg-slate-500 px-4 py-2 text-slate-50 text-sm hover:bg-slate-600 active:bg-slate-700',
                       DEFAULT_INTERACTION_CLASS
                     )}
                     onClick={() => {
@@ -462,8 +458,8 @@ const Quiz = () => {
                   </button>
                   <button
                     type="button"
-                    class={twMerge(
-                      'flex-1 rounded-lg border-2 border-slate-300 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50',
+                    class={cn(
+                      'flex-1 cursor-pointer rounded-lg border-2 border-slate-300 px-4 py-2 text-slate-700 text-sm hover:bg-slate-50',
                       DEFAULT_INTERACTION_CLASS
                     )}
                     onClick={() => navigate('/')}
@@ -481,8 +477,8 @@ const Quiz = () => {
 
       <section class="col-span-12 flex flex-col items-center gap-y-8">
         <div class="w-full">
-          <div class="mb-4 flex h-6 w-full items-center justify-center rounded-full border-2 border-slate-200">
-            <small class="text-xs text-slate-500">
+          <div class="flex h-6 w-full items-center justify-center rounded-t-xl border-2 border-slate-200 border-b-0">
+            <small class="text-slate-500 text-xs">
               {state.currentQuestion} of {state.questions.length}
             </small>
           </div>
@@ -497,20 +493,17 @@ const Quiz = () => {
               <For each={state.questions}>
                 {(question, idx) => (
                   <li
-                    class={twMerge(
+                    class={cn(
                       'question grid h-24 w-32 grid-flow-row justify-center gap-y-4 rounded-xl border-2 p-2',
                       QUESTION_STATE_CLASSES[getQuestionStateClass()(question, idx())]
                     )}
                   >
                     <span
-                      class={twMerge(
-                        'question-kana',
-                        'flex items-end justify-center font-sans text-3xl font-bold leading-none'
-                      )}
+                      class="question-kana flex items-end justify-center font-bold font-sans text-3xl leading-none"
                     >
                       {question.char}
                     </span>
-                    <span class="flex justify-center text-xl lowercase leading-none text-slate-500">
+                    <span class="flex justify-center text-slate-500 text-xl lowercase leading-none">
                       {state.currentQuestion === idx() && !question.answer ? (
                         <For each={currentAnswer()}>
                           {(char) => <RomajiChar>{char}</RomajiChar>}
@@ -532,8 +525,8 @@ const Quiz = () => {
               type="button"
               aria-labelledby="reset-button"
               title="Reset quiz"
-              class={twMerge(
-                'w-12 h-12 flex items-center justify-center rounded-full bg-slate-500 text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 hover:bg-slate-600 [&:not(:disabled)]:active:bg-slate-700 [&:not(:disabled)]:active:scale-90 disabled:bg-slate-300',
+              class={cn(
+                'flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-slate-500 text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 hover:bg-slate-600 disabled:bg-slate-300 [&:not(:disabled)]:active:scale-90 [&:not(:disabled)]:active:bg-slate-700',
                 DEFAULT_INTERACTION_CLASS
               )}
               disabled={!state.currentQuestion}
@@ -549,7 +542,7 @@ const Quiz = () => {
                 stroke-width="3"
                 stroke="currentColor"
                 aria-hidden="true"
-                class={twMerge('reset-icon', 'h-5 w-5')}
+                class="reset-icon h-5 w-5"
               >
                 <path
                   stroke-linecap="round"
@@ -568,8 +561,8 @@ const Quiz = () => {
             value={answerInputValue()}
             onKeyDown={handleKeyPress}
             placeholder="answer..."
-            class={twMerge(
-              'w-32 h-12 appearance-none rounded-full border-2 border-slate-300 bg-slate-50 px-3 py-2 text-center lowercase shadow-md shadow-slate-200 placeholder:text-slate-500',
+            class={cn(
+              'h-12 w-32 appearance-none rounded-full border-2 border-slate-300 bg-slate-50 px-3 py-2 text-center lowercase shadow-md shadow-slate-200 placeholder:text-slate-500',
               DEFAULT_INTERACTION_CLASS
             )}
             onInput={handleAnswerInput}
@@ -578,8 +571,8 @@ const Quiz = () => {
             <button
               type="submit"
               aria-labelledby="submit-button"
-              class={twMerge(
-                'w-12 h-12 flex items-center justify-center rounded-full bg-slate-500 text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 [&:not(:disabled)]:active:bg-slate-700 [&:not(:disabled)]:active:scale-90 disabled:bg-slate-300',
+              class={cn(
+                'flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-slate-500 text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 disabled:bg-slate-300 [&:not(:disabled)]:active:scale-90 [&:not(:disabled)]:active:bg-slate-700',
                 DEFAULT_INTERACTION_CLASS
               )}
             >
@@ -605,8 +598,6 @@ const Quiz = () => {
           </div>
         </form>
       </section>
-
-      <Footer />
     </General>
   )
 }

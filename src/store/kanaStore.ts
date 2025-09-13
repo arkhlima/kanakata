@@ -6,7 +6,7 @@ import { initialState } from './initialState'
 import type { CorrectAnswer, IncorrectAnswer, Questions, StateWithActions } from './types'
 import { calculateTotal, createResetState, generateQuestions } from './utils'
 
-export type { Questions, IncorrectAnswer, CorrectAnswer } from './types'
+export type { CorrectAnswer, IncorrectAnswer, Questions } from './types'
 export { getSelectedCharGroup } from './types'
 
 const useStore = create<StateWithActions>((set, get) => ({

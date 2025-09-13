@@ -1,13 +1,11 @@
-import { twMerge } from 'tailwind-merge'
+import type { JSX } from 'solid-js'
 
 import { For, Show } from 'solid-js'
-import type { JSX } from 'solid-js'
 import { Transition } from 'solid-transition-group'
-
-import useStore from '~/store/kanaStore'
-
 import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
 import type { Script } from '~/constants/kana'
+import useStore from '~/store/kanaStore'
+import { cn } from '~/utils/cn'
 
 const Menu = (): JSX.Element => {
   const state = useStore()
@@ -35,8 +33,8 @@ const Menu = (): JSX.Element => {
             <Transition name="tr--from-bottom">
               <Show when={!!state[`total${menu}`]}>
                 <span
-                  class={twMerge(
-                    'absolute -top-6 right-0 flex h-[24px] w-[24px] items-center justify-center rounded-full text-xs',
+                  class={cn(
+                    '-top-6 absolute right-0 flex h-[24px] w-[24px] items-center justify-center rounded-full text-xs',
                     MENU_STATE_CLASSES[isMenuSelected(menu) ? 'active' : 'inactive']
                   )}
                 >
@@ -49,10 +47,10 @@ const Menu = (): JSX.Element => {
             {/* menu button */}
             <button
               type="button"
-              class={twMerge(
-                'text-2xl lowercase text-slate-500 decoration-blue-300 decoration-wavy',
+              class={cn(
+                'cursor-pointer text-2xl text-slate-500 lowercase decoration-blue-300 decoration-wavy',
                 DEFAULT_INTERACTION_CLASS,
-                isMenuSelected(menu) && 'underline text-slate-700'
+                isMenuSelected(menu) && 'text-slate-700 underline'
               )}
               onClick={() => handleClickMenuButton(menu)}
             >

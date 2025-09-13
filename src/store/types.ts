@@ -80,7 +80,6 @@ export type SelectedCharsKey = `selected${Script}${CharType}`
 export type TotalKey = `total${Script}`
 
 export const getSelectedCharGroup = (state: State, key: string): CharGroup => {
-  // Type-safe property access for dynamic keys
   const stateWithDynamicAccess = state as unknown as Record<
     string,
     | CharGroup

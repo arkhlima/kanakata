@@ -1,8 +1,7 @@
-import { twMerge } from 'tailwind-merge'
-
 import type { JSX } from 'solid-js'
 
 import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
+import { cn } from '~/utils/cn'
 
 interface CheckboxProps {
   label: string
@@ -22,7 +21,7 @@ const Checkbox = (props: CheckboxProps): JSX.Element => {
       <input
         type="checkbox"
         checked={props.isChecked}
-        class={twMerge('cursor-pointer', DEFAULT_INTERACTION_CLASS)}
+        class={cn('cursor-pointer', DEFAULT_INTERACTION_CLASS)}
         onClick={() => props.onChange()}
       />
       <span

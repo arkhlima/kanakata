@@ -10,7 +10,7 @@
     "jsx": "preserve",
     "strict": true,
     "noEmit": true,
-    "types": ["solid-start/env"],
+    "types": ["vite/client"],
     "baseUrl": "./",
     "paths": {
       "~/*": ["./src/*"]
