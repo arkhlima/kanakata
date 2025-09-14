@@ -69,6 +69,7 @@ export interface Actions {
   setTotalSelected: () => void
   toggleChars: (selectedChars: string, chars: CharGroup, groupIndex: number) => void
   toggleAllChars: (selectedChars: string, chars: CharGroup) => void
+  toggleAllScript: (script: Script) => void
   setResetState: (value: boolean) => void
   resetQuiz: () => void
   resetAll: () => void

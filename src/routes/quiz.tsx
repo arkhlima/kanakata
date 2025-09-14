@@ -269,6 +269,39 @@ const Quiz = () => {
     return Math.round((state.correctAnswersTotal / state.questions.length) * 100)
   })
 
+  // progress bar color variables
+  const PROGRESS_COLORS = {
+    CORRECT: 'oklch(87.1% 0.15 154.449)', // emerald-200
+    INCORRECT: 'oklch(82.3% 0.12 346.018)', // pink-200
+  } as const
+
+  const progressBarGradient = createMemo(() => {
+    const answeredQuestions = state.questions.slice(0, state.currentQuestion)
+    const segments: string[] = []
+
+    for (let i = 0; i < answeredQuestions.length; i++) {
+      const question = answeredQuestions[i]
+      if (question.answer) {
+        const isCorrect = question.answer.toLowerCase() === toRomaji(question.char)
+        const color = isCorrect ? PROGRESS_COLORS.CORRECT : PROGRESS_COLORS.INCORRECT
+
+        const position = (i / state.currentQuestion) * 100
+        segments.push(`${color} ${position}%`)
+      }
+    }
+
+    if (segments.length > 0) {
+      const lastQuestion = answeredQuestions[answeredQuestions.length - 1]
+      if (lastQuestion.answer) {
+        const isCorrect = lastQuestion.answer.toLowerCase() === toRomaji(lastQuestion.char)
+        const color = isCorrect ? PROGRESS_COLORS.CORRECT : PROGRESS_COLORS.INCORRECT
+        segments.push(`${color} 100%`)
+      }
+    }
+
+    return segments.length > 0 ? `linear-gradient(90deg, ${segments.join(', ')})` : ''
+  })
+
   const handleAnswerInput = (event: InputEvent) => {
     const target = event.target as HTMLInputElement
     if (/^[A-Za-z]*$/g.test(target.value)) {
@@ -470,11 +503,19 @@ const Quiz = () => {
 
       <section class="col-span-12 flex flex-col items-center gap-y-8">
         <div class="w-full">
-          <div class="flex h-6 w-full items-center justify-center rounded-t-xl border-2 border-slate-200 border-b-0">
-            <small class="text-slate-500 text-xs">
+          {/* progress bar */}
+          <div
+            class="progress-bar relative flex h-4 w-full items-center justify-center rounded-full border-2 border-slate-200 overflow-hidden bg-slate-50 before:content-[''] before:absolute before:left-0 before:top-0 before:h-full before:rounded-full before:transition-all before:duration-300 before:ease-out"
+            style={{
+              '--progress-width': `${(state.currentQuestion / state.questions.length) * 100}%`,
+              '--progress-gradient': progressBarGradient() || PROGRESS_COLORS.CORRECT
+            }}
+          >
+            <small class="relative z-10 text-slate-700 text-[10px] font-medium drop-shadow-sm">
               {state.currentQuestion} of {state.questions.length}
             </small>
           </div>
+          {/* /progress bar */}
 
           <div
             class="relative flex w-full justify-center overflow-x-hidden"

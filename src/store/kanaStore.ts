@@ -1,6 +1,14 @@
 import create from 'solid-zustand'
 import { toRomaji } from 'wanakana'
 import type { CharGroup, Script } from '~/constants/kana'
+import {
+  MONOGRAPHS,
+  MONOGRAPH_DIACRITICS,
+  DIAGRAPHS,
+  DIAGRAPH_DIACRITICS,
+  HIRAGANA_LOOK_ALIKE,
+  KATAKANA_LOOK_ALIKE
+} from '~/constants/kana'
 
 import { initialState } from './initialState'
 import type { CorrectAnswer, IncorrectAnswer, Questions, StateWithActions } from './types'
@@ -64,7 +72,7 @@ const useStore = create<StateWithActions>((set, get) => ({
     })
   },
 
-  // toggle entire char group selection
+  // toggle all char group selection
   toggleChars: (selectedChars, chars, groupIndex) => {
     const state = get() as unknown as Record<
       string,
@@ -117,6 +125,66 @@ const useStore = create<StateWithActions>((set, get) => ({
         ? chars.map((group) => group.map(() => ''))
         : chars.map((group) => group.slice()),
     })
+  },
+
+  // toggle all script
+  toggleAllScript: (script) => {
+    const state = get()
+    const scriptPrefix = `selected${script}`
+
+    const charGroupKeys = [
+      `${scriptPrefix}Monographs`,
+      `${scriptPrefix}MonographDiacritics`,
+      `${scriptPrefix}Diagraphs`,
+      `${scriptPrefix}DiagraphDiacritics`,
+      `${scriptPrefix}LookAlike`
+    ]
+
+    // check if all char groups are fully selected
+    const allCharGroupsSelected = charGroupKeys.every(key => {
+      const stateWithDynamicAccess = state as unknown as Record<string, CharGroup>
+      const selection = stateWithDynamicAccess[key]
+      // get corresponding original chars for this group
+      const getCharsForKey = (key: string) => {
+        if (key.includes('Monographs') && !key.includes('Diacritics')) return MONOGRAPHS
+        if (key.includes('MonographDiacritics')) return MONOGRAPH_DIACRITICS
+        if (key.includes('Diagraphs') && !key.includes('Diacritics')) return DIAGRAPHS
+        if (key.includes('DiagraphDiacritics')) return DIAGRAPH_DIACRITICS
+        if (script === 'Hiragana' && key.includes('LookAlike')) return HIRAGANA_LOOK_ALIKE
+        if (script === 'Katakana' && key.includes('LookAlike')) return KATAKANA_LOOK_ALIKE
+        return []
+      }
+
+      const originalChars = getCharsForKey(key)
+      return originalChars.every((group, groupIndex) =>
+        group.every((char, charIndex) => {
+          if (char === null) return true
+          return selection[groupIndex][charIndex] !== ''
+        })
+      )
+    })
+
+    // toggle all char groups
+    const updates: Record<string, CharGroup> = {}
+    charGroupKeys.forEach(key => {
+      const getCharsForKey = (key: string) => {
+        if (key.includes('Monographs') && !key.includes('Diacritics')) return MONOGRAPHS
+        if (key.includes('MonographDiacritics')) return MONOGRAPH_DIACRITICS
+        if (key.includes('Diagraphs') && !key.includes('Diacritics')) return DIAGRAPHS
+        if (key.includes('DiagraphDiacritics')) return DIAGRAPH_DIACRITICS
+        if (script === 'Hiragana' && key.includes('LookAlike')) return HIRAGANA_LOOK_ALIKE
+        if (script === 'Katakana' && key.includes('LookAlike')) return KATAKANA_LOOK_ALIKE
+        return []
+      }
+
+      const originalChars = getCharsForKey(key)
+      updates[key] = allCharGroupsSelected
+        ? originalChars.map((group) => group.map(() => ''))
+        : originalChars.map((group) => group.slice())
+    })
+
+    set(updates)
+    get().setTotalSelected()
   },
 
   // set quiz reset state — used for animations during reset

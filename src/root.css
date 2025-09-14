@@ -40,3 +40,8 @@ body {
 .tr--from-bottom-exit-to {
   transform: translateY(2rem);
 }
+
+.progress-bar::before {
+  width: var(--progress-width);
+  background: var(--progress-gradient);
+}

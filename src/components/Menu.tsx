@@ -1,15 +1,24 @@
 import type { JSX } from 'solid-js'
 
-import { For, Show } from 'solid-js'
+import { For, Show, createMemo } from 'solid-js'
 import { Transition } from 'solid-transition-group'
 import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
 import type { Script } from '~/constants/kana'
+import {
+  MONOGRAPHS,
+  MONOGRAPH_DIACRITICS,
+  DIAGRAPHS,
+  DIAGRAPH_DIACRITICS,
+  HIRAGANA_LOOK_ALIKE,
+  KATAKANA_LOOK_ALIKE
+} from '~/constants/kana'
 import useStore from '~/store/kanaStore'
 import { cn } from '~/utils/cn'
+import Checkbox from './Checkbox'
 
 const Menu = (): JSX.Element => {
   const state = useStore()
-  const { setSelectedScript } = state
+  const { setSelectedScript, toggleAllScript } = state
 
   const MENU_STATE_CLASSES: Record<string, string> = {
     active: 'bg-blue-300',
@@ -24,11 +33,61 @@ const Menu = (): JSX.Element => {
     setSelectedScript(menu)
   }
 
+  const isAllScriptSelected = (script: Script) => {
+    const scriptPrefix = `selected${script}`
+    const charGroupKeys = [
+      `${scriptPrefix}Monographs`,
+      `${scriptPrefix}MonographDiacritics`,
+      `${scriptPrefix}Diagraphs`,
+      `${scriptPrefix}DiagraphDiacritics`,
+      `${scriptPrefix}LookAlike`
+    ]
+
+    return charGroupKeys.every(key => {
+      const selection = state[key as keyof typeof state] as any[][]
+
+      const getCharsForKey = (key: string) => {
+        if (key.includes('Monographs') && !key.includes('Diacritics')) return MONOGRAPHS
+        if (key.includes('MonographDiacritics')) return MONOGRAPH_DIACRITICS
+        if (key.includes('Diagraphs') && !key.includes('Diacritics')) return DIAGRAPHS
+        if (key.includes('DiagraphDiacritics')) return DIAGRAPH_DIACRITICS
+        if (script === 'Hiragana' && key.includes('LookAlike')) return HIRAGANA_LOOK_ALIKE
+        if (script === 'Katakana' && key.includes('LookAlike')) return KATAKANA_LOOK_ALIKE
+        return []
+      }
+
+      const originalChars = getCharsForKey(key)
+      return originalChars.every((group, groupIndex) =>
+        group.every((char, charIndex) => {
+          if (char === null) return true // ignore null positions
+          return selection[groupIndex][charIndex] !== ''
+        })
+      )
+    })
+  }
+
+  const handleToggleAllScript = (script: Script) => {
+    if (state.selectedScript !== script) {
+      setSelectedScript(script)
+    }
+
+    toggleAllScript(script)
+  }
+
   return (
     <ul class="flex justify-center gap-x-4 md:justify-normal">
       <For each={state.scripts}>
         {(menu) => (
-          <li class="relative">
+          <li class="relative flex items-center gap-x-2">
+            {/* select all checkbox */}
+            <Checkbox
+              label=""
+              isLabelHidden={true}
+              isChecked={isAllScriptSelected(menu)}
+              onChange={() => handleToggleAllScript(menu)}
+            />
+            {/* /select all checkbox */}
+
             {/* total selected char group balloon */}
             <Transition name="tr--from-bottom">
               <Show when={!!state[`total${menu}`]}>
