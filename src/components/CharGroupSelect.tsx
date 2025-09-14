@@ -128,7 +128,12 @@ const CharGroupSelect = (props: CharGroupProps) => {
   return (
     <div class="grid gap-y-1">
       {/* header */}
-      <header class="flex items-center justify-between rounded-t-xl border-2 border-slate-300 border-b-0 bg-slate-50 p-2 pb-1">
+      <header
+        class={cn(
+          'flex items-center justify-between rounded-t-xl border-2 border-b-0 p-2 pb-1 transition-all duration-100 ease-linear',
+          CHAR_STATE_CLASSES[isCharGroupSelected() ? 'active' : 'inactive']
+        )}
+      >
         <h2 class="order-last flex text-right font-bold text-slate-500 text-sm xs:text-base">
           {getCharGroupTitle(props.selectedChars)}
         </h2>
@@ -153,7 +158,12 @@ const CharGroupSelect = (props: CharGroupProps) => {
             // eslint-disable-next-line solid/style-prop
             style={`grid-template-columns: auto repeat(${charGroup.length},1fr)`}
           >
-            <div class="flex items-center rounded-l-xl border-2 border-slate-300 border-r-0 bg-slate-50 p-2 pr-1">
+            <div
+              class={cn(
+                'flex items-center rounded-l-xl border-2 border-r-0 p-2 pr-1 transition-all duration-100 ease-linear',
+                CHAR_STATE_CLASSES[isCharSelected()(groupIndex()) ? 'active' : 'inactive']
+              )}
+            >
               {/* select char group */}
               <Checkbox
                 label={toRomaji(props.chars[groupIndex()][0] ?? '')}

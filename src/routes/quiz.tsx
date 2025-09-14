@@ -107,13 +107,6 @@ const Quiz = () => {
         }
         return
       }
-
-      // spacebar
-      if (event.key === ' ' && state.currentQuestion > 0) {
-        event.preventDefault()
-        setResetState(true)
-        return
-      }
     }
 
     document.addEventListener('keydown', handleKeyDown)
@@ -330,7 +323,7 @@ const Quiz = () => {
             onClick={() => navigate('/')}
           >
             back
-            <kbd class="rounded bg-slate-200 px-1 py-0.5 text-xs lowercase">Esc</kbd>
+            <kbd class="rounded-full bg-slate-500 text-slate-50 px-1 py-0.5 text-xs lowercase">Esc</kbd>
           </button>
         </div>
         <div class="order-3 flex justify-end">
