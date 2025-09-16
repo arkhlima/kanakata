@@ -64,7 +64,9 @@ export const calculateTotal = (state: State, script: Script): number => {
     ...state[`selected${script}LookAlike`],
   ] as string[][]
 
-  return allCharGroups.filter((group) => group.some((char) => char !== '')).length
+  return allCharGroups.reduce((total, group) => {
+    return total + group.filter((char) => char !== '').length
+  }, 0)
 }
 
 // helper function to create empty char groups (used in reset)
