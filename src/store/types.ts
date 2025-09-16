@@ -47,6 +47,11 @@ export interface State {
 
   // hiragana state
   totalHiragana: number
+  totalHiraganaMonographs: number
+  totalHiraganaMonographDiacritics: number
+  totalHiraganaDiagraphs: number
+  totalHiraganaDiagraphDiacritics: number
+  totalHiraganaLookAlike: number
   selectedHiraganaMonographs: CharGroup
   selectedHiraganaMonographDiacritics: CharGroup
   selectedHiraganaDiagraphs: CharGroup
@@ -55,6 +60,11 @@ export interface State {
 
   // katakana state
   totalKatakana: number
+  totalKatakanaMonographs: number
+  totalKatakanaMonographDiacritics: number
+  totalKatakanaDiagraphs: number
+  totalKatakanaDiagraphDiacritics: number
+  totalKatakanaLookAlike: number
   selectedKatakanaMonographs: CharGroup
   selectedKatakanaMonographDiacritics: CharGroup
   selectedKatakanaDiagraphs: CharGroup

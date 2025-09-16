@@ -1,5 +1,6 @@
 import gsap from 'gsap'
-import { createEffect, createMemo, For, onCleanup } from 'solid-js'
+import { createEffect, createMemo, For, onCleanup, Show } from 'solid-js'
+import { Transition } from 'solid-transition-group'
 import { toKatakana, toRomaji } from 'wanakana'
 
 import Checkbox from '~/components/Checkbox'
@@ -125,15 +126,33 @@ const CharGroupSelect = (props: CharGroupProps) => {
     })
   })
 
+  // get char group total count from state
+  const getCharGroupTotal = createMemo(() => {
+    const script = state.selectedScript
+    const charType = props.selectedChars.replace(`selected${script}`, '')
+    const totalKey = `total${script}${charType}` as keyof typeof state
+    return state[totalKey] as number
+  })
+
   return (
     <div class="grid gap-y-1">
       {/* header */}
       <header
         class={cn(
-          'flex items-center justify-between rounded-t-xl border-2 border-b-0 p-2 pb-1 transition-all duration-100 ease-linear',
+          'relative flex items-center justify-between rounded-t-xl border-2 border-b-0 p-2 pb-1 transition-all duration-100 ease-linear',
           CHAR_STATE_CLASSES[isCharGroupSelected() ? 'active' : 'inactive']
         )}
       >
+        {/* char group count balloon */}
+        <Transition name="tr--from-bottom">
+          <Show when={!!getCharGroupTotal()}>
+            <span class="-top-5 absolute right-2 flex h-[24px] w-[24px] items-center justify-center rounded-full bg-blue-300 text-xs">
+              {getCharGroupTotal()}
+            </span>
+          </Show>
+        </Transition>
+        {/* /char group count balloon */}
+
         <h2 class="order-last flex text-right font-bold text-slate-500 text-sm xs:text-base">
           {getCharGroupTitle(props.selectedChars)}
         </h2>

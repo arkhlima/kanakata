@@ -12,7 +12,13 @@ import {
 
 import { initialState } from './initialState'
 import type { CorrectAnswer, IncorrectAnswer, Questions, StateWithActions } from './types'
-import { calculateTotal, createResetState, generateQuestions } from './utils'
+import {
+  calculateCharGroupTotal,
+  calculateTotal,
+  createResetState,
+  generateQuestions,
+  getOriginalCharsForGroup,
+} from './utils'
 
 export type { CorrectAnswer, IncorrectAnswer, Questions } from './types'
 export { getSelectedCharGroup } from './types'
@@ -66,10 +72,31 @@ const useStore = create<StateWithActions>((set, get) => ({
 
   // calculate and update total selected chars for current script
   setTotalSelected: () => {
-    const total = calculateTotal(get(), get().selectedScript)
-    set({
-      [`total${get().selectedScript}`]: total,
+    const state = get()
+    const script = state.selectedScript
+    const total = calculateTotal(state, script)
+
+    const charGroupTypes = [
+      'Monographs',
+      'MonographDiacritics',
+      'Diagraphs',
+      'DiagraphDiacritics',
+      'LookAlike',
+    ]
+    const updates: Record<string, number> = {
+      [`total${script}`]: total,
+    }
+
+    charGroupTypes.forEach((charType) => {
+      const selectedCharGroup = state[
+        `selected${script}${charType}` as keyof typeof state
+      ] as string[][]
+      const originalChars = getOriginalCharsForGroup(script, charType)
+      const groupTotal = calculateCharGroupTotal(selectedCharGroup, originalChars)
+      updates[`total${script}${charType}`] = groupTotal
     })
+
+    set(updates)
   },
 
   // toggle all char group selection

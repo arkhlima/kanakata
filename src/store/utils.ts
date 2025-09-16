@@ -69,6 +69,33 @@ export const calculateTotal = (state: State, script: Script): number => {
   }, 0)
 }
 
+// calc individual char group totals
+export const calculateCharGroupTotal = (
+  charGroup: string[][],
+  originalChars: (string | null)[][]
+): number => {
+  return charGroup.reduce((total, group, groupIndex) => {
+    const originalGroup = originalChars[groupIndex]
+    return (
+      total +
+      group.filter((char, charIndex) => {
+        return originalGroup[charIndex] !== null && char !== ''
+      }).length
+    )
+  }, 0)
+}
+
+// get original chars for a specific char group type
+export const getOriginalCharsForGroup = (script: Script, charType: string): (string | null)[][] => {
+  if (charType.includes('Monographs') && !charType.includes('Diacritics')) return MONOGRAPHS
+  if (charType.includes('MonographDiacritics')) return MONOGRAPH_DIACRITICS
+  if (charType.includes('Diagraphs') && !charType.includes('Diacritics')) return DIAGRAPHS
+  if (charType.includes('DiagraphDiacritics')) return DIAGRAPH_DIACRITICS
+  if (script === 'Hiragana' && charType.includes('LookAlike')) return HIRAGANA_LOOK_ALIKE
+  if (script === 'Katakana' && charType.includes('LookAlike')) return KATAKANA_LOOK_ALIKE
+  return []
+}
+
 // helper function to create empty char groups (used in reset)
 export const createEmptyCharGroups = (charGroups: (string | null)[][]) =>
   charGroups.map((group) => group.map(() => ''))
@@ -78,6 +105,11 @@ export const createResetState = () => ({
   selectedScript: 'Hiragana' as Script,
 
   totalHiragana: 0,
+  totalHiraganaMonographs: 0,
+  totalHiraganaMonographDiacritics: 0,
+  totalHiraganaDiagraphs: 0,
+  totalHiraganaDiagraphDiacritics: 0,
+  totalHiraganaLookAlike: 0,
   selectedHiraganaMonographs: createEmptyCharGroups(MONOGRAPHS),
   selectedHiraganaMonographDiacritics: createEmptyCharGroups(MONOGRAPH_DIACRITICS),
   selectedHiraganaDiagraphs: createEmptyCharGroups(DIAGRAPHS),
@@ -85,6 +117,11 @@ export const createResetState = () => ({
   selectedHiraganaLookAlike: createEmptyCharGroups(HIRAGANA_LOOK_ALIKE),
 
   totalKatakana: 0,
+  totalKatakanaMonographs: 0,
+  totalKatakanaMonographDiacritics: 0,
+  totalKatakanaDiagraphs: 0,
+  totalKatakanaDiagraphDiacritics: 0,
+  totalKatakanaLookAlike: 0,
   selectedKatakanaMonographs: createEmptyCharGroups(MONOGRAPHS),
   selectedKatakanaMonographDiacritics: createEmptyCharGroups(MONOGRAPH_DIACRITICS),
   selectedKatakanaDiagraphs: createEmptyCharGroups(DIAGRAPHS),

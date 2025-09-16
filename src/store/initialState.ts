@@ -25,6 +25,11 @@ export const initialState: State = {
 
   // hiragana state
   totalHiragana: 0,
+  totalHiraganaMonographs: 0,
+  totalHiraganaMonographDiacritics: 0,
+  totalHiraganaDiagraphs: 0,
+  totalHiraganaDiagraphDiacritics: 0,
+  totalHiraganaLookAlike: 0,
   selectedHiraganaMonographs: createEmptyCharGroups(MONOGRAPHS),
   selectedHiraganaMonographDiacritics: createEmptyCharGroups(MONOGRAPH_DIACRITICS),
   selectedHiraganaDiagraphs: createEmptyCharGroups(DIAGRAPHS),
@@ -33,6 +38,11 @@ export const initialState: State = {
 
   // katakana state
   totalKatakana: 0,
+  totalKatakanaMonographs: 0,
+  totalKatakanaMonographDiacritics: 0,
+  totalKatakanaDiagraphs: 0,
+  totalKatakanaDiagraphDiacritics: 0,
+  totalKatakanaLookAlike: 0,
   selectedKatakanaMonographs: createEmptyCharGroups(MONOGRAPHS),
   selectedKatakanaMonographDiacritics: createEmptyCharGroups(MONOGRAPH_DIACRITICS),
   selectedKatakanaDiagraphs: createEmptyCharGroups(DIAGRAPHS),
