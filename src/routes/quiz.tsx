@@ -1,50 +1,16 @@
 import { useNavigate } from '@solidjs/router'
 import gsap from 'gsap'
 
-import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { Transition } from 'solid-transition-group'
-import { toRomaji } from 'wanakana'
-import Dialog from '~/components/Dialog'
+import AnswerInputForm from '~/components/quiz/AnswerInputForm'
+import ProgressBar from '~/components/quiz/ProgressBar'
+import QuestionList from '~/components/quiz/QuestionList'
+import QuizResultsDialog from '~/components/quiz/QuizResultsDialog'
 import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
 import General from '~/layouts/general'
-import type { Questions } from '~/store/kanaStore'
 import useStore from '~/store/kanaStore'
 import { cn } from '~/utils/cn'
-
-interface RomajiCharProps {
-  children: string
-}
-
-const RomajiChar = (props: RomajiCharProps) => {
-  let char: HTMLSpanElement
-  let animation: gsap.core.Tween
-
-  const ROMAJI_ANIMATION = {
-    DURATION: 0.2,
-    EASE: 'expo.in.out',
-  } as const
-
-  onMount(() => {
-    // individual char animation
-    animation = gsap.fromTo(
-      char,
-      { opacity: 0, scale: 0 },
-      { opacity: 1, scale: 1, ease: ROMAJI_ANIMATION.EASE, duration: ROMAJI_ANIMATION.DURATION }
-    )
-  })
-
-  onCleanup(() => {
-    // kill animations and clear properties
-    if (animation) {
-      animation.kill()
-      if (char) {
-        gsap.set(char, { clearProps: 'all' })
-      }
-    }
-  })
-
-  return <span ref={(el) => (char = el)}>{props.children}</span>
-}
 
 const Quiz = () => {
   const state = useStore()
@@ -57,12 +23,6 @@ const Quiz = () => {
   let resetAnimation: gsap.core.Timeline
 
   const DEFAULT_ANSWER: string[] = ['.', '.', '.']
-  const QUESTION_STATE_CLASSES: Record<string, string> = {
-    active: 'border-blue-300 bg-blue-50',
-    inactive: 'border-slate-300 bg-slate-50',
-    correct: 'border-emerald-300 bg-emerald-50',
-    incorrect: 'border-pink-300 bg-pink-50',
-  }
 
   const ANIMATION = {
     DURATION: {
@@ -182,7 +142,9 @@ const Quiz = () => {
             }
       )
 
-      answerInput.focus()
+      if (answerInput) {
+        answerInput.focus()
+      }
       setAnswerInputValue('')
     }
 
@@ -253,73 +215,9 @@ const Quiz = () => {
     return -8 * state.currentQuestion - 0.5 * state.currentQuestion
   })
 
-  const getQuestionStateClass = createMemo(() => {
-    return (question: Questions, idx: number): string => {
-      return idx === state.currentQuestion
-        ? 'active'
-        : question.answer
-          ? question.answer.toLowerCase() === toRomaji(question.char)
-            ? 'correct'
-            : 'incorrect'
-          : 'inactive'
-    }
-  })
-
   const completionPercentage = createMemo(() => {
     return Math.round((state.correctAnswersTotal / state.questions.length) * 100)
   })
-
-  // progress bar color variables
-  const PROGRESS_COLORS = {
-    CORRECT: 'oklch(87.1% 0.15 154.449)', // emerald-200
-    INCORRECT: 'oklch(82.3% 0.12 346.018)', // pink-200
-  } as const
-
-  const progressBarGradient = createMemo(() => {
-    const answeredQuestions = state.questions.slice(0, state.currentQuestion)
-    const segments: string[] = []
-
-    for (let i = 0; i < answeredQuestions.length; i++) {
-      const question = answeredQuestions[i]
-      if (question.answer) {
-        const isCorrect = question.answer.toLowerCase() === toRomaji(question.char)
-        const color = isCorrect ? PROGRESS_COLORS.CORRECT : PROGRESS_COLORS.INCORRECT
-
-        const position = (i / state.currentQuestion) * 100
-        segments.push(`${color} ${position}%`)
-      }
-    }
-
-    if (segments.length > 0) {
-      const lastQuestion = answeredQuestions[answeredQuestions.length - 1]
-      if (lastQuestion.answer) {
-        const isCorrect = lastQuestion.answer.toLowerCase() === toRomaji(lastQuestion.char)
-        const color = isCorrect ? PROGRESS_COLORS.CORRECT : PROGRESS_COLORS.INCORRECT
-        segments.push(`${color} 100%`)
-      }
-    }
-
-    return segments.length > 0 ? `linear-gradient(90deg, ${segments.join(', ')})` : ''
-  })
-
-  const handleAnswerInput = (event: InputEvent) => {
-    const target = event.target as HTMLInputElement
-    if (/^[A-Za-z]*$/g.test(target.value)) {
-      setAnswerInputValue(target.value)
-      setCurrentAnswer(target.value ? target.value.split('') : DEFAULT_ANSWER)
-    }
-  }
-
-  const handleKeyPress = (event: KeyboardEvent) => {
-    const isAlphabet = /[a-zA-Z]/i.test(event.key)
-    const isAllowedKey = ['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(
-      event.key
-    )
-
-    if (!isAlphabet && !isAllowedKey) {
-      event.preventDefault()
-    }
-  }
 
   const handleSubmit = (event: Event): void => {
     event.preventDefault()
@@ -339,6 +237,11 @@ const Quiz = () => {
     }
   }
 
+  const handleAnswerInputChange = (value: string) => {
+    setAnswerInputValue(value)
+    setCurrentAnswer(value ? value.split('') : DEFAULT_ANSWER)
+  }
+
   return (
     <General>
       <header class="col-span-12 grid grid-cols-1 items-end gap-2 md:grid-cols-3 md:justify-center">
@@ -356,7 +259,9 @@ const Quiz = () => {
             onClick={() => navigate('/')}
           >
             back
-            <kbd class="rounded-full bg-slate-500 text-slate-50 px-1 py-0.5 text-xs lowercase">Esc</kbd>
+            <kbd class="rounded-full bg-slate-500 px-1 py-0.5 text-slate-50 text-xs lowercase">
+              Esc
+            </kbd>
           </button>
         </div>
         <div class="order-3 flex justify-end">
@@ -375,262 +280,38 @@ const Quiz = () => {
 
       <Transition name="tr--from-bottom">
         <Show when={!!isResultVisible()}>
-          <Dialog isVisible={isResultVisible}>
-            <header class="mb-4">
-              <h2 class="text-center font-bold text-lg text-slate-700 xs:text-2xl">
-                quiz complete!
-              </h2>
-            </header>
-
-            {/* statistics */}
-            <article class="space-y-4">
-              {/* score overview */}
-              <p class="text-center font-bold text-2xl text-slate-700">{completionPercentage()}%</p>
-              {/* /score overview */}
-
-              {/* detailed stats */}
-              <div class="grid grid-cols-2 gap-4 text-center">
-                <div class="rounded-lg bg-emerald-50 p-3">
-                  <p class="font-bold text-emerald-700 text-lg">{state.correctAnswersTotal}</p>
-                  <p class="text-emerald-600 text-xs">correct</p>
-                </div>
-                <div class="rounded-lg bg-pink-50 p-3">
-                  <p class="font-bold text-lg text-pink-700">{state.incorrectAnswersTotal}</p>
-                  <p class="text-pink-600 text-xs">incorrect</p>
-                </div>
-              </div>
-              {/* /detailed stats */}
-
-              {/* answers detail */}
-              <div class="space-y-3">
-                <Show when={state.correctAnswers.length > 0}>
-                  <div class="space-y-2">
-                    <h3 class="font-semibold text-emerald-700 text-sm">Correct Answers:</h3>
-                    <div class="max-h-32 space-y-1 overflow-y-auto rounded-lg bg-emerald-50 p-3">
-                      <For each={state.correctAnswers}>
-                        {(correctAnswer) => (
-                          <div class="flex items-center justify-between rounded bg-white p-2 text-xs">
-                            <div class="flex items-center gap-2">
-                              <p class="font-bold text-lg">{correctAnswer.char}</p>
-                              <span class="text-slate-500">→</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-right">
-                              <p class="text-emerald-600">your: {correctAnswer.userAnswer}</p>
-                              <p class="text-emerald-600">correct: {correctAnswer.correctAnswer}</p>
-                            </div>
-                          </div>
-                        )}
-                      </For>
-                    </div>
-                  </div>
-                </Show>
-
-                <Show when={state.incorrectAnswers.length > 0}>
-                  <div class="space-y-2">
-                    <h3 class="font-semibold text-pink-700 text-sm">Incorrect Answers:</h3>
-                    <div class="max-h-32 space-y-1 overflow-y-auto rounded-lg bg-pink-50 p-3">
-                      <For each={state.incorrectAnswers}>
-                        {(incorrectAnswer) => (
-                          <div class="flex items-center justify-between rounded bg-white p-2 text-xs">
-                            <div class="flex items-center gap-2">
-                              <p class="font-bold text-lg">{incorrectAnswer.char}</p>
-                              <span class="text-slate-500">→</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-right">
-                              <p class="text-pink-600">your: {incorrectAnswer.userAnswer}</p>
-                              <p class="text-emerald-600">
-                                correct: {incorrectAnswer.correctAnswer}
-                              </p>
-                            </div>
-                          </div>
-                        )}
-                      </For>
-                    </div>
-                  </div>
-                </Show>
-              </div>
-              {/* /answers detail */}
-
-              {/* action buttons */}
-              <div class="space-y-2">
-                <Show when={state.incorrectAnswers.length > 0}>
-                  <button
-                    type="button"
-                    class={cn(
-                      'w-full cursor-pointer rounded-lg bg-pink-500 px-4 py-2 text-pink-50 text-sm hover:bg-pink-600 active:bg-pink-700',
-                      DEFAULT_INTERACTION_CLASS
-                    )}
-                    onClick={() => {
-                      setQuestionsFromWrongAnswers()
-                      setResultVisibility(false)
-                    }}
-                  >
-                    quiz from incorrect answers
-                  </button>
-                </Show>
-                <div class="flex gap-2">
-                  <button
-                    type="button"
-                    class={cn(
-                      'flex-1 cursor-pointer rounded-lg bg-slate-500 px-4 py-2 text-slate-50 text-sm hover:bg-slate-600 active:bg-slate-700',
-                      DEFAULT_INTERACTION_CLASS
-                    )}
-                    onClick={() => {
-                      setResetState(true)
-                      setResultVisibility(false)
-                    }}
-                  >
-                    try again
-                  </button>
-                  <button
-                    type="button"
-                    class={cn(
-                      'flex-1 cursor-pointer rounded-lg border-2 border-slate-300 px-4 py-2 text-slate-700 text-sm hover:bg-slate-50',
-                      DEFAULT_INTERACTION_CLASS
-                    )}
-                    onClick={() => navigate('/')}
-                  >
-                    new quiz
-                  </button>
-                </div>
-              </div>
-              {/* /action buttons */}
-            </article>
-            {/* /statistics */}
-          </Dialog>
+          <QuizResultsDialog
+            isVisible={isResultVisible}
+            setResultVisibility={setResultVisibility}
+            state={state}
+            setQuestionsFromWrongAnswers={setQuestionsFromWrongAnswers}
+            setResetState={setResetState}
+            completionPercentage={completionPercentage}
+          />
         </Show>
       </Transition>
 
       <section class="col-span-12 flex flex-col items-center gap-y-8">
         <div class="w-full">
           {/* progress bar */}
-          <div
-            class="progress-bar relative flex h-4 w-full items-center justify-center rounded-full border-2 border-slate-200 overflow-hidden bg-slate-50 before:content-[''] before:absolute before:left-0 before:top-0 before:h-full before:rounded-full before:transition-all before:duration-300 before:ease-out"
-            style={{
-              '--progress-width': `${(state.currentQuestion / state.questions.length) * 100}%`,
-              '--progress-gradient': progressBarGradient() || PROGRESS_COLORS.CORRECT
-            }}
-          >
-            <small class="relative z-10 text-slate-700 text-[10px] font-medium drop-shadow-sm">
-              {state.currentQuestion} of {state.questions.length}
-            </small>
-          </div>
+          <ProgressBar state={state} />
           {/* /progress bar */}
 
-          <div
-            class="relative flex w-full justify-center overflow-x-hidden"
-            style={{
-              '-webkit-mask-image': 'linear-gradient(to right, #0000, #000, #000, #0000)',
-            }}
-          >
-            <ul ref={(el) => (questionList = el)} class="relative grid w-32 grid-flow-col gap-x-2">
-              <For each={state.questions}>
-                {(question, idx) => (
-                  <li
-                    class={cn(
-                      'question grid h-24 w-32 grid-flow-row justify-center gap-y-4 rounded-xl border-2 p-2',
-                      QUESTION_STATE_CLASSES[getQuestionStateClass()(question, idx())]
-                    )}
-                  >
-                    <span
-                      class="question-kana flex items-end justify-center font-bold font-sans text-3xl leading-none"
-                    >
-                      {question.char}
-                    </span>
-                    <span class="flex justify-center text-slate-500 text-xl lowercase leading-none">
-                      {state.currentQuestion === idx() && !question.answer ? (
-                        <For each={currentAnswer()}>
-                          {(char) => <RomajiChar>{char}</RomajiChar>}
-                        </For>
-                      ) : (
-                        question.answer || '...'
-                      )}
-                    </span>
-                  </li>
-                )}
-              </For>
-            </ul>
-          </div>
+          <QuestionList
+            state={state}
+            currentAnswer={currentAnswer}
+            listRef={(el) => (questionList = el)}
+          />
         </div>
 
-        <form class="flex w-full items-center gap-x-4" onSubmit={handleSubmit}>
-          <div class="flex min-w-0 shrink-[1] grow-[1] basis-0 justify-end">
-            <button
-              type="button"
-              aria-labelledby="reset-button"
-              title="Reset quiz"
-              class={cn(
-                'flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-slate-500 text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 hover:bg-slate-600 disabled:bg-slate-300 [&:not(:disabled)]:active:scale-90 [&:not(:disabled)]:active:bg-slate-700',
-                DEFAULT_INTERACTION_CLASS
-              )}
-              disabled={!state.currentQuestion}
-              onClick={() => state.currentQuestion && setResetState(true)}
-            >
-              <span id="reset-button" hidden>
-                reset
-              </span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="3"
-                stroke="currentColor"
-                aria-hidden="true"
-                class="reset-icon h-5 w-5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
-                />
-              </svg>
-            </button>
-          </div>
-          <input
-            ref={(el) => (answerInput = el)}
-            id="answer"
-            type="text"
-            maxlength="3"
-            minlength="1"
-            value={answerInputValue()}
-            onKeyDown={handleKeyPress}
-            placeholder="answer..."
-            class={cn(
-              'h-12 w-32 appearance-none rounded-full border-2 border-slate-300 bg-slate-50 px-3 py-2 text-center lowercase shadow-md shadow-slate-200 placeholder:text-slate-500',
-              DEFAULT_INTERACTION_CLASS
-            )}
-            onInput={handleAnswerInput}
-          />
-          <div class="min-w-0 shrink-[1] grow-[1] basis-0">
-            <button
-              type="submit"
-              aria-labelledby="submit-button"
-              class={cn(
-                'flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-slate-500 text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 disabled:bg-slate-300 [&:not(:disabled)]:active:scale-90 [&:not(:disabled)]:active:bg-slate-700',
-                DEFAULT_INTERACTION_CLASS
-              )}
-            >
-              <span id="submit-button" hidden>
-                check
-              </span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="3"
-                stroke="currentColor"
-                aria-hidden="true"
-                class="h-5 w-5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                />
-              </svg>
-            </button>
-          </div>
-        </form>
+        <AnswerInputForm
+          state={state}
+          inputRef={(el: HTMLInputElement) => (answerInput = el)}
+          answerInputValue={answerInputValue}
+          setAnswerInputValue={handleAnswerInputChange}
+          setResetState={setResetState}
+          handleSubmit={handleSubmit}
+        />
       </section>
     </General>
   )

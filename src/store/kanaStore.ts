@@ -2,12 +2,12 @@ import create from 'solid-zustand'
 import { toRomaji } from 'wanakana'
 import type { CharGroup, Script } from '~/constants/kana'
 import {
-  MONOGRAPHS,
-  MONOGRAPH_DIACRITICS,
-  DIAGRAPHS,
   DIAGRAPH_DIACRITICS,
+  DIAGRAPHS,
   HIRAGANA_LOOK_ALIKE,
-  KATAKANA_LOOK_ALIKE
+  KATAKANA_LOOK_ALIKE,
+  MONOGRAPH_DIACRITICS,
+  MONOGRAPHS,
 } from '~/constants/kana'
 
 import { initialState } from './initialState'
@@ -137,11 +137,11 @@ const useStore = create<StateWithActions>((set, get) => ({
       `${scriptPrefix}MonographDiacritics`,
       `${scriptPrefix}Diagraphs`,
       `${scriptPrefix}DiagraphDiacritics`,
-      `${scriptPrefix}LookAlike`
+      `${scriptPrefix}LookAlike`,
     ]
 
     // check if all char groups are fully selected
-    const allCharGroupsSelected = charGroupKeys.every(key => {
+    const allCharGroupsSelected = charGroupKeys.every((key) => {
       const stateWithDynamicAccess = state as unknown as Record<string, CharGroup>
       const selection = stateWithDynamicAccess[key]
       // get corresponding original chars for this group
@@ -166,7 +166,7 @@ const useStore = create<StateWithActions>((set, get) => ({
 
     // toggle all char groups
     const updates: Record<string, CharGroup> = {}
-    charGroupKeys.forEach(key => {
+    charGroupKeys.forEach((key) => {
       const getCharsForKey = (key: string) => {
         if (key.includes('Monographs') && !key.includes('Diacritics')) return MONOGRAPHS
         if (key.includes('MonographDiacritics')) return MONOGRAPH_DIACRITICS

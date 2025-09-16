@@ -1,16 +1,16 @@
 import type { JSX } from 'solid-js'
 
-import { For, Show, createMemo } from 'solid-js'
+import { For, Show } from 'solid-js'
 import { Transition } from 'solid-transition-group'
 import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
 import type { Script } from '~/constants/kana'
 import {
-  MONOGRAPHS,
-  MONOGRAPH_DIACRITICS,
-  DIAGRAPHS,
   DIAGRAPH_DIACRITICS,
+  DIAGRAPHS,
   HIRAGANA_LOOK_ALIKE,
-  KATAKANA_LOOK_ALIKE
+  KATAKANA_LOOK_ALIKE,
+  MONOGRAPH_DIACRITICS,
+  MONOGRAPHS,
 } from '~/constants/kana'
 import useStore from '~/store/kanaStore'
 import { cn } from '~/utils/cn'
@@ -40,10 +40,10 @@ const Menu = (): JSX.Element => {
       `${scriptPrefix}MonographDiacritics`,
       `${scriptPrefix}Diagraphs`,
       `${scriptPrefix}DiagraphDiacritics`,
-      `${scriptPrefix}LookAlike`
+      `${scriptPrefix}LookAlike`,
     ]
 
-    return charGroupKeys.every(key => {
+    return charGroupKeys.every((key) => {
       const selection = state[key as keyof typeof state] as any[][]
 
       const getCharsForKey = (key: string) => {
