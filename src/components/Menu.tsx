@@ -75,7 +75,7 @@ const Menu = (): JSX.Element => {
   }
 
   return (
-    <nav>
+    <nav aria-label="Script selection">
       <ul class="flex justify-center gap-x-4 md:justify-normal">
         <For each={state.scripts}>
           {(menu) => (

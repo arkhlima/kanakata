@@ -45,3 +45,17 @@ body {
   width: var(--progress-width);
   background: var(--progress-gradient);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
+  }
+
+  progress::-webkit-progress-value {
+    transition: none;
+  }
+}

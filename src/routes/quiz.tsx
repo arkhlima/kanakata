@@ -296,6 +296,8 @@ const Quiz = () => {
       {/* /quiz results dialog */}
 
       <section class="col-span-12 flex flex-col items-center gap-y-8">
+        <h2 class="sr-only lowercase">Quiz</h2>
+
         {/* progress bar */}
         <ProgressBar state={state} />
         {/* /progress bar */}

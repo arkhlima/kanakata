@@ -47,7 +47,7 @@ const QuizResultsDialog = (props: QuizResultsDialogProps) => {
         {/* answers detail */}
         <Show when={props.state.incorrectAnswers.length > 0}>
           <div>
-            <h3 class="mb-1 font-bold text-slate-500 text-sm lowercase">Incorrect Answers:</h3>
+            <h3 class="mb-1 font-bold text-slate-500 text-sm lowercase">Incorrect Answers</h3>
             <div class="max-h-32 space-y-1 overflow-y-auto rounded-xl border-2 border-pink-300 bg-pink-50 p-3">
               <For each={props.state.incorrectAnswers}>
                 {(incorrectAnswer) => (

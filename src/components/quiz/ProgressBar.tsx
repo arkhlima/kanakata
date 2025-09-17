@@ -13,6 +13,10 @@ const ProgressBar = (props: ProgressBarProps) => {
     INCORRECT: 'oklch(82.3% 0.12 346.018)', // pink-200
   } as const
 
+  const progressValue = () => props.state.currentQuestion
+  const progressMax = () => props.state.questions.length
+  const progressPercent = () => (progressValue() / progressMax()) * 100
+
   const progressBarGradient = createMemo(() => {
     const answeredQuestions = props.state.questions.slice(0, props.state.currentQuestion)
     const segments: string[] = []
@@ -41,16 +45,36 @@ const ProgressBar = (props: ProgressBarProps) => {
   })
 
   return (
-    <div
-      class="progress-bar relative flex h-4 w-full items-center justify-center overflow-hidden rounded-full border-2 border-slate-200 bg-slate-50 before:absolute before:top-0 before:left-0 before:h-full before:rounded-full before:transition-all before:duration-300 before:ease-out before:content-['']"
-      style={{
-        '--progress-width': `${(props.state.currentQuestion / props.state.questions.length) * 100}%`,
-        '--progress-gradient': progressBarGradient() || PROGRESS_COLORS.CORRECT,
-      }}
-    >
+    <div class="relative flex h-4 w-full items-center justify-center rounded-full border-2 border-slate-200 bg-slate-50">
+      {/* semantic progress */}
+      <progress
+        value={progressValue()}
+        max={progressMax()}
+        aria-label={`Quiz progress: question ${progressValue()} of ${progressMax()}`}
+        class="sr-only absolute inset-0 h-full w-full appearance-none [&::-moz-progress-bar]:rounded-full [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-slate-50 [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:transition-all [&::-webkit-progress-value]:duration-300 [&::-webkit-progress-value]:ease-out"
+        style={{
+          '--progress-gradient': progressBarGradient() || PROGRESS_COLORS.CORRECT,
+        }}
+      >
+        {progressPercent()}% complete
+      </progress>
+      {/* /semantic progress */}
+
+      {/* gradient effect */}
+      <div
+        class="absolute inset-0 h-full rounded-full transition-all duration-300 ease-out"
+        style={{
+          background: progressBarGradient(),
+          width: `${progressPercent()}%`,
+        }}
+      />
+      {/* /gradient effect */}
+
+      {/* progress text */}
       <small class="relative z-10 font-medium text-[10px] text-slate-700 drop-shadow-sm">
-        {props.state.currentQuestion} of {props.state.questions.length}
+        {progressValue()} of {progressMax()}
       </small>
+      {/* /progress text */}
     </div>
   )
 }

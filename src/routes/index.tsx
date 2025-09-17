@@ -40,6 +40,8 @@ const Home = () => {
 
       {/* content */}
       <section class="col-span-12 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-8">
+        <h2 class="sr-only lowercase">Character Selection</h2>
+
         <div class="flex flex-col gap-y-4 md:gap-y-8">
           <CharGroupSelect
             chars={MONOGRAPHS}
