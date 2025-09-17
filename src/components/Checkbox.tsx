@@ -13,10 +13,10 @@ interface CheckboxProps {
 const Checkbox = (props: CheckboxProps): JSX.Element => {
   return (
     <label
-      class="flex cursor-pointer items-center gap-x-2 lowercase"
-      classList={{
-        'underline decoration-blue-300 decoration-wavy': props.isChecked,
-      }}
+      class={cn(
+        'flex cursor-pointer items-center gap-x-2 lowercase',
+        props.isChecked ? 'underline decoration-blue-300 decoration-wavy' : ''
+      )}
     >
       <input
         type="checkbox"
@@ -24,11 +24,7 @@ const Checkbox = (props: CheckboxProps): JSX.Element => {
         class={cn('cursor-pointer', DEFAULT_INTERACTION_CLASS)}
         onClick={() => props.onChange()}
       />
-      <span
-        classList={{
-          'absolute z-[-1] left-[-999px] overflow-hidden': props.isLabelHidden,
-        }}
-      >
+      <span class={cn(props.isLabelHidden ? 'absolute left-[-999px] z-[-1] overflow-hidden' : '')}>
         {props.label}
       </span>
     </label>

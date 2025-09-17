@@ -244,6 +244,7 @@ const Quiz = () => {
 
   return (
     <General>
+      {/* header */}
       <header class="col-span-12 grid grid-cols-1 items-end gap-2 md:grid-cols-3 md:justify-center">
         <h1 class="order-1 col-span-2 text-center font-bold text-5xl md:order-2 md:col-span-1">
           kanakata
@@ -259,7 +260,7 @@ const Quiz = () => {
             onClick={() => navigate('/')}
           >
             back
-            <kbd class="rounded-full bg-slate-500 px-1 py-0.5 text-slate-50 text-xs lowercase">
+            <kbd class="rounded-md bg-slate-300 px-1 py-0.5 text-slate-50 text-xs lowercase">
               Esc
             </kbd>
           </button>
@@ -268,16 +269,18 @@ const Quiz = () => {
           <button
             type="button"
             class={cn(
-              'cursor-pointer text-lg text-slate-500 lowercase decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl',
+              'cursor-pointer text-lg lowercase decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline disabled:text-slate-300 md:text-2xl',
               DEFAULT_INTERACTION_CLASS
             )}
-            onClick={() => alert('coming soon!')}
+            disabled
           >
             settings
           </button>
         </div>
       </header>
+      {/* /header */}
 
+      {/* quiz results dialog */}
       <Transition name="tr--from-bottom">
         <Show when={!!isResultVisible()}>
           <QuizResultsDialog
@@ -290,20 +293,22 @@ const Quiz = () => {
           />
         </Show>
       </Transition>
+      {/* /quiz results dialog */}
 
       <section class="col-span-12 flex flex-col items-center gap-y-8">
-        <div class="w-full">
-          {/* progress bar */}
-          <ProgressBar state={state} />
-          {/* /progress bar */}
+        {/* progress bar */}
+        <ProgressBar state={state} />
+        {/* /progress bar */}
 
-          <QuestionList
-            state={state}
-            currentAnswer={currentAnswer}
-            listRef={(el) => (questionList = el)}
-          />
-        </div>
+        {/* question list */}
+        <QuestionList
+          state={state}
+          currentAnswer={currentAnswer}
+          listRef={(el) => (questionList = el)}
+        />
+        {/* /question list */}
 
+        {/* answer input form */}
         <AnswerInputForm
           state={state}
           inputRef={(el: HTMLInputElement) => (answerInput = el)}
@@ -312,6 +317,7 @@ const Quiz = () => {
           setResetState={setResetState}
           handleSubmit={handleSubmit}
         />
+        {/* /answer input form */}
       </section>
     </General>
   )

@@ -19,19 +19,9 @@ const AnswerInputForm = (props: AnswerInputFormProps) => {
     }
   }
 
-  const handleKeyPress = (event: KeyboardEvent) => {
-    const isAlphabet = /[a-zA-Z]/i.test(event.key)
-    const isAllowedKey = ['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(
-      event.key
-    )
-
-    if (!isAlphabet && !isAllowedKey) {
-      event.preventDefault()
-    }
-  }
-
   return (
     <form class="flex w-full items-center gap-x-4" onSubmit={props.handleSubmit}>
+      {/* reset button */}
       <div class="flex min-w-0 shrink-[1] grow-[1] basis-0 justify-end">
         <button
           type="button"
@@ -64,6 +54,9 @@ const AnswerInputForm = (props: AnswerInputFormProps) => {
           </svg>
         </button>
       </div>
+      {/* /reset button */}
+
+      {/* answer input */}
       <input
         ref={props.inputRef}
         id="answer"
@@ -71,14 +64,16 @@ const AnswerInputForm = (props: AnswerInputFormProps) => {
         maxlength="3"
         minlength="1"
         value={props.answerInputValue() || ''}
-        onKeyDown={handleKeyPress}
-        placeholder="answer..."
+        placeholder="Answer..."
         class={cn(
-          'h-12 w-32 appearance-none rounded-full border-2 border-slate-300 bg-slate-50 px-3 py-2 text-center lowercase shadow-md shadow-slate-200 placeholder:text-slate-500',
+          'h-12 w-32 appearance-none rounded-full border-2 border-slate-300 bg-slate-50 px-3 py-2 text-center lowercase lowercase shadow-md shadow-slate-200 placeholder:text-slate-500',
           DEFAULT_INTERACTION_CLASS
         )}
         onInput={handleAnswerInput}
       />
+      {/* /answer input */}
+
+      {/* check button */}
       <div class="min-w-0 shrink-[1] grow-[1] basis-0">
         <button
           type="submit"
@@ -108,6 +103,7 @@ const AnswerInputForm = (props: AnswerInputFormProps) => {
           </svg>
         </button>
       </div>
+      {/* /check button */}
     </form>
   )
 }

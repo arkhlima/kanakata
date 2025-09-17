@@ -135,7 +135,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
   })
 
   return (
-    <div class="grid gap-y-1">
+    <section class="grid gap-y-1">
       {/* header */}
       <header
         class={cn(
@@ -210,7 +210,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
           </div>
         )}
       </For>
-    </div>
+    </section>
   )
 }
 

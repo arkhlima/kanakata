@@ -46,10 +46,10 @@ const QuestionList = (props: QuestionListProps) => {
                 QUESTION_STATE_CLASSES[getQuestionStateClass()(question, idx())]
               )}
             >
-              <span class="question-kana flex items-end justify-center font-bold font-sans text-3xl leading-none">
+              <p class="question-kana flex items-end justify-center font-bold font-sans text-3xl leading-none">
                 {question.char}
-              </span>
-              <span class="flex justify-center text-slate-500 text-xl lowercase leading-none">
+              </p>
+              <p class="flex justify-center text-slate-500 text-xl lowercase leading-none">
                 {props.state.currentQuestion === idx() && !question.answer ? (
                   <For each={props.currentAnswer()}>
                     {(char) => <RomajiChar>{char}</RomajiChar>}
@@ -57,7 +57,7 @@ const QuestionList = (props: QuestionListProps) => {
                 ) : (
                   question.answer || '...'
                 )}
-              </span>
+              </p>
             </li>
           )}
         </For>
