@@ -219,6 +219,11 @@ const useStore = create<StateWithActions>((set, get) => ({
     set({ resetState: value })
   },
 
+  // reset the incorrect answers flag
+  resetIncorrectAnswersFlag: () => {
+    set({ isResetFromIncorrectAnswers: false })
+  },
+
   // reset quiz progress
   resetQuiz: () => {
     set({
@@ -246,6 +251,8 @@ const useStore = create<StateWithActions>((set, get) => ({
       incorrectAnswersTotal: 0,
       correctAnswers: [],
       incorrectAnswers: [],
+      resetState: true,
+      isResetFromIncorrectAnswers: true,
     })
   },
 

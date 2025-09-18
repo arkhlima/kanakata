@@ -16,6 +16,7 @@ export const initialState: State = {
   scripts: ['Hiragana', 'Katakana'],
   selectedScript: 'Hiragana',
   resetState: false,
+  isResetFromIncorrectAnswers: false,
   questions: [],
   currentQuestion: 0,
   correctAnswersTotal: 0,

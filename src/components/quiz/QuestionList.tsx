@@ -1,6 +1,9 @@
-import { createMemo, For } from 'solid-js'
+import gsap from 'gsap'
+import { createEffect, createMemo, For, onCleanup } from 'solid-js'
 import { toRomaji } from 'wanakana'
+import { CHAR_ANIMATION } from '~/constants/animations'
 import type { Questions, StateWithActions } from '~/store/types'
+import { cleanupAnimations } from '~/utils/animations'
 import { cn } from '~/utils/cn'
 import RomajiChar from './RomajiChar'
 
@@ -11,6 +14,8 @@ interface QuestionListProps {
 }
 
 const QuestionList = (props: QuestionListProps) => {
+  let kaomojiAnimations: gsap.core.Timeline[] = []
+
   const QUESTION_STATE_CLASSES: Record<string, string> = {
     active: 'border-blue-300 bg-blue-50',
     inactive: 'border-slate-300 bg-slate-50',
@@ -28,6 +33,46 @@ const QuestionList = (props: QuestionListProps) => {
             : 'incorrect'
           : 'inactive'
     }
+  })
+
+  createEffect(() => {
+    if (props.state.currentQuestion === 0 && props.state.questions.length > 0) {
+      cleanupAnimations(kaomojiAnimations)
+      kaomojiAnimations = []
+
+      for (let index = 0; index < props.state.questions.length; index++) {
+        const kanaElement = document.querySelector(
+          `.question:nth-child(${index + 1}) .question-kana`
+        )
+
+        if (kanaElement) {
+          kanaElement.textContent = '◕‿◕'
+
+          const animation = gsap
+            .timeline()
+            .to(kanaElement, {
+              scale: 0,
+              duration: CHAR_ANIMATION.DURATION,
+              ease: CHAR_ANIMATION.EASING.EXPO_IN,
+              onComplete: () => {
+                kanaElement.textContent = props.state.questions[index].char
+              },
+            })
+            .to(kanaElement, {
+              scale: 1,
+              duration: CHAR_ANIMATION.DURATION,
+              ease: CHAR_ANIMATION.EASING.EXPO_OUT,
+            })
+
+          kaomojiAnimations.push(animation)
+        }
+      }
+    }
+  })
+
+  onCleanup(() => {
+    cleanupAnimations(kaomojiAnimations, '.question-kana')
+    kaomojiAnimations = []
   })
 
   return (

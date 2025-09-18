@@ -29,7 +29,7 @@ const QuizResultsDialog = (props: QuizResultsDialogProps) => {
       <article class="flex flex-col gap-6 p-6">
         {/* detailed stats */}
         <div class="grid grid-cols-3 gap-2 text-center">
-          <div class="flex flex-col items-center justify-center rounded-xl border-2 border-slate-300 bg-slate-50 p-2">
+          <div class="flex flex-col items-center justify-center rounded-xl border-2 border-blue-300 bg-blue-50 p-2">
             <p class="text-center text-slate-500 text-xs">score</p>
             <p class="text-center font-bold text-4xl">{props.completionPercentage()}</p>
           </div>

@@ -10,11 +10,19 @@ import QuizResultsDialog from '~/components/quiz/QuizResultsDialog'
 import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
 import General from '~/layouts/general'
 import useStore from '~/store/kanaStore'
+import { cleanupAnimation } from '~/utils/animations'
 import { cn } from '~/utils/cn'
 
 const Quiz = () => {
   const state = useStore()
-  const { setQuestions, setAnswer, resetQuiz, setResetState, setQuestionsFromWrongAnswers } = state
+  const {
+    setQuestions,
+    setAnswer,
+    resetQuiz,
+    setResetState,
+    setQuestionsFromWrongAnswers,
+    resetIncorrectAnswersFlag,
+  } = state
 
   const navigate = useNavigate()
   let answerInput: HTMLInputElement
@@ -43,6 +51,7 @@ const Quiz = () => {
   const [answerInputValue, setAnswerInputValue] = createSignal<string>()
   const [isResultVisible, setResultVisibility] = createSignal<boolean>(false)
   const [isResetting, setIsResetting] = createSignal<boolean>(false)
+  const [isTransitioning, setIsTransitioning] = createSignal<boolean>(false)
 
   onMount(() => {
     if (state.questions.length === 0) navigate('/', { replace: true })
@@ -90,6 +99,8 @@ const Quiz = () => {
       // only animate if not the first question
       const isShowFeedbackAnimation = state.currentQuestion > 0
 
+      setIsTransitioning(true)
+
       questionAnimation = gsap.timeline()
 
       if (isShowFeedbackAnimation) {
@@ -133,18 +144,19 @@ const Quiz = () => {
           ? {
               onComplete: () => {
                 setResultVisibility(true)
+                setIsTransitioning(false)
               },
             }
           : {
               x: `${calculatedTranslate}rem`,
               duration: ANIMATION.DURATION.SLIDE,
               ease: ANIMATION.EASING.EXPO_IN_OUT,
+              onComplete: () => {
+                setIsTransitioning(false)
+              },
             }
       )
 
-      if (answerInput) {
-        answerInput.focus()
-      }
       setAnswerInputValue('')
     }
 
@@ -154,10 +166,35 @@ const Quiz = () => {
   })
 
   createEffect(() => {
+    if (
+      state.currentQuestion === 0 &&
+      state.questions.length > 0 &&
+      !state.resetState &&
+      !isResetting()
+    ) {
+      setIsTransitioning(true)
+
+      const charAnimationDuration = 0.2 * 2
+      setTimeout(() => {
+        setIsTransitioning(false)
+      }, charAnimationDuration * 1000)
+    }
+  })
+
+  createEffect(() => {
+    if (!isTransitioning() && answerInput) {
+      answerInput.focus()
+    }
+  })
+
+  createEffect(() => {
     // scale-in & scale-out chars animation
     if (state.resetState) {
       // cleanup previous reset animation
       if (resetAnimation) resetAnimation.kill()
+
+      // Set transitioning state during reset
+      setIsTransitioning(true)
 
       resetAnimation = gsap
         .timeline()
@@ -173,7 +210,11 @@ const Quiz = () => {
           onComplete: () => {
             setIsResetting(true)
             resetQuiz()
-            setQuestions()
+
+            // only call setQuestions if this is not a reset from incorrect answers
+            if (!state.isResetFromIncorrectAnswers) {
+              setQuestions()
+            }
           },
         })
         .to('.question-kana', {
@@ -183,6 +224,10 @@ const Quiz = () => {
           onComplete: () => {
             setResetState(false)
             setIsResetting(false)
+            setIsTransitioning(false)
+            if (state.isResetFromIncorrectAnswers) {
+              resetIncorrectAnswersFlag()
+            }
           },
         })
         .to('.reset-icon', {
@@ -195,20 +240,13 @@ const Quiz = () => {
   })
 
   onCleanup(() => {
-    // kill animations and clear properties
-    if (questionAnimation) {
-      questionAnimation.kill()
-      if (questionList) {
-        gsap.set(questionList, { clearProps: 'all' })
-      }
-      gsap.set('.question', { clearProps: 'all' })
-      gsap.set('.question-kana', { clearProps: 'all' })
-    }
-    if (resetAnimation) {
-      resetAnimation.kill()
-      gsap.set('.reset-icon', { clearProps: 'all' })
-      gsap.set('.question-kana', { clearProps: 'all' })
-    }
+    cleanupAnimation(questionAnimation, questionList)
+    gsap.set('.question', { clearProps: 'all' })
+    gsap.set('.question-kana', { clearProps: 'all' })
+
+    cleanupAnimation(resetAnimation)
+    gsap.set('.reset-icon', { clearProps: 'all' })
+    gsap.set('.question-kana', { clearProps: 'all' })
   })
 
   const translateValue = createMemo(() => {
@@ -318,6 +356,7 @@ const Quiz = () => {
           setAnswerInputValue={handleAnswerInputChange}
           setResetState={setResetState}
           handleSubmit={handleSubmit}
+          disabled={isTransitioning()}
         />
         {/* /answer input form */}
       </section>

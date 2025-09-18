@@ -4,8 +4,10 @@ import { Transition } from 'solid-transition-group'
 import { toKatakana, toRomaji } from 'wanakana'
 
 import Checkbox from '~/components/Checkbox'
+import { CHAR_ANIMATION } from '~/constants/animations'
 import type { CharGroup } from '~/constants/kana'
 import useStore, { getSelectedCharGroup } from '~/store/kanaStore'
+import { cleanupAnimation } from '~/utils/animations'
 import { getCharGroupTitle } from '~/utils/chars'
 import { cn } from '~/utils/cn'
 
@@ -24,14 +26,6 @@ const Char = (props: CharProps) => {
 
   let kanaText: HTMLSpanElement
   let animation: gsap.core.Timeline
-
-  const CHAR_ANIMATION = {
-    DURATION: 0.2,
-    EASING: {
-      EXPO_IN: 'expo.in',
-      EXPO_OUT: 'expo.out',
-    },
-  } as const
 
   const displayChar = createMemo(() => {
     return state.selectedScript === 'Katakana' ? toKatakana(props.char) : props.char
@@ -64,13 +58,7 @@ const Char = (props: CharProps) => {
   })
 
   onCleanup(() => {
-    // kill animations and clear properties
-    if (animation) {
-      animation.kill()
-      if (kanaText) {
-        gsap.set(kanaText, { clearProps: 'all' })
-      }
-    }
+    cleanupAnimation(animation, kanaText)
   })
 
   return (

@@ -38,6 +38,7 @@ export interface State {
   scripts: Script[]
   selectedScript: Script
   resetState: boolean
+  isResetFromIncorrectAnswers: boolean
   questions: Questions[]
   currentQuestion: number
   correctAnswersTotal: number
@@ -81,6 +82,7 @@ export interface Actions {
   toggleAllChars: (selectedChars: string, chars: CharGroup) => void
   toggleAllScript: (script: Script) => void
   setResetState: (value: boolean) => void
+  resetIncorrectAnswersFlag: () => void
   resetQuiz: () => void
   resetAll: () => void
   setQuestionsFromWrongAnswers: () => void

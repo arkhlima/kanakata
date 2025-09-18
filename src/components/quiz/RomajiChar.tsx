@@ -1,5 +1,6 @@
 import gsap from 'gsap'
 import { onCleanup, onMount } from 'solid-js'
+import { cleanupAnimation } from '~/utils/animations'
 
 interface RomajiCharProps {
   children: string
@@ -24,13 +25,7 @@ const RomajiChar = (props: RomajiCharProps) => {
   })
 
   onCleanup(() => {
-    // kill animations and clear properties
-    if (animation) {
-      animation.kill()
-      if (char) {
-        gsap.set(char, { clearProps: 'all' })
-      }
-    }
+    cleanupAnimation(animation, char)
   })
 
   return <span ref={(el) => (char = el)}>{props.children}</span>
