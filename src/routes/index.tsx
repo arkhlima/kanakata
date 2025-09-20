@@ -95,7 +95,7 @@ const Home = () => {
       <Transition name="tr--from-bottom">
         <Show when={state.totalHiragana + state.totalKatakana > 0}>
           <aside class="fixed bottom-8 left-0 w-full">
-            <div class="relative mx-auto flex h-full w-full max-w-4xl justify-end px-4 md:px-8">
+            <div class="relative mx-auto flex h-full w-full max-w-3xl justify-end px-4 md:px-8">
               <button
                 type="button"
                 class={cn(
