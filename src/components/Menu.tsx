@@ -82,7 +82,7 @@ const Menu = (): JSX.Element => {
             <li class="relative flex items-center gap-x-2">
               {/* select all checkbox */}
               <Checkbox
-                label=""
+                label={`Select all ${menu}`}
                 isLabelHidden={true}
                 isChecked={isAllScriptSelected(menu)}
                 onChange={() => handleToggleAllScript(menu)}
