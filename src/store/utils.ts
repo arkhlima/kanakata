@@ -56,16 +56,19 @@ export const generateQuestions = (state: State): Questions[] => {
 
 // calc total selected
 export const calculateTotal = (state: State, script: Script): number => {
-  const allCharGroups = [
-    ...state[`selected${script}Monographs`],
-    ...state[`selected${script}MonographDiacritics`],
-    ...state[`selected${script}Diagraphs`],
-    ...state[`selected${script}DiagraphDiacritics`],
-    ...state[`selected${script}LookAlike`],
-  ] as string[][]
+  const charGroupTypes = [
+    'Monographs',
+    'MonographDiacritics',
+    'Diagraphs',
+    'DiagraphDiacritics',
+    'LookAlike',
+  ]
 
-  return allCharGroups.reduce((total, group) => {
-    return total + group.filter((char) => char !== '').length
+  return charGroupTypes.reduce((total, charType) => {
+    const selectedCharGroup = state[`selected${script}${charType}` as keyof State] as string[][]
+    const originalChars = getOriginalCharsForGroup(script, charType)
+    const groupTotal = calculateCharGroupTotal(selectedCharGroup, originalChars)
+    return total + groupTotal
   }, 0)
 }
 
