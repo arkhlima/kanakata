@@ -82,16 +82,16 @@ const QuestionList = (props: QuestionListProps) => {
         '-webkit-mask-image': 'linear-gradient(to right, #0000, #000, #000, #0000)',
       }}
     >
-      <ul ref={props.listRef} class="relative grid w-32 grid-flow-col gap-x-2">
+      <ul ref={props.listRef} class="relative grid w-24 grid-flow-col gap-x-2">
         <For each={props.state.questions}>
           {(question, idx) => (
             <li
               class={cn(
-                'question grid h-24 w-32 grid-flow-row justify-center gap-y-4 rounded-xl border-2 p-2',
+                'question grid h-24 w-24 grid-flow-row justify-center gap-y-4 rounded-xl border-2 p-2',
                 QUESTION_STATE_CLASSES[getQuestionStateClass()(question, idx())]
               )}
             >
-              <p class="question-kana flex items-end justify-center font-bold font-sans text-3xl leading-none">
+              <p class="question-kana flex items-end justify-center font-bold font-japan text-3xl leading-none">
                 {question.char}
               </p>
               <p class="flex justify-center text-slate-500 text-xl lowercase leading-none">

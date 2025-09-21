@@ -65,9 +65,9 @@ const AnswerInputForm = (props: AnswerInputFormProps) => {
         maxlength="3"
         minlength="1"
         value={props.answerInputValue() || ''}
-        placeholder="Answer..."
+        placeholder="..."
         class={cn(
-          'h-12 w-32 appearance-none rounded-full border-2 border-slate-300 bg-slate-50 px-3 py-2 text-center lowercase shadow-md shadow-slate-200 placeholder:text-slate-500 disabled:bg-slate-200 disabled:text-slate-400',
+          'h-12 w-24 appearance-none rounded-full border-2 border-slate-300 bg-slate-50 px-3 py-2 text-center lowercase shadow-md shadow-slate-200 placeholder:text-slate-500 disabled:bg-slate-200 disabled:text-slate-400',
           DEFAULT_INTERACTION_CLASS
         )}
         onInput={handleAnswerInput}

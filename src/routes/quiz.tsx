@@ -250,7 +250,7 @@ const Quiz = () => {
   })
 
   const translateValue = createMemo(() => {
-    return -8 * state.currentQuestion - 0.5 * state.currentQuestion
+    return -6 * state.currentQuestion - 0.5 * state.currentQuestion
   })
 
   const completionPercentage = createMemo(() => {

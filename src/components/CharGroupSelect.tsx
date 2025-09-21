@@ -65,7 +65,7 @@ const Char = (props: CharProps) => {
     <>
       <span
         ref={(el) => (kanaText = el)}
-        class="flex items-end justify-center font-bold font-sans text-xl leading-none"
+        class="flex items-end justify-center font-bold font-japan text-xl leading-none"
       >
         <span class="text-slate-500">◕‿◕</span>
       </span>
