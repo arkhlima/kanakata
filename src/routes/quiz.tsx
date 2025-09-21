@@ -11,7 +11,7 @@ import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
 import General from '~/layouts/general'
 import useStore from '~/store/kanaStore'
 import { cleanupAnimation } from '~/utils/animations'
-import { cn } from '~/utils/cn'
+import { clsx } from 'clsx'
 
 const Quiz = () => {
   const state = useStore()
@@ -289,7 +289,7 @@ const Quiz = () => {
         <div class="order-1">
           <button
             type="button"
-            class={cn(
+            class={clsx(
               'flex cursor-pointer items-center gap-1 text-lg text-slate-500 lowercase decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline md:text-2xl',
               DEFAULT_INTERACTION_CLASS
             )}
@@ -304,7 +304,7 @@ const Quiz = () => {
         <div class="order-3 flex justify-end">
           <button
             type="button"
-            class={cn(
+            class={clsx(
               'cursor-pointer text-lg lowercase decoration-blue-300 decoration-wavy hover:text-slate-700 focus:underline disabled:text-slate-300 md:text-2xl',
               DEFAULT_INTERACTION_CLASS
             )}

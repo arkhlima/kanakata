@@ -3,7 +3,7 @@ import { For, Show } from 'solid-js'
 import Dialog from '~/components/Dialog'
 import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
 import type { StateWithActions } from '~/store/types'
-import { cn } from '~/utils/cn'
+import { clsx } from 'clsx'
 
 interface QuizResultsDialogProps {
   isVisible: () => boolean
@@ -73,7 +73,7 @@ const QuizResultsDialog = (props: QuizResultsDialogProps) => {
           <Show when={props.state.incorrectAnswers.length > 0}>
             <button
               type="button"
-              class={cn(
+              class={clsx(
                 'w-full cursor-pointer rounded-xl bg-pink-500 px-4 py-2 text-pink-50 text-sm hover:bg-pink-600 active:bg-pink-700',
                 DEFAULT_INTERACTION_CLASS
               )}
@@ -88,7 +88,7 @@ const QuizResultsDialog = (props: QuizResultsDialogProps) => {
           <div class="flex gap-2">
             <button
               type="button"
-              class={cn(
+              class={clsx(
                 'flex-1 cursor-pointer rounded-xl bg-slate-500 px-4 py-2 text-slate-50 text-sm hover:bg-slate-600 active:bg-slate-700',
                 DEFAULT_INTERACTION_CLASS
               )}
@@ -101,7 +101,7 @@ const QuizResultsDialog = (props: QuizResultsDialogProps) => {
             </button>
             <button
               type="button"
-              class={cn(
+              class={clsx(
                 'flex-1 cursor-pointer rounded-xl border-2 border-slate-300 px-4 py-2 text-slate-700 text-sm hover:bg-slate-50',
                 DEFAULT_INTERACTION_CLASS
               )}

@@ -1,6 +1,6 @@
+import { clsx } from 'clsx'
 import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
 import type { StateWithActions } from '~/store/types'
-import { cn } from '~/utils/cn'
 
 interface AnswerInputFormProps {
   state: StateWithActions
@@ -28,7 +28,7 @@ const AnswerInputForm = (props: AnswerInputFormProps) => {
           type="button"
           aria-labelledby="reset-button"
           title="Reset quiz"
-          class={cn(
+          class={clsx(
             'flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-slate-500 text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 hover:bg-slate-600 disabled:bg-slate-300 [&:not(:disabled)]:active:scale-90 [&:not(:disabled)]:active:bg-slate-700',
             DEFAULT_INTERACTION_CLASS
           )}
@@ -66,7 +66,7 @@ const AnswerInputForm = (props: AnswerInputFormProps) => {
         minlength="1"
         value={props.answerInputValue() || ''}
         placeholder="..."
-        class={cn(
+        class={clsx(
           'h-12 w-24 appearance-none rounded-full border-2 border-slate-300 bg-slate-50 px-3 py-2 text-center lowercase shadow-md shadow-slate-200 placeholder:text-slate-500 disabled:bg-slate-200 disabled:text-slate-400',
           DEFAULT_INTERACTION_CLASS
         )}
@@ -80,7 +80,7 @@ const AnswerInputForm = (props: AnswerInputFormProps) => {
           type="submit"
           aria-labelledby="submit-button"
           disabled={props.disabled}
-          class={cn(
+          class={clsx(
             'flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-slate-500 text-slate-50 decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 disabled:bg-slate-300 [&:not(:disabled)]:active:scale-90 [&:not(:disabled)]:active:bg-slate-700',
             DEFAULT_INTERACTION_CLASS
           )}

@@ -14,7 +14,7 @@ import {
 } from '~/constants/kana'
 import General from '~/layouts/general'
 import useStore from '~/store/kanaStore'
-import { cn } from '~/utils/cn'
+import { clsx } from 'clsx'
 
 const Home = () => {
   const state = useStore()
@@ -98,7 +98,7 @@ const Home = () => {
             <div class="relative mx-auto flex h-full w-full max-w-3xl justify-end px-4 md:px-8">
               <button
                 type="button"
-                class={cn(
+                class={clsx(
                   'flex h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-slate-700 text-lg text-slate-50 lowercase decoration-slate-50 decoration-wavy shadow-md shadow-slate-200 hover:bg-slate-600 focus:underline active:bg-slate-500',
                   DEFAULT_INTERACTION_CLASS
                 )}
@@ -118,7 +118,7 @@ const Home = () => {
       {/* footer */}
       <footer class="col-span-12 flex justify-center md:justify-end">
         <a
-          class={cn(
+          class={clsx(
             'text-slate-700 text-sm underline decoration-blue-300 decoration-wavy',
             DEFAULT_INTERACTION_CLASS
           )}

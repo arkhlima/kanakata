@@ -9,7 +9,7 @@ import type { CharGroup } from '~/constants/kana'
 import useStore, { getSelectedCharGroup } from '~/store/kanaStore'
 import { cleanupAnimation } from '~/utils/animations'
 import { getCharGroupTitle } from '~/utils/chars'
-import { cn } from '~/utils/cn'
+import { clsx } from 'clsx'
 
 interface CharGroupProps {
   chars: CharGroup
@@ -126,7 +126,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
     <section class="grid gap-y-1">
       {/* header */}
       <header
-        class={cn(
+        class={clsx(
           'relative flex items-center justify-between rounded-t-xl border-2 border-b-0 p-2 pb-1 transition-all duration-100 ease-linear',
           CHAR_STATE_CLASSES[isCharGroupSelected() ? 'active' : 'inactive']
         )}
@@ -166,7 +166,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
             style={`grid-template-columns: auto repeat(${charGroup.length},1fr)`}
           >
             <div
-              class={cn(
+              class={clsx(
                 'flex items-center rounded-l-xl border-2 border-r-0 p-2 pr-1 transition-all duration-100 ease-linear',
                 CHAR_STATE_CLASSES[isCharSelected()(groupIndex()) ? 'active' : 'inactive']
               )}
@@ -186,7 +186,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
             <For each={charGroup}>
               {(char) => (
                 <div
-                  class={cn(
+                  class={clsx(
                     'grid grid-flow-row justify-center gap-y-2 rounded-xl border-2 p-2 transition-all duration-100 ease-linear',
                     CHAR_STATE_CLASSES[isCharSelected()(groupIndex()) ? 'active' : 'inactive']
                   )}

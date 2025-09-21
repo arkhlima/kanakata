@@ -4,7 +4,7 @@ import { toRomaji } from 'wanakana'
 import { CHAR_ANIMATION } from '~/constants/animations'
 import type { Questions, StateWithActions } from '~/store/types'
 import { cleanupAnimations } from '~/utils/animations'
-import { cn } from '~/utils/cn'
+import { clsx } from 'clsx'
 import RomajiChar from './RomajiChar'
 
 interface QuestionListProps {
@@ -86,7 +86,7 @@ const QuestionList = (props: QuestionListProps) => {
         <For each={props.state.questions}>
           {(question, idx) => (
             <li
-              class={cn(
+              class={clsx(
                 'question grid h-24 w-24 grid-flow-row justify-center gap-y-4 rounded-xl border-2 p-2',
                 QUESTION_STATE_CLASSES[getQuestionStateClass()(question, idx())]
               )}

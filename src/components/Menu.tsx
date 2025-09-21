@@ -1,5 +1,5 @@
+import { clsx } from 'clsx'
 import type { JSX } from 'solid-js'
-
 import { For, Show } from 'solid-js'
 import { Transition } from 'solid-transition-group'
 import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
@@ -13,7 +13,6 @@ import {
   MONOGRAPHS,
 } from '~/constants/kana'
 import useStore from '~/store/kanaStore'
-import { cn } from '~/utils/cn'
 import Checkbox from './Checkbox'
 
 const Menu = (): JSX.Element => {
@@ -93,7 +92,7 @@ const Menu = (): JSX.Element => {
               <Transition name="tr--from-bottom">
                 <Show when={!!state[`total${menu}`]}>
                   <span
-                    class={cn(
+                    class={clsx(
                       '-top-6 absolute right-0 flex h-[24px] w-[24px] items-center justify-center rounded-full text-xs',
                       MENU_STATE_CLASSES[isMenuSelected(menu) ? 'active' : 'inactive']
                     )}
@@ -107,7 +106,7 @@ const Menu = (): JSX.Element => {
               {/* menu button */}
               <button
                 type="button"
-                class={cn(
+                class={clsx(
                   'cursor-pointer text-2xl text-slate-500 lowercase decoration-blue-300 decoration-wavy',
                   DEFAULT_INTERACTION_CLASS,
                   isMenuSelected(menu) && 'text-slate-700 underline'
