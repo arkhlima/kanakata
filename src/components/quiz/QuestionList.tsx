@@ -91,7 +91,7 @@ const QuestionList = (props: QuestionListProps) => {
                 QUESTION_STATE_CLASSES[getQuestionStateClass()(question, idx())]
               )}
             >
-              <p class="question-kana flex items-end justify-center font-bold font-japan text-3xl leading-none">
+              <p class="question-kana flex items-end justify-center font-japan font-semibold text-3xl leading-none">
                 {question.char}
               </p>
               <p class="flex justify-center text-slate-500 text-xl lowercase leading-none">

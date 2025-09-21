@@ -284,9 +284,7 @@ const Quiz = () => {
     <General>
       {/* header */}
       <header class="col-span-12 grid grid-cols-1 items-end gap-2 md:grid-cols-3 md:justify-center">
-        <h1 class="order-1 col-span-2 text-center font-bold text-5xl md:order-2 md:col-span-1">
-          kanakata
-        </h1>
+        <h1 class="order-1 col-span-2 text-center text-5xl md:order-2 md:col-span-1">kanakata</h1>
 
         <div class="order-1">
           <button

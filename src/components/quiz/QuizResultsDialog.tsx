@@ -21,7 +21,7 @@ const QuizResultsDialog = (props: QuizResultsDialogProps) => {
     <Dialog isVisible={props.isVisible}>
       {/* header */}
       <header class="bg-slate-300 px-6 py-2">
-        <h2 class="text-center font-bold text-slate-700">complete!</h2>
+        <h2 class="text-center text-slate-700">complete!</h2>
       </header>
       {/* /header */}
 
@@ -31,14 +31,14 @@ const QuizResultsDialog = (props: QuizResultsDialogProps) => {
         <div class="grid grid-cols-3 gap-2 text-center">
           <div class="flex flex-col items-center justify-center rounded-xl border-2 border-blue-300 bg-blue-50 p-2">
             <p class="text-center text-slate-500 text-xs">score</p>
-            <p class="text-center font-bold text-4xl">{props.completionPercentage()}</p>
+            <p class="text-center text-4xl">{props.completionPercentage()}</p>
           </div>
           <div class="flex flex-col items-center justify-center rounded-xl border-2 border-emerald-300 bg-emerald-50 p-2">
-            <p class="font-bold text-2xl">{props.state.correctAnswersTotal}</p>
+            <p class="text-2xl">{props.state.correctAnswersTotal}</p>
             <p class="text-slate-500 text-xs">correct</p>
           </div>
           <div class="flex flex-col items-center justify-center rounded-xl border-2 border-pink-300 bg-pink-50 p-2">
-            <p class="font-bold text-2xl">{props.state.incorrectAnswersTotal}</p>
+            <p class="text-2xl">{props.state.incorrectAnswersTotal}</p>
             <p class="text-slate-500 text-xs">incorrect</p>
           </div>
         </div>
@@ -47,13 +47,13 @@ const QuizResultsDialog = (props: QuizResultsDialogProps) => {
         {/* answers detail */}
         <Show when={props.state.incorrectAnswers.length > 0}>
           <div>
-            <h3 class="mb-1 font-bold text-slate-500 text-sm lowercase">Incorrect Answers</h3>
+            <h3 class="mb-1 text-slate-500 text-sm lowercase">Incorrect Answers</h3>
             <div class="max-h-32 space-y-1 overflow-y-auto rounded-xl border-2 border-pink-300 bg-pink-50 p-3">
               <For each={props.state.incorrectAnswers}>
                 {(incorrectAnswer) => (
                   <div class="flex items-center justify-between rounded bg-white p-2 text-xs">
                     <div class="flex items-center gap-2">
-                      <p class="font-bold text-lg">{incorrectAnswer.char}</p>
+                      <p class="text-lg">{incorrectAnswer.char}</p>
                       <span class="text-slate-500">→</span>
                     </div>
                     <div class="flex items-center gap-2 text-right">

@@ -65,7 +65,7 @@ const Char = (props: CharProps) => {
     <>
       <span
         ref={(el) => (kanaText = el)}
-        class="flex items-end justify-center font-bold font-japan text-xl leading-none"
+        class="flex items-end justify-center font-japan font-semibold text-xl leading-none"
       >
         <span class="text-slate-500">◕‿◕</span>
       </span>
@@ -141,7 +141,7 @@ const CharGroupSelect = (props: CharGroupProps) => {
         </Transition>
         {/* /char group count balloon */}
 
-        <h2 class="order-last flex text-right font-bold text-slate-500 text-sm xs:text-base">
+        <h2 class="order-last flex text-right text-slate-500 text-sm xs:text-base">
           {getCharGroupTitle(props.selectedChars)}
         </h2>
 
