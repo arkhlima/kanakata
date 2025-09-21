@@ -19,29 +19,27 @@ const ProgressBar = (props: ProgressBarProps) => {
 
   const progressBarGradient = createMemo(() => {
     const answeredQuestions = props.state.questions.slice(0, props.state.currentQuestion)
+
+    if (answeredQuestions.length === 0) return ''
+
     const segments: string[] = []
+    const segmentWidth = 100 / answeredQuestions.length
+    const blendWidth = segmentWidth * 0.3
 
-    for (let i = 0; i < answeredQuestions.length; i++) {
-      const question = answeredQuestions[i]
-      if (question.answer) {
-        const isCorrect = question.answer.toLowerCase() === toRomaji(question.char)
-        const color = isCorrect ? PROGRESS_COLORS.CORRECT : PROGRESS_COLORS.INCORRECT
+    answeredQuestions.forEach((question, i) => {
+      if (!question.answer) return
 
-        const position = (i / props.state.currentQuestion) * 100
-        segments.push(`${color} ${position}%`)
-      }
-    }
+      const isCorrect = question.answer.toLowerCase() === toRomaji(question.char)
+      const color = isCorrect ? PROGRESS_COLORS.CORRECT : PROGRESS_COLORS.INCORRECT
 
-    if (segments.length > 0) {
-      const lastQuestion = answeredQuestions[answeredQuestions.length - 1]
-      if (lastQuestion.answer) {
-        const isCorrect = lastQuestion.answer.toLowerCase() === toRomaji(lastQuestion.char)
-        const color = isCorrect ? PROGRESS_COLORS.CORRECT : PROGRESS_COLORS.INCORRECT
-        segments.push(`${color} 100%`)
-      }
-    }
+      const center = (i + 0.5) * segmentWidth
+      const start = Math.max(0, center - blendWidth)
+      const end = Math.min(100, center + blendWidth)
 
-    return segments.length > 0 ? `linear-gradient(90deg, ${segments.join(', ')})` : ''
+      segments.push(`${color} ${start}%`, `${color} ${end}%`)
+    })
+
+    return `linear-gradient(90deg, ${segments.join(', ')})`
   })
 
   return (
