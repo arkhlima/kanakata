@@ -42,9 +42,7 @@ const QuestionList = (props: QuestionListProps) => {
     kaomojiAnimations = []
 
     for (let index = 0; index < props.state.questions.length; index++) {
-      const kanaElement = document.querySelector(
-        `.question:nth-child(${index + 1}) .question-kana`
-      )
+      const kanaElement = document.querySelector(`.question:nth-child(${index + 1}) .question-kana`)
 
       if (kanaElement) {
         kanaElement.textContent = '◕‿◕'
@@ -71,7 +69,11 @@ const QuestionList = (props: QuestionListProps) => {
   }
 
   createEffect(() => {
-    if (props.state.currentQuestion === 0 && props.state.questions.length > 0 && !props.state.resetState) {
+    if (
+      props.state.currentQuestion === 0 &&
+      props.state.questions.length > 0 &&
+      !props.state.resetState
+    ) {
       animateKaomoji()
     }
   })

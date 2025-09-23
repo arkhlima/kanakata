@@ -1,9 +1,9 @@
 import { useNavigate } from '@solidjs/router'
+import { clsx } from 'clsx'
 import { For, Show } from 'solid-js'
 import Dialog from '~/components/Dialog'
 import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
 import type { StateWithActions } from '~/store/types'
-import { clsx } from 'clsx'
 
 interface QuizResultsDialogProps {
   isVisible: () => boolean

@@ -23,7 +23,9 @@ const Checkbox = (props: CheckboxProps): JSX.Element => {
         class={clsx('cursor-pointer', DEFAULT_INTERACTION_CLASS)}
         onClick={() => props.onChange()}
       />
-      <span class={clsx(props.isLabelHidden ? 'absolute left-[-999px] z-[-1] overflow-hidden' : '')}>
+      <span
+        class={clsx(props.isLabelHidden ? 'absolute left-[-999px] z-[-1] overflow-hidden' : '')}
+      >
         {props.label}
       </span>
     </label>

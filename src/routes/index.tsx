@@ -1,4 +1,5 @@
 import { useNavigate } from '@solidjs/router'
+import { clsx } from 'clsx'
 import { Match, onMount, Show, Switch } from 'solid-js'
 import { Transition } from 'solid-transition-group'
 import CharGroupSelect from '~/components/CharGroupSelect'
@@ -14,7 +15,6 @@ import {
 } from '~/constants/kana'
 import General from '~/layouts/general'
 import useStore from '~/store/kanaStore'
-import { clsx } from 'clsx'
 
 const Home = () => {
   const state = useStore()

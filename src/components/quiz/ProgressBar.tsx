@@ -24,7 +24,7 @@ const ProgressBar = (props: ProgressBarProps) => {
 
     const segments: string[] = []
     const segmentWidth = 100 / answeredQuestions.length
-    const blendWidth = segmentWidth * 0.3
+    const blendWidth = segmentWidth * 0.1
 
     answeredQuestions.forEach((question, i) => {
       if (!question.answer) return

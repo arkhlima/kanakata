@@ -1,15 +1,14 @@
+import { clsx } from 'clsx'
 import gsap from 'gsap'
 import { createEffect, createMemo, For, onCleanup, Show } from 'solid-js'
 import { Transition } from 'solid-transition-group'
 import { toKatakana, toRomaji } from 'wanakana'
-
 import Checkbox from '~/components/Checkbox'
 import { CHAR_ANIMATION } from '~/constants/animations'
 import type { CharGroup } from '~/constants/kana'
 import useStore, { getSelectedCharGroup } from '~/store/kanaStore'
 import { cleanupAnimation } from '~/utils/animations'
 import { getCharGroupTitle } from '~/utils/chars'
-import { clsx } from 'clsx'
 
 interface CharGroupProps {
   chars: CharGroup
