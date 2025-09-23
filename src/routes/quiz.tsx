@@ -1,6 +1,6 @@
 import { useNavigate } from '@solidjs/router'
+import { clsx } from 'clsx'
 import gsap from 'gsap'
-
 import { createEffect, createMemo, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { Transition } from 'solid-transition-group'
 import AnswerInputForm from '~/components/quiz/AnswerInputForm'
@@ -11,7 +11,6 @@ import { DEFAULT_INTERACTION_CLASS } from '~/constants/classes'
 import General from '~/layouts/general'
 import useStore from '~/store/kanaStore'
 import { cleanupAnimation } from '~/utils/animations'
-import { clsx } from 'clsx'
 
 const Quiz = () => {
   const state = useStore()
@@ -29,6 +28,7 @@ const Quiz = () => {
   let questionList: HTMLUListElement
   let questionAnimation: gsap.core.Timeline
   let resetAnimation: gsap.core.Timeline
+  let kaomojiAnimationRef: { triggerKaomoji: () => void } | null = null
 
   const DEFAULT_ANSWER: string[] = ['.', '.', '.']
 
@@ -215,18 +215,17 @@ const Quiz = () => {
             if (!state.isResetFromIncorrectAnswers) {
               setQuestions()
             }
-          },
-        })
-        .to('.question-kana', {
-          opacity: 1,
-          duration: ANIMATION.DURATION.FADE,
-          ease: ANIMATION.EASING.EXPO_IN_OUT,
-          onComplete: () => {
+
+            gsap.set('.question-kana', { opacity: 1 })
+
             setResetState(false)
             setIsResetting(false)
             setIsTransitioning(false)
             if (state.isResetFromIncorrectAnswers) {
               resetIncorrectAnswersFlag()
+            }
+            if (kaomojiAnimationRef) {
+              kaomojiAnimationRef.triggerKaomoji()
             }
           },
         })
@@ -343,6 +342,7 @@ const Quiz = () => {
           state={state}
           currentAnswer={currentAnswer}
           listRef={(el) => (questionList = el)}
+          onResetComplete={(ref) => (kaomojiAnimationRef = ref)}
         />
         {/* /question list */}
 
