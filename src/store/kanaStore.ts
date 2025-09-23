@@ -9,6 +9,8 @@ import {
   MONOGRAPH_DIACRITICS,
   MONOGRAPHS,
 } from '~/constants/kana'
+import { SOUND_PATHS } from '~/constants/sounds'
+import { playSound } from '~/utils/sounds'
 
 import { initialState } from './initialState'
 import type { CorrectAnswer, IncorrectAnswer, Questions, StateWithActions } from './types'
@@ -38,6 +40,10 @@ const useStore = create<StateWithActions>((set, get) => ({
     const currentQuestion = get().questions[currentQuestionIndex]
     const correctAnswer = toRomaji(currentQuestion.char)
     const isCorrect = value.toLowerCase() === correctAnswer
+
+    // play sound effect based on answer
+    const soundPath = isCorrect ? SOUND_PATHS.correct : SOUND_PATHS.incorrect
+    playSound(soundPath)
 
     const answerData = {
       char: currentQuestion.char,
