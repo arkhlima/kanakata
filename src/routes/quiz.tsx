@@ -113,7 +113,7 @@ const Quiz = () => {
           questionAnimation
             .to(`.question:nth-child(${currentQuestionIndex})`, {
               scale: 0.8,
-              duration: ANIMATION.DURATION.SCALE,
+              duration: 0.1,
               ease: ANIMATION.EASING.EXPO_IN,
             })
             .to(`.question:nth-child(${currentQuestionIndex})`, {
